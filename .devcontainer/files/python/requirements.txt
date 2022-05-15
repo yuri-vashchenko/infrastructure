@@ -1,0 +1,7 @@
+virtualenv
+pywinrm[kerberos]
+pywinrm
+paramiko
+pyyaml
+ansible
+

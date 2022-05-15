@@ -1,0 +1,38 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.202.5/containers/ubuntu
+{
+	"name": "Infrastructure dev container",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"args": {
+			"USER": "yuri"
+		}
+	},
+	"containerEnv": {
+	},
+	"runArgs": ["--hostname", "infra"],
+	"mounts": [
+		"source=infrastructure,target=/src,type=volume",
+		"source=D:\\share,target=/share,type=bind,consistency=cached",
+		"source=env-infrastructure,target=/home/yuri,type=volume"
+	],
+	"forwardPorts": [22],
+	"workspaceFolder": "/infrastructure",
+	"remoteUser": "1000",
+	"extensions": [
+	],
+	"settings": {
+	  	"files.watcherExclude": {
+			"**/.git/**": true,
+		},
+		"search.exclude": {
+			"**/.git/**": true,
+		},
+		"files.eol": "\n",
+		"editor.tabSize": 4,
+		"editor.formatOnPaste": false,
+		"editor.formatOnSave": true,
+		"editor.formatOnType": true,
+		"files.trimTrailingWhitespace": true
+	}
+}
