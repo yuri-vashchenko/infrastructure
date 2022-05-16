@@ -1,0 +1,9 @@
+skip_list:
+  - command-instead-of-shell
+  - no-handler
+  - git-latest
+
+exclude_paths:
+  - ansible/galaxy_roles/
+  - ansible/galaxy_collections/
+  - ~/.ansible
