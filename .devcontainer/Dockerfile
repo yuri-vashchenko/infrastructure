@@ -116,6 +116,9 @@ ENV LC_ALL en_US.UTF-8
 COPY ./files/python/requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt ; rm requirements.txt
 
+COPY ./files/ansible/galaxy_requirements.yaml /tmp/galaxy_requirements.yaml
+RUN ansible-galaxy install -r /tmp/galaxy-requirements.yml
+
 RUN chown ${USER}:${GROUP} /src
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
