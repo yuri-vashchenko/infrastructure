@@ -118,6 +118,7 @@ RUN pip3 install -r requirements.txt ; rm requirements.txt
 
 COPY ./files/ansible/galaxy_requirements.yaml /tmp/galaxy_requirements.yaml
 RUN ansible-galaxy install -r /tmp/galaxy-requirements.yml
+RUN rm /tmp/galaxy-requirements.yml
 
 RUN chown ${USER}:${GROUP} /src
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
