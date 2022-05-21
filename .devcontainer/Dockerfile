@@ -86,15 +86,13 @@ RUN mkdir /src
 # install software-properties-common for add-apt-repository to work
 RUN apt-get install -y --no-install-recommends software-properties-common
 
-RUN add-apt-repository -y ppa:aacebedo/fasd
-
 # update apt cache
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
         default-jre tmux \
-        silversearcher-ag fasd \
+        silversearcher-ag \
         && \
     apt-get autoremove -y; apt-get clean; rm /var/lib/apt/lists/* -r ; \
     rm -rf /usr/share/man/* ; \
