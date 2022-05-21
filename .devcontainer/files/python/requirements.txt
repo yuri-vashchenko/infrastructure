@@ -3,6 +3,3 @@ pywinrm[kerberos]
 pywinrm
 paramiko
 pyyaml
-ansible
-yamllint
-ansible-lint

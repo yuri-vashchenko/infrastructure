@@ -49,6 +49,7 @@ RUN dpkg --add-architecture i386 && \
         python3-dev \
         python-is-python3 \
         python-dev-is-python3 \
+        python3-venv \
         libkrb5-dev \
         openssh-client \
         openssh-server \
