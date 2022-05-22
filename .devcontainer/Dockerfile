@@ -176,6 +176,6 @@ RUN cp ${HOME}/.local/env/dircolors-solarized/dircolors.ansi-dark ${HOME}/.dirco
 RUN cd ${HOME} && chmod 644 .bashrc .bash_profile .bash_aliases .tmux.conf .dircolors .profile .gnupg/gpg-agent.conf
 
 # Update path
-ENV PATH="$PATH:${HOME}/.local/bin"
+ENV PATH="$PATH:${HOME}/.local/bin:/src/infrastructure/env/bin"
 
 USER ${USER}
