@@ -1,0 +1,8 @@
+- name: Update
+  include_tasks: update.yml
+- name: Packages
+  include_tasks: packages.yml
+- name: SSH
+  include_tasks: ssh.yml
+- name: User
+  include_tasks: user.yml

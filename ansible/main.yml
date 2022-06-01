@@ -1,0 +1,9 @@
+- hosts: all
+  gather_facts: false
+  tasks:
+    - name: Detect ssh port
+      include_tasks: roles/system/tasks/ssh_port.yml
+
+- hosts: all
+  roles:
+    - system

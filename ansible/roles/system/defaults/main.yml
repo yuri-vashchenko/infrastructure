@@ -1,0 +1,10 @@
+packages_to_install:
+  - speedtest-cli
+  - htop
+  - git
+  - vim
+  - neofetch
+  - rsync
+  - sudo
+
+ssh_extra_allowed_users: "{{ user }}"
