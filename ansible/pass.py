@@ -7,7 +7,7 @@ vault_id = "test"
 if (len(sys.argv) > 1):
     vault_id = sys.argv[1]
 
-secrets = "/home/yuri/.local/secret.yml"
+secrets = "/home/yuri/.local/secret.yaml"
 
 with open(secrets, "r") as stream:
     try:
