@@ -5,7 +5,8 @@ collections:
 
 roles:
   - src: geerlingguy.docker
-    version: 4.2.2
+    version: 4.2.3
   - src: geerlingguy.ntp
     version: 2.3.1
   - src: chmduquesne.iptables_persistent
+  - src: aklinkert.docker_cleanup
