@@ -1,0 +1,7 @@
+- name: Create data if needed directory
+  file:
+    path: "{{ app_data_dir }}"
+    state: directory
+    mode: "{{ docker_compose_directory_mask }}"
+    owner: "{{ user }}"
+  become: true

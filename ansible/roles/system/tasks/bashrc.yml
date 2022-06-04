@@ -1,0 +1,9 @@
+- name: Update bashrc to autostart neofetch
+  lineinfile:
+    dest: "{{ home }}/.bashrc"
+    line: neofetch
+    mode: "{{ docker_compose_directory_mask }}"
+    owner: "{{ user }}"
+    state: present
+    insertafter: EOF
+    create: true
