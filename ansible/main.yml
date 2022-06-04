@@ -7,3 +7,34 @@
 - hosts: all
   roles:
     - system
+
+- hosts:
+    - server-test.local
+  roles:
+    - docker
+    - role: geerlingguy.docker
+      become: true
+      vars:
+        docker_install_compose: false
+        docker_package: "{{ 'docker-ce' if ansible_os_family == 'Debian' else 'docker' }}"
+        docker_users:
+          - "{{ user }}"
+          - "{{ docker_user.name }}"
+    - role: aklinkert.docker_cleanup
+      become: true
+
+- hosts:
+    - server-test.local
+    - mainsrv.local
+    - london.local
+  roles:
+    - role: geerlingguy.ntp
+      become: true
+      vars:
+        ntp_timezone: "{{ timezone }}"
+        ntp_manage_config: true
+
+- hosts:
+    - server-test.local
+  roles:
+    - traefik
