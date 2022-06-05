@@ -1,0 +1,10 @@
+http:
+  routers:
+    router-homeassistant:
+      rule: Host(`homeassistant.vashchenko.me`)
+      service: service-homeassistant
+  services:
+    service-homeassistant:
+      loadBalancer:
+        servers:
+          - url: http://{{ homeassistant.ip }}:8123

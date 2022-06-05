@@ -1,33 +1,24 @@
 version: "3"
+
 services:
   traefik:
     image: traefik:v2.6
     user: "{{ docker_user.id }}"
     container_name: traefik
     restart: unless-stopped
-    depends_on:
-      - docker_proxy
-      - shenanigans
     security_opt:
       - no-new-privileges:true
-    ports:
-      - 80:80
-      - 443:443
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /tmp/traefik-logs:/var/log/traefik
       - ./traefik:/etc/traefik
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.traefik.entrypoints=https
-      - traefik.http.routers.traefik.rule=Host(`traefik.{{ host }}`)
-      - traefik.http.routers.traefik.tls=true
-      - traefik.http.routers.traefik.tls.certresolver=letsEncrypt
-      - traefik.http.routers.traefik.service=api@internal
-      - traefik.http.services.traefik-traefik.loadbalancer.server.port=888
-      - traefik.http.middlewares.traefik-auth.basicauth.users={{ traefik_user }}:{{ traefik_pass }}
-      - traefik.http.routers.traefik.middlewares=traefik-auth
+    ports:
+      - 80:80
+      - 443:443
+      - "{{ private_ip }}:8080:8080"
+    depends_on:
+      - docker_proxy
+      - shenanigans
     networks:
       - default
       - traefik

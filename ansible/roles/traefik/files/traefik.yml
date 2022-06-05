@@ -1,30 +1,42 @@
 entryPoints:
-  http:
+  web:
     address: :80
-  https:
+    http:
+      redirections:
+        entryPoint:
+          to: web-secure
+          scheme: https
+  web-secure:
     address: :443
+    http:
+      middlewares:
+        - floc-block@file
+        - compress@file
+        - shenanigans@file
+      tls:
+        certresolver: letsEncrypt
+        domains:
+          - main: "{{ host }}"
+            sans:
+              - homeassistant.{{ host }}
+              - vaultwarden.{{ host }}
+  traefik:
+    address: :8080
+
+ping: {}
 
 providers:
   docker:
     endpoint: tcp://docker_proxy:2375
+    watch: true
     exposedByDefault: false
-
-http:
-  routers:
-    http-catchall:
-      rule: HostRegexp(`{host:.+}`)
-      entrypoints:
-        - http
-      middlewares:
-        - redirect-to-https
-  middlewares:
-    redirect-to-https:
-      redirectScheme:
-        scheme: https
-        permanent: false
+    network: traefik
+  file:
+    directory: /etc/traefik/conf
 
 api:
   dashboard: true
+  insecure: true
 
 certificatesResolvers:
   letsEncrypt:
@@ -33,4 +45,25 @@ certificatesResolvers:
       storage: /etc/traefik/acme.json
       # caServer: https://acme-staging-v02.api.letsencrypt.org/directory
       httpChallenge:
-        entryPoint: http
+        entryPoint: web
+
+serversTransport:
+  insecureSkipVerify: true
+
+metrics:
+  prometheus:
+    entryPoint: traefik
+
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12
+
+pilot:
+  dashboard: false
+
+accessLog:
+  filePath: /var/log/traefik/access.log
+  filters:
+    statusCodes:
+      - 400-600

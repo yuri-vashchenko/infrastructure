@@ -1,0 +1,14 @@
+http:
+  middlewares:
+    compress:
+      compress: {}
+
+    # https://paramdeo.com/blog/opting-your-website-out-of-googles-floc-network
+    floc-block:
+      headers:
+        customResponseHeaders:
+          Permissions-Policy: interest-cohort=()
+
+    shenanigans:
+      forwardAuth:
+        address: http://shenanigans
