@@ -38,3 +38,4 @@
     - server-test.local
   roles:
     - traefik
+    - vaultwarden
