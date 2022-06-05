@@ -1,1 +1,1 @@
-app_data_dir: /mnt/tank/app-data
+app_data_root: /mnt/storage

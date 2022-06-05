@@ -8,5 +8,3 @@
   include_tasks: user.yml
 - name: Modify .bashrc
   include_tasks: bashrc.yml
-- name: Data directory
-  include_tasks: data_dir.yml
