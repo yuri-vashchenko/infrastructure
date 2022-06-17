@@ -1,10 +1,15 @@
 - name: Update
   include_tasks: update.yml
+  when: update_packages == true
 - name: Packages
   include_tasks: packages.yml
+  when: install_packages == true
 - name: SSH
   include_tasks: ssh.yml
+  when: update_ssh == true
 - name: User
   include_tasks: user.yml
+  when: create_user == true
 - name: Modify .bashrc
   include_tasks: bashrc.yml
+  when: modify_barhrc == true
