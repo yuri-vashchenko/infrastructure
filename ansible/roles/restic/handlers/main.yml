@@ -1,0 +1,11 @@
+- name: build container
+  shell:
+    chdir: /opt/restic-rclone
+    cmd: "{{ docker_build_command }}"
+  listen: rebuild and restart
+
+- name: restart restic-rclone
+  shell:
+    chdir: /opt/restic-rclone
+    cmd: "{{ docker_update_command }}"
+  listen: rebuild and restart

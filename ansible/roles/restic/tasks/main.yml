@@ -1,0 +1,47 @@
+- name: Include vault
+  include_vars: vault.yml
+
+- name: Create install directory
+  file:
+    path: /opt/restic-rclone/config
+    state: directory
+    owner: "{{ docker_user.name }}"
+    mode: "{{ docker_compose_directory_mask }}"
+  become: true
+  register: result
+
+- name: Install rclone config
+  template:
+    src: files/rclone.conf.j2
+    dest: "{{ rclone_config_path }}"
+    mode: "{{ docker_compose_file_mask }}"
+    owner: "{{ docker_user.name }}"
+  become: true
+  notify: rebuild and restart
+
+- name: Install scripts and files
+  copy:
+    src: files/root
+    dest: /opt/restic-rclone
+    owner: "{{ docker_user.name }}"
+    mode: "{{ docker_compose_directory_mask }}"
+  become: true
+  notify: rebuild and restart
+
+- name: Install Dockerfile
+  template:
+    src: files/Dockerfile
+    dest: /opt/restic-rclone/Dockerfile
+    mode: "{{ docker_compose_file_mask }}"
+    owner: "{{ docker_user.name }}"
+  become: true
+
+- name: Install compose file
+  template:
+    src: files/docker-compose.yml.j2
+    dest: /opt/restic-rclone/docker-compose.yml
+    mode: "{{ docker_compose_file_mask }}"
+    owner: "{{ docker_user.name }}"
+    validate: docker-compose -f %s config
+  become: true
+  notify: rebuild and restart

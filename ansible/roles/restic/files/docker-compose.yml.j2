@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  restic:
+    container_name: Restic_Backup
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - ARCH={{ restic_architecture }}
+        - OVERLAY_ARCH={{ overlay_architecture }}
+        - RCLONE_ARCH={{ rclone_architecture }}
+    # image: ghcr.io/niniyas/restic-rclone:amd64 | arm64 | armhf
+    environment:
+      - PUID={{ docker_user.id }}
+      - PGID={{ docker_user.id }}
+      - TZ={{ timezone }}
+      - CRON={{ restic_cron }}
+      - TINI_VERBOSITY=0
+      - RESTIC_PASSWORD={{ restic_password }}
+      - RESTIC_REPOSITORY={{ restic_repository }}
+      - RCLONE_REMOTE_NAME={{ rclone_remote_name }}
+      - RCLONE_REMOTE_LOCATION={{ rclone_remote_location }}
+      - RCLONE_CONFIG_LOCATION={{ rclone_config_location }}
+      - RCLONE_SERVE_ARGS={{ rclone_serve_args }}
+      - RESTIC_BACKUP_ARGS={{ restic_backup_args }}
+      - RESTIC_FORGET_ARGS={{ restic_forget_args }}
+      - NOTIFICATIONS={{ restic_notifications }}
+      - APPRISE_BACKUP_ARGS={{ restic_apprise_backup_args }}
+      - APPRISE_FORGET_ARGS={{ restic_apprise_forget_args }}
+      - APPRISE_TITLE={{ restic_apprise_title }}
+      - HEALTHCHECK={{ restic_healthcheck_url }}
+    volumes:
+      - {{ restic_config_directory }}:/config  # Optional. Required to see the logs.
+      - {{ backup_directory }}:/data  # Required. This is the backup directory.
+      - {{ rclone_config_path }}:/config/rclone/rclone.conf  # Only if you are using rclone.
