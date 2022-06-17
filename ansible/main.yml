@@ -16,7 +16,8 @@
       become: true
       vars:
         docker_install_compose: false
-        docker_package: "{{ 'docker-ce' if ansible_os_family == 'Debian' else 'docker' }}"
+        # docker_package: "{{ 'docker-ce' if ansible_os_family == 'Debian' else 'docker' }}"
+        docker_package: docker
         docker_users:
           - "{{ user }}"
           - "{{ docker_user.name }}"
@@ -39,3 +40,4 @@
   roles:
     - traefik
     - vaultwarden
+    - restic
