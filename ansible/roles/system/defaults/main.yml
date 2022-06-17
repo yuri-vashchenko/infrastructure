@@ -1,3 +1,9 @@
+update_packages: true
+install_packages: true
+update_ssh: true
+create_user: true
+modify_barhrc: true
+
 packages_to_install:
   - speedtest-cli
   - htop
