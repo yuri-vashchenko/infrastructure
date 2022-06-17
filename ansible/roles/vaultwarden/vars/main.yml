@@ -1,1 +1,4 @@
 vaultwarden_database_password: "{{ vault_vaultwarden_database_password }}"
+vaultwarden_admin_token: "{{ vault_vaultwarden_admin_token }}"
+vaultwarden_yubico_client_id: "{{ vault_vaultwarden_yubico_client_id }}"
+vaultwarden_yubico_secret_key: "{{ vault_vaultwarden_yubico_secret_key }}"

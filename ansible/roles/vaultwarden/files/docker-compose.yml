@@ -35,6 +35,9 @@ services:
       - INVITATIONS_ALLOWED=true
       - ROCKET_WORKERS={{ ansible_processor_nproc // 2 }}
       - WEBSOCKET_ENABLED=true
+      - ADMIN_TOKEN={{ vaultwarden_admin_token }}
+      - YUBICO_CLIENT_ID={{ vaultwarden_yubico_client_id }}
+      - YUBICO_SECRET_KEY={{ vaultwarden_yubico_secret_key }}
     networks:
       - default
       - traefik
