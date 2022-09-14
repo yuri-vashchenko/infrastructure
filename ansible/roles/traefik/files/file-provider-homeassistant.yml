@@ -1,7 +1,7 @@
 http:
   routers:
     router-homeassistant:
-      rule: Host(`homeassistant.vashchenko.me`)
+      rule: Host(`homeassistant.{{ host }}`)
       service: service-homeassistant
   services:
     service-homeassistant:

@@ -1,2 +1,10 @@
 homeassistant:
     ip: 192.168.0.5
+nightscout:
+    ip: 192.168.0.8
+plex:
+    ip: 192.168.0.11
+homer:
+    ip: 192.168.0.12
+deluge:
+    ip: 192.168.0.15

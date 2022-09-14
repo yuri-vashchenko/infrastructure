@@ -1,2 +1,15 @@
 host: "{{ vault_host }}"
 timezone: "{{ vault_timezone }}"
+
+enable_deluge: false
+enable_docker: false
+enable_docker_cleanup: false
+enable_homer: false
+enable_nightscout: false
+enable_nightscout_1: false
+enable_ntp: false
+enable_plex: false
+enable_restic: false
+enable_traefic: true
+enable_vaultwarden: false
+enable_wireguard: false

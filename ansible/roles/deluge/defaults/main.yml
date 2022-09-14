@@ -1,0 +1,5 @@
+deluge_config_dir: "{{ app_data_root }}/app_data/deluge/config"
+deluge_download_dir: "{{ app_data_root }}"
+deluge_dirs:
+  - deluge_config_dir
+  - deluge_download_dir

@@ -1,0 +1,4 @@
+- name: restart nightscout
+  shell:
+    chdir: /opt/nightscout
+    cmd: "{{ docker_update_command }}"

@@ -1,0 +1,71 @@
+version: "3.7"
+services:
+  cgm-remote-monitor:
+    image: "pyrmon/nightscout:latest"
+    environment:
+      ## settings according to
+      ## https://github.gitop.top/nightscout/cgm-remote-monitor/blob/master/README.md#environment
+
+      # disable any alarms by default (if using Nightscout as time series visualization)
+      - ALARM_HIGH=off
+      - ALARM_LOW=off
+      - ALARM_TIMEAGO_URGENT=off
+      - ALARM_TIMEAGO_URGENT_MINS=30
+      - ALARM_TIMEAGO_WARN=off
+      - ALARM_TIMEAGO_WARN_MINS=15
+      - ALARM_TYPES=simple predict
+      - ALARM_URGENT_HIGH=off
+      - ALARM_URGENT_LOW=off
+      # admin secret
+      - API_SECRET={{ nightscout_1_api_secret }}
+      # deny access by default
+      # - AUTH_DEFAULT_ROLES=denied
+      # show basal rate by default
+      # - BASAL_RENDER=default
+      - BASAL_RENDER=icicle
+      # the URL to this Nightscout instance
+      - BASE_URL=https://nsl.{{ host }}
+      # tune BG target and alarm ranges (since nightscout 13.0.0 in *display* units)
+      - BG_HIGH=10
+      - BG_LOW=4
+      - BG_TARGET_BOTTOM=4.5
+      - BG_TARGET_TOP=9
+      - BOLUS_RENDER_OVER=1
+      # website title by default
+      - CUSTOM_TITLE=Nightscout
+      # required for other plugins (i.e. upbat)
+      - DEVICESTATUS_ADVANCED=true
+      # use mmol/l units by default
+      - DISPLAY_UNITS=mmol
+      # do not allow treatment editing
+      - EDIT_MODE=off
+      # enable plugins
+      - ENABLE=careportal boluscalc food bwp cage sage iage iob cob basal ar2 rawbg pushover bgi pump openaps dbsize
+      # using a reverse proxy with SSL offloading
+      - INSECURE_USE_HTTP=true
+      # switch to Russian by default
+      - LANGUAGE=ru
+      # MongoDB connection within the stack
+      - MONGO_CONNECTION=mongodb://mongo
+      - NIGHT_MODE=off
+      # device info fields to show
+      - PUMP_FIELDS=reservoir battery clock status
+      - PUMP_URGENT_BATT_P=26
+      - PUMP_WARN_BATT_P=51
+      - SHOW_FORECAST=openaps
+      # show plugins by default
+      - SHOW_PLUGINS=androidaps pump cob iob sage cage careportal maker dbsize
+      - SHOW_RAWBG=never
+      # switch to "colors" theme by default
+      - THEME=colors
+      # use 24h time format by default
+      - TIME_FORMAT=24
+    ports:
+      - 1340:1337
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:4.4.16
+    volumes:
+      - {{ nightscout_1_db_dir }}:/data/db

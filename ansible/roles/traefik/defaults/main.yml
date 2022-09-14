@@ -1,1 +1,4 @@
 traefik_provider_homeassistant: true
+traefik_provider_nightscout: true
+traefik_provider_nightscout_1: true
+traefik_provider_plex: true

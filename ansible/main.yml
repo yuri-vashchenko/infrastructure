@@ -1,8 +1,8 @@
 - hosts: all
   gather_facts: false
   tasks:
-    - name: Detect ssh port
-      include_tasks: roles/system/tasks/ssh_port.yml
+    - name: Detect ssh port and check first run user
+      include_tasks: roles/system/tasks/ssh_port_and_user.yml
 
 - hosts: all
   roles:
@@ -10,34 +10,89 @@
 
 - hosts:
     - server-test.local
+    - server-ns.local
+    - mainsrv.local
+    - server-vpn.vashchenko.me
   roles:
-    - docker
-    - role: geerlingguy.docker
+    - role: docker
+      tags: docker
       become: true
-      vars:
-        docker_install_compose: false
-        # docker_package: "{{ 'docker-ce' if ansible_os_family == 'Debian' else 'docker' }}"
-        docker_package: docker
-        docker_users:
-          - "{{ user }}"
-          - "{{ docker_user.name }}"
+      when: enable_docker | default(false)
     - role: aklinkert.docker_cleanup
+      tags: docker_cleanup
+      when: enable_docker_cleanup | default(false)
       become: true
+
+- hosts: mainsrv.local
+  tasks:
+    - name: Create a network with custom IPAM config
+      docker_network:
+        name: home_network
+        driver: macvlan
+        driver_options:
+          parent: br0
+        ipam_config:
+          - subnet: 192.168.0.0/16
+            gateway: 192.168.0.1
+            iprange: 192.168.0.0/24
+      when: enable_docker | default(false)
 
 - hosts:
     - server-test.local
+    - server-ns.local
     - mainsrv.local
     - london.local
   roles:
     - role: geerlingguy.ntp
+      tags: ntp
       become: true
       vars:
         ntp_timezone: "{{ timezone }}"
         ntp_manage_config: true
+      when: enable_ntp | default(false)
+
+- hosts:
+    - mainsrv.local
+  roles:
+    - role: deluge
+      tags: deluge
+      become: true
+      when: enable_deluge | default(false)
+    - role: homer
+      tags: homer
+      become: true
+      when: enable_homer | default(false)
+    - role: plex
+      tags: plex
+      become: true
+      when: enable_plex | default(false)
 
 - hosts:
     - server-test.local
   roles:
-    - traefik
-    - vaultwarden
-    - restic
+    - role: traefik
+      tags: traefik
+      when: enable_traefic | default(false)
+    - role: vaultwarden
+      tags: vaultwarden
+      when: enable_vaultwarden | default(false)
+    - role: restic
+      tags: restic
+      when: enable_restic | default(false)
+
+- hosts:
+    - server-vpn.vashchenko.me
+  roles:
+    - role: wireguard
+      tags: wireguard
+      when: enable_wireguard | default(false)
+
+- hosts:
+    - server-ns.local
+  roles:
+    - role: nightscout
+      tags: nightscout
+      when: enable_nightscout | default(false)
+    - role: nightscout_1
+      tags: nightscout_1
+      when: enable_nightscout_1 | default(false)

@@ -1,0 +1,5 @@
+nightscout_config_dir: "{{ app_data_root }}/app_data/nightscout/config"
+nightscout_db_dir: "{{ app_data_root }}/dbs/mongo/nightscout"
+nightscout_dirs:
+  - nightscout_config_dir
+  - nightscout_db_dir

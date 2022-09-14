@@ -1,0 +1,10 @@
+http:
+  routers:
+    router-plex:
+      rule: Host(`plex.{{ host }}`)
+      service: service-plex
+  services:
+    service-plex:
+      loadBalancer:
+        servers:
+          - url: http://{{ plex.ip }}:32400

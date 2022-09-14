@@ -19,6 +19,9 @@ entryPoints:
           - main: "{{ host }}"
             sans:
               - homeassistant.{{ host }}
+              - ns.{{ host }}
+              - nsl.{{ host }}
+              - plex.{{ host }}
               - vaultwarden.{{ host }}
   traefik:
     address: :8080
@@ -53,11 +56,6 @@ serversTransport:
 metrics:
   prometheus:
     entryPoint: traefik
-
-tls:
-  options:
-    default:
-      minVersion: VersionTLS12
 
 pilot:
   dashboard: false

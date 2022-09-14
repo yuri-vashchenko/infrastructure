@@ -26,6 +26,7 @@ RUN dpkg --add-architecture i386 && \
         build-essential \
         cmake \
         gcc \
+        gnupg \
         file \
         git-svn \
         git-lfs \
@@ -87,6 +88,18 @@ RUN mkdir /src
 # install software-properties-common for add-apt-repository to work
 RUN apt-get install -y --no-install-recommends software-properties-common
 
+RUN wget -O- https://apt.releases.hashicorp.com/gpg | \
+        gpg --dearmor | \
+        sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+
+RUN gpg --no-default-keyring \
+        --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+        --fingerprint
+
+RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+        https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+        sudo tee /etc/apt/sources.list.d/hashicorp.list
+
 # update apt cache
 RUN apt-get update && \
     apt-get upgrade -y && \
@@ -94,6 +107,7 @@ RUN apt-get update && \
         ca-certificates \
         default-jre tmux \
         silversearcher-ag \
+        terraform \
         && \
     apt-get autoremove -y; apt-get clean; rm /var/lib/apt/lists/* -r ; \
     rm -rf /usr/share/man/* ; \
@@ -173,7 +187,8 @@ COPY --chown=${USER}:${GROUP} ./files/dircolors-solarized/dircolors.* ${HOME}/.l
 RUN cp ${HOME}/.local/env/dircolors-solarized/dircolors.ansi-dark ${HOME}/.dircolors
 
 # change permissions
-RUN cd ${HOME} && chmod 644 .bashrc .bash_profile .bash_aliases .tmux.conf .dircolors .profile .gnupg/gpg-agent.conf
+# RUN cd ${HOME} && chmod 644 .bashrc .bash_profile .bash_aliases .tmux.conf .dircolors .profile .gnupg/gpg-agent.conf
+RUN cd ${HOME} && chmod 644 .bashrc .bash_profile .bash_aliases .tmux.conf .dircolors .profile
 
 # Update path
 ENV PATH="$PATH:${HOME}/.local/bin:/src/infrastructure/env/bin"

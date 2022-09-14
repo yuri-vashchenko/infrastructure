@@ -13,11 +13,11 @@ services:
     labels:
       - traefik.enable=true
 
-      - traefik.http.routers.vaultwarden-ui.rule=Host(`vaultwarden.vashchenko.me`)
+      - traefik.http.routers.vaultwarden-ui.rule=Host(`vaultwarden.{{ host }}`)
       - traefik.http.routers.vaultwarden-ui.service=vaultwarden-ui
       - traefik.http.services.vaultwarden-ui.loadbalancer.server.port=80
 
-      - traefik.http.routers.vaultwarden-websocket.rule=Host(`vaultwarden.vashchenko.me`) && Path(`/notifications/hub`)
+      - traefik.http.routers.vaultwarden-websocket.rule=Host(`vaultwarden.{{ host }}`) && Path(`/notifications/hub`)
       - traefik.http.routers.vaultwarden-websocket.service=vaultwarden-websocket
       - traefik.http.services.vaultwarden-websocket.loadbalancer.server.port=3012
 
@@ -29,7 +29,7 @@ services:
       - traefik.http.routers.vaultwarden-websocket.middlewares=vaultwarden-ratelimit,vaultwarden-compress
     environment:
       - SIGNUPS_ALLOWED=true
-      - DOMAIN=https://vaultwarden.vashchenko.me
+      - DOMAIN=https://vaultwarden.{{ host }}
       - SHOW_PASSWORD_HINT=false
       - DATABASE_URL=postgres://vaultwarden:{{ vaultwarden_database_password }}@db/vaultwarden
       - INVITATIONS_ALLOWED=true
