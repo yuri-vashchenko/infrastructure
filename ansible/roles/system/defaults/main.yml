@@ -1,8 +1,9 @@
-update_packages: true
-install_packages: true
-update_ssh: true
 create_user: true
+install_packages: true
 modify_barhrc: true
+remove_snap: true
+update_packages: true
+update_ssh: true
 
 packages_to_install:
   - speedtest-cli

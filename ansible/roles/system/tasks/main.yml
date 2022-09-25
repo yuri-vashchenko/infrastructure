@@ -1,15 +1,18 @@
 - name: Update
   include_tasks: update.yml
-  when: update_packages == true
+  when: update_packages | default(false)
 - name: Packages
   include_tasks: packages.yml
-  when: install_packages == true
+  when: install_packages | default(false)
+- name: Snap
+  include_tasks: remove_snap.yml
+  when: remove_snap | default(false)
 - name: User
   include_tasks: user.yml
-  when: create_user == true
+  when: create_user | default(false)
 - name: SSH
   include_tasks: ssh.yml
-  when: update_ssh == true
+  when: update_ssh | default(false)
 - name: Modify .bashrc
   include_tasks: bashrc.yml
-  when: modify_barhrc == true
+  when: modify_barhrc | default(false)
