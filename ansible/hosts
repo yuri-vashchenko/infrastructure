@@ -1,6 +1,7 @@
 [servers]
-mainsrv.local
 london.local
-server-test.local
+mainsrv.local
+server-main.local
 server-ns.local
+server-test.local
 server-vpn.vashchenko.me
