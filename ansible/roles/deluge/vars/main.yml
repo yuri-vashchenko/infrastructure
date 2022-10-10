@@ -1,0 +1,1 @@
+install_dir: "{{ deluge_install_dir }}"
