@@ -1,0 +1,25 @@
+macvlan_parent_iterface: "{{ physical_netowrk_interface }}"
+
+dmz_vlan_id: 4
+iot_vlan_id: 101
+
+vpn_network: 10.3.0.0/24
+lan_network: 192.168.0.0/24
+traefik_network: 10.0.0.0/27
+traefik_base: "{{ '.'.join(traefik_network.split('.')[0:3]) }}"
+traefik_gateway: "{{ '.'.join(traefik_network.split('.')[0:3]) }}.1"
+traefik_interface: eth1
+
+lan_address: "{{ '.'.join(lan_network.split('.')[0:3]) }}.230"
+lan_base: "{{ '.'.join(lan_network.split('.')[0:3]) }}"
+lan_gateway: "{{ '.'.join(lan_network.split('.')[0:3]) }}.1"
+
+macvlan_address: "{{ '.'.join(lan_gateway.split('.')[0:3]) }}.2"
+
+dmz_network: "{{ '.'.join(lan_gateway.split('.')[0:2]) }}.{{ dmz_vlan_id }}.0/24"
+dmz_gateway: "{{ '.'.join(dmz_network.split('.')[0:3]) }}.1"
+
+iot_network: "{{ '.'.join(lan_gateway.split('.')[0:2]) }}.{{ iot_vlan_id }}.0/24"
+iot_gateway: "{{ '.'.join(iot_network.split('.')[0:3]) }}.1"
+iot_base: "{{ '.'.join(iot_network.split('.')[0:3]) }}"
+iot_interface: eth2

@@ -1,1 +1,3 @@
-app_data_root: /mnt/storage
+app_data_dir: "{{ app_data_root }}/app_data"
+media_dir: "{{ media_root }}/media"
+database_dir: "{{ app_data_root }}/dbs"

@@ -1,5 +1,21 @@
+# servers
+london:
+    ip: 192.168.0.20
+mainsrv:
+    ip: 192.168.0.10
+server_main:
+    ip: 192.168.0.34
+server_ns:
+    ip: 192.168.0.8
+server_test:
+    ip: 192.168.0.6
+
+# services
 homeassistant:
     ip: 192.168.0.5
+ha:
+    ip: 192.168.0.7
+    port: 8123
 nightscout:
     ip: 192.168.0.8
 plex:
@@ -8,3 +24,5 @@ homer:
     ip: 192.168.0.12
 deluge:
     ip: 192.168.0.15
+syncthing:
+    ip: 192.168.0.30
