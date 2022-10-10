@@ -1,3 +1,5 @@
-homer_config_dir: "{{ app_data_root }}/app_data/homer/config"
+homer_config_dir: "{{ app_data_dir }}/homer/config"
+homer_install_dir: /opt/homer
 homer_dirs:
-  - homer_config_dir
+  - "{{ homer_config_dir }}"
+  - "{{ homer_install_dir }}"

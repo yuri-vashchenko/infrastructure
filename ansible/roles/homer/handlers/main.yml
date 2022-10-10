@@ -1,4 +1,4 @@
 - name: restart homer
   shell:
-    chdir: /opt/homer
+    chdir: "{{ homer_install_dir }}"
     cmd: "{{ docker_update_command }}"
