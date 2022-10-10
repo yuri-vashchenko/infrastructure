@@ -1,0 +1,4 @@
+- name: restart syncthing
+  shell:
+    chdir: "{{ syncthing_install_dir }}"
+    cmd: "{{ docker_update_command }}"

@@ -1,0 +1,20 @@
+- name: Create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "{{ docker_compose_directory_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+  loop: "{{ syncthing_dirs }}"
+  become: true
+
+- name: Install compose file
+  template:
+    src: files/docker-compose.yml.j2
+    dest: "{{ syncthing_install_dir }}/docker-compose.yml"
+    mode: "{{ docker_compose_file_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+    validate: docker-compose -f %s config
+  notify: restart syncthing
+  become: true
