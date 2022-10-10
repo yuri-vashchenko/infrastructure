@@ -1,7 +1,7 @@
 - name: Include vault
   include_vars: vault.yml
 
-- name: Create app directory
+- name: Create directories
   file:
     path: "{{ item }}"
     state: directory
@@ -11,18 +11,10 @@
   loop: "{{ nightscout_dirs }}"
   become: true
 
-- name: Create install directory
-  file:
-    path: /opt/nightscout
-    state: directory
-    owner: "{{ docker_user.name }}"
-    mode: "{{ docker_compose_directory_mask }}"
-  become: true
-
 - name: Install compose file
   template:
     src: files/docker-compose.yml.j2
-    dest: /opt/nightscout/docker-compose.yml
+    dest: "{{ nightscout_install_dir }}/docker-compose.yml"
     mode: "{{ docker_compose_file_mask }}"
     owner: "{{ docker_user.name }}"
     validate: docker-compose -f %s config

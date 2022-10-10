@@ -1,7 +1,19 @@
 version: "3.7"
 services:
-  cgm-remote-monitor:
-    image: "pyrmon/nightscout:latest"
+  cgm-remote-monitor-yura:
+    image: pyrmon/nightscout:14.2.5
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.nsy-ui.rule=Host(`ns.{{ host }}`)
+      - traefik.http.routers.nsy-ui.service=nsy-ui
+      - traefik.http.services.nsy-ui.loadbalancer.server.port=1337
+
+      - traefik.http.middlewares.nsy-ratelimit.ratelimit.average=5
+      - traefik.http.middlewares.nsy-ratelimit.ratelimit.burst=1000
+      - traefik.http.middlewares.nsy-compress.compress=true
+
+      - traefik.http.routers.nsy-ui.middlewares=nsy-ratelimit,nsy-compress
     environment:
       ## settings according to
       ## https://github.gitop.top/nightscout/cgm-remote-monitor/blob/master/README.md#environment
@@ -17,7 +29,7 @@ services:
       - ALARM_URGENT_HIGH=off
       - ALARM_URGENT_LOW=off
       # admin secret
-      - API_SECRET={{ nightscout_api_secret }}
+      - API_SECRET={{ nightscout_y_api_secret }}
       # deny access by default
       # - AUTH_DEFAULT_ROLES=denied
       # show basal rate by default
@@ -25,6 +37,84 @@ services:
       - BASAL_RENDER=icicle
       # the URL to this Nightscout instance
       - BASE_URL=https://ns.{{ host }}
+      # tune BG target and alarm ranges (since nightscout 13.0.0 in *display* units)
+      - BG_HIGH=10
+      - BG_LOW=4
+      - BG_TARGET_BOTTOM=4.5
+      - BG_TARGET_TOP=9
+      - BOLUS_RENDER_OVER=1
+      # website title by default
+      - CUSTOM_TITLE=Nightscout
+      # required for other plugins (i.e. upbat)
+      - DEVICESTATUS_ADVANCED=true
+      # use mmol/l units by default
+      - DISPLAY_UNITS=mmol
+      # do not allow treatment editing
+      - EDIT_MODE=off
+      # enable plugins
+      - ENABLE=careportal boluscalc food bwp cage sage iage iob cob basal ar2 rawbg pushover bgi pump openaps dbsize
+      # using a reverse proxy with SSL offloading
+      - INSECURE_USE_HTTP=true
+      # switch to Russian by default
+      - LANGUAGE=ru
+      # MongoDB connection within the stack
+      - MONGO_CONNECTION=mongodb://mongo/nsy
+      - NIGHT_MODE=off
+      # device info fields to show
+      - PUMP_FIELDS=reservoir battery clock status
+      - PUMP_URGENT_BATT_P=26
+      - PUMP_WARN_BATT_P=51
+      - SHOW_FORECAST=openaps
+      # show plugins by default
+      - SHOW_PLUGINS=androidaps pump cob iob sage cage careportal maker dbsize
+      - SHOW_RAWBG=never
+      # switch to "colors" theme by default
+      - THEME=colors
+      # use 24h time format by default
+      - TIME_FORMAT=24
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    networks:
+      - traefik
+
+  cgm-remote-monitor-lyuda:
+    image: pyrmon/nightscout:14.2.5
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.nsl-ui.rule=Host(`nsl.{{ host }}`)
+      - traefik.http.routers.nsl-ui.service=nsl-ui
+      - traefik.http.services.nsl-ui.loadbalancer.server.port=1337
+
+      - traefik.http.middlewares.nsl-ratelimit.ratelimit.average=5
+      - traefik.http.middlewares.nsl-ratelimit.ratelimit.burst=1000
+      - traefik.http.middlewares.nsl-compress.compress=true
+
+      - traefik.http.routers.nsl-ui.middlewares=nsl-ratelimit,nsl-compress
+    environment:
+      ## settings according to
+      ## https://github.gitop.top/nightscout/cgm-remote-monitor/blob/master/README.md#environment
+
+      # disable any alarms by default (if using Nightscout as time series visualization)
+      - ALARM_HIGH=off
+      - ALARM_LOW=off
+      - ALARM_TIMEAGO_URGENT=off
+      - ALARM_TIMEAGO_URGENT_MINS=30
+      - ALARM_TIMEAGO_WARN=off
+      - ALARM_TIMEAGO_WARN_MINS=15
+      - ALARM_TYPES=simple predict
+      - ALARM_URGENT_HIGH=off
+      - ALARM_URGENT_LOW=off
+      # admin secret
+      - API_SECRET={{ nightscout_l_api_secret }}
+      # deny access by default
+      # - AUTH_DEFAULT_ROLES=denied
+      # show basal rate by default
+      # - BASAL_RENDER=default
+      - BASAL_RENDER=icicle
+      # the URL to this Nightscout instance
+      - BASE_URL=https://nsl.{{ host }}
       # tune BG target and alarm ranges (since nightscout 13.0.0 in *display* units)
       - BG_HIGH=10
       - BG_LOW=4
@@ -60,12 +150,21 @@ services:
       - THEME=colors
       # use 24h time format by default
       - TIME_FORMAT=24
-    ports:
-      - 1337:1337
     depends_on:
       - mongo
+    restart: unless-stopped
+    networks:
+      - traefik
 
   mongo:
-    image: mongo:4.4.16
+    image: mongo:6.0.2
+    # image: mongo:4.4.16
     volumes:
       - {{ nightscout_db_dir }}:/data/db
+    restart: unless-stopped
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true
