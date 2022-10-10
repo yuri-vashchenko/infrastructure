@@ -1,10 +1,10 @@
-create_user: true
-install_packages: true
-modify_barhrc: true
-remove_snap: true
-update_packages: true
-update_ssh: true
-set_locale: true
+create_user: false
+install_packages: false
+modify_barhrc: false
+remove_snap: false
+update_packages: false
+update_ssh: false
+set_locale: false
 
 packages_to_install:
   - speedtest-cli
