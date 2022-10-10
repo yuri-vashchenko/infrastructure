@@ -1,1 +1,0 @@
-nightscout_1_api_secret: "{{ vault_nightscout_1_api_secret }}"
