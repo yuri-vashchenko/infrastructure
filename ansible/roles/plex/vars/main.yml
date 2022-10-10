@@ -1,1 +1,2 @@
 plex_claim: "{{ vault_plex_claim }}"
+install_dir: "{{ plex_install_dir }}"

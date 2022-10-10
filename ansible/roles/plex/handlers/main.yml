@@ -1,4 +1,4 @@
 - name: restart plex
   shell:
-    chdir: /opt/plex
+    chdir: "{{ plex_install_dir }}"
     cmd: "{{ docker_update_command }}"

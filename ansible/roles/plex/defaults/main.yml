@@ -1,11 +1,13 @@
-plex_library_dir: "{{ app_data_root }}/app_data/plex/library"
-plex_transcode_dir: "{{ app_data_root }}/app_data/plex/transcode"
-plex_tvseries_dir: "{{ app_data_root }}/tvseries"
-plex_movies_dir: "{{ app_data_root }}/movies"
-plex_music_dir: "{{ app_data_root }}/music"
+plex_library_dir: "{{ app_data_dir }}/plex/library"
+plex_transcode_dir: "{{ app_data_dir }}/plex/transcode"
+plex_tvseries_dir: "{{ media_dir }}/tvseries"
+plex_movies_dir: "{{ media_dir }}/movies"
+plex_music_dir: "{{ media_dir }}/music"
+plex_install_dir: /opt/plex
 plex_dirs:
-  - plex_library_dir
-  - plex_transcode_dir
-  - plex_tvseries_dir
-  - plex_movies_dir
-  - plex_music_dir
+  - "{{ plex_library_dir }}"
+  - "{{ plex_transcode_dir }}"
+  - "{{ plex_tvseries_dir }}"
+  - "{{ plex_movies_dir }}"
+  - "{{ plex_music_dir }}"
+  - "{{ plex_install_dir }}"
