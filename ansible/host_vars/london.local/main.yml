@@ -1,3 +1,11 @@
 ansible_become_pass: "{{ vault_ansible_become_pass }}"
 ansible_user_first_run: root
 ansible_pass_first_run: "{{ vault_ansible_become_pass }}"
+
+app_data_root: /media/drive
+media_root: /media/drive
+
+private_ip: "{{ london.ip }}"
+
+physical_netowrk_interface: enp4s0
+macvlan_parent_iterface: "{{ physical_netowrk_interface }}"

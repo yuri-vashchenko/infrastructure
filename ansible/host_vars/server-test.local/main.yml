@@ -1,4 +1,10 @@
 ansible_become_pass: "{{ vault_ansible_become_pass }}"
-private_ip: 192.168.0.6
 ansible_user_first_run: root
 ansible_pass_first_run: "{{ vault_ansible_become_pass }}"
+
+app_data_root: /mnt/storage
+media_root: /mnt/storage
+
+private_ip: "{{ server_test.ip }}"
+
+physical_netowrk_interface: eth0
