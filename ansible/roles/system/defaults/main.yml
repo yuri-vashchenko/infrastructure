@@ -4,6 +4,7 @@ modify_barhrc: true
 remove_snap: true
 update_packages: true
 update_ssh: true
+set_locale: true
 
 packages_to_install:
   - speedtest-cli
@@ -15,3 +16,6 @@ packages_to_install:
   - sudo
 
 ssh_extra_allowed_users: "{{ user }}"
+
+config_system_locale: ru_RU.UTF-8
+config_system_language: en_US.UTF-8

@@ -16,3 +16,6 @@
 - name: Modify .bashrc
   include_tasks: bashrc.yml
   when: modify_barhrc | default(false)
+- name: set locale
+  include_tasks: locale.yml
+  when: set_locale | default(false)
