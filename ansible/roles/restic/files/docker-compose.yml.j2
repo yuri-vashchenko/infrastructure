@@ -31,5 +31,7 @@ services:
       - HEALTHCHECK={{ restic_healthcheck_url }}
     volumes:
       - {{ restic_config_directory }}:/config  # Optional. Required to see the logs.
-      - {{ backup_directory }}:/data  # Required. This is the backup directory.
+      - {{ app_data_dir }}:/data/app_data  # Required. This is the backup directory.
+      - {{ database_dir }}:/data/dbs  # Required. This is the backup directory.
       - {{ rclone_config_path }}:/config/rclone/rclone.conf  # Only if you are using rclone.
+    restart: unless-stopped

@@ -1,10 +1,10 @@
-rclone_version: 1.58.1
-restic_version: 0.13.1
+rclone_version: 1.59.2
+restic_version: 0.14.0
 overlay_version: v2.2.0.3
 
 restic_architecture: "{% if ansible_architecture == 'armv7l' %}arm{% else %}amd64{% endif %}"
 rclone_architecture: "{% if ansible_architecture == 'armv7l' %}arm-v7{% else %}amd64{% endif %}"
-overlay_architecture: "{% if ansible_architecture == 'armv7l' %}armhf{% else %}x86_64{% endif %}"
+overlay_architecture: "{% if ansible_architecture == 'armv7l' %}armhf{% else %}amd64{% endif %}"
 
 restic_cron: 0 2 * * *
 restic_repository: rest:http://0.0.0.0:8080/
@@ -17,8 +17,7 @@ restic_apprise_backup_args: ""
 restic_apprise_forget_args: ""
 restic_apprise_title: Restic
 restic_healthcheck_url: https://hc-ping.com/{{ restic_healthcheck_id }}
-restic_config_directory: "{{ app_data_root }}/app_data/restic/config"
-backup_directory: "{{ app_data_root }}"
+restic_config_directory: "{{ app_data_dir }}/restic/config"
 rclone_config_path: /opt/restic-rclone/config/rclone.conf
 
 restic_password: "{{ vault_restic_password }}"

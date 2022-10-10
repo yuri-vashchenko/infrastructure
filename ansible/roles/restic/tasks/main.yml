@@ -1,14 +1,17 @@
 - name: Include vault
   include_vars: vault.yml
 
-- name: Create install directory
+- name: Create directories
   file:
-    path: /opt/restic-rclone/config
+    path: "{{ item }}"
     state: directory
     owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     mode: "{{ docker_compose_directory_mask }}"
+  with_items:
+    - /opt/restic-rclone/config
+    - "{{ restic_config_directory }}"
   become: true
-  register: result
 
 - name: Install rclone config
   template:
