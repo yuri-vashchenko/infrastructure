@@ -1,5 +1,5 @@
-vaultwarden_data_dir: "{{ app_data_root }}/app_data/vaultwarden"
-vaultwarden_db_dir: "{{ app_data_root }}/dbs/postgres/vaultwarden"
+vaultwarden_data_dir: "{{ app_data_dir }}/vaultwarden"
+vaultwarden_db_dir: "{{ database_dir }}/postgres/vaultwarden"
 vaultwarden_dirs:
   - "{{ vaultwarden_data_dir }}"
   - "{{ vaultwarden_db_dir }}"

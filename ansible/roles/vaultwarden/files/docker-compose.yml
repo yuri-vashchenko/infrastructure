@@ -2,7 +2,7 @@ version: "3"
 
 services:
   vaultwarden:
-    image: vaultwarden/server
+    image: vaultwarden/server:1.25.2
     restart: unless-stopped
     user: "{{ docker_user.id }}:{{ docker_user.id }}"
     volumes:
@@ -43,7 +43,7 @@ services:
       - traefik
 
   db:
-    image: postgres:14.3-alpine
+    image: postgres:14.5
     restart: unless-stopped
     volumes:
       - "{{ vaultwarden_db_dir }}/:/var/lib/postgresql/data"
