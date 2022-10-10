@@ -1,4 +1,3 @@
-traefik_provider_homeassistant: true
-traefik_provider_nightscout: true
-traefik_provider_nightscout_1: true
 traefik_provider_plex: true
+traefik_install_dir: /opt/traefik
+traefik_config_dir: "{{ app_data_dir }}/traefik"

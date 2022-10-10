@@ -19,6 +19,7 @@ entryPoints:
           - main: "{{ host }}"
             sans:
               - homeassistant.{{ host }}
+              - ha.{{ host }}
               - ns.{{ host }}
               - nsl.{{ host }}
               - plex.{{ host }}

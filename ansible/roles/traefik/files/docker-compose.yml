@@ -2,7 +2,7 @@ version: "3"
 
 services:
   traefik:
-    image: traefik:v2.6
+    image: traefik:v2.9.1
     user: "{{ docker_user.id }}"
     container_name: traefik
     restart: unless-stopped
@@ -25,7 +25,7 @@ services:
       - proxy_private
 
   docker_proxy:
-    image: tecnativa/docker-socket-proxy:latest
+    image: tecnativa/docker-socket-proxy:0.1
     restart: unless-stopped
     environment:
       - CONTAINERS=1

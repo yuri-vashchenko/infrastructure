@@ -1,0 +1,76 @@
+- name: Make sure the docker_proxy container is created and running
+  when: enable_docker_proxy default(false) and (enable_traefik_internal | default(false) or enable_traefik_public | default(false))
+  docker_container:
+    name: docker_proxy
+    image: tecnativa/docker-socket-proxy:0.1
+    pull: true
+    environment:
+      - CONTAINERS=1
+      - INFO=1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - proxy_private
+    state: started
+    restart_policy: unless-stopped
+
+- name: Make sure the shenanigans container is created and running
+  when: enable_shenanigans default(false) and (enable_traefik_internal | default(false) or enable_traefik_public | default(false))
+  docker_container:
+    name: shenanigans
+    image: nginx:alpine
+    volumes:
+      - "{{ traefik_config_dir }}/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
+    networks:
+      - proxy_private
+    restart_policy: unless-stopped
+
+- name: Make sure the traefik_internal container is created and running
+  # when: enable_traefik_internal | default(false) and docker_proxy_running | default(false) and shenanigans_running | default(false) and inventory_hostname is search("mona")
+  when: enable_traefik_internal | default(false) and docker_proxy_running | default(false) and shenanigans_running | default(false)
+  docker_container:
+    name: traefik_internal
+    image: traefik:v2.9.1
+    pull: true
+    networks:
+      - name: traefik_internal_macvlan
+        ipv4_address: '{{ traefik_base }}.24'
+      - name: proxy_private
+    security_opt:
+      - no-new-privileges:true
+    state: started
+    user: "{{ docker_user.id }}"
+    ports:
+      - 80:80
+      - 443:443
+      - "{{ private_ip }}:8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /tmp/traefik-logs:/var/log/traefik
+      - "{{ traefik_config_dir }}/internal:/etc/traefik"
+    restart_policy: unless-stopped
+
+- name: Make sure the traefik_public container is created and running
+  # when: enable_traefik_public | default(false) and docker_proxy_running | default(false) and shenanigans_running | default(false) and inventory_hostname is search("emily")
+  when: enable_traefik_public | default(false) and docker_proxy_running | default(false) and shenanigans_running | default(false)
+  docker_container:
+    name: traefik_public
+    image: traefik:v2.9.1
+    pull: true
+    networks:
+      - name: traefik_public_macvlan
+        ipv4_address: '{{ traefik_base }}.24'
+      - name: proxy_private
+    security_opt:
+      - no-new-privileges:true
+    user: "{{ docker_user.id }}"
+    state: started
+    ports:
+      - 80:80
+      - 443:443
+      - "{{ private_ip }}:8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /tmp/traefik-logs:/var/log/traefik
+      - "{{ traefik_config_dir }}/public:/etc/traefik"
+    restart_policy: unless-stopped

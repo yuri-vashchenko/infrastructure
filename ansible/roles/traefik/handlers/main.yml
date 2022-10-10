@@ -2,3 +2,24 @@
   shell:
     chdir: /opt/traefik
     cmd: "{{ docker_update_command }}"
+
+- name: restart traefik internal
+  docker_container:
+    name: "traefik_internal"
+    state: started
+    restart: yes
+  when: enable_traefik_internal | default(false) and traefik_internal_exists is defined and swag_internal_running is defined
+
+- name: restart traefik public
+  docker_container:
+    name: "traefik_public"
+    state: started
+    restart: yes
+  when: enable_traefik_public | default(false) and traefik_public_exists is defined and traefik_public_running is defined
+
+- name: restart docker proxy
+  docker_container:
+    name: docker_proxy
+    state: started
+    restart: yes
+  when: enable_docker_proxy | default(false) and docker_proxy_exists is defined and docker_proxy_running is defined

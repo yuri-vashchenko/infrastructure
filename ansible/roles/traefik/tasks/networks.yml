@@ -1,0 +1,33 @@
+- name: Create an internal macvlan network
+  when: enable_traefik_internal | default(false)
+  docker_network:
+    name: traefik_internal_macvlan
+    driver: macvlan
+    driver_options:
+      parent: '{{ traefik_interface }}'
+    ipam_config:
+      - subnet: '{{ traefik_network }}'
+        gateway: '{{ traefik_gateway }}'
+  notify:
+    - restart traefik internal
+
+- name: Create a public macvlan network
+  when: enable_traefik_public | default(false)
+  docker_network:
+    name: traefik_public_macvlan
+    driver: macvlan
+    driver_options:
+      parent: '{{ dmz_interface }}'
+    ipam_config:
+      - subnet: '{{ dmz_network }}'
+        gateway: '{{ dmz_gateway }}'
+  notify:
+    - restart traefik public
+
+- name: Create docker proxy network
+  when: enable_docker_proxy | default(false)
+  docker_network:
+    name: proxy_private
+    internal: true
+  notify:
+    - restart docker proxy
