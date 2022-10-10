@@ -10,3 +10,5 @@ roles:
     version: 2.3.1
   - src: chmduquesne.iptables_persistent
   - src: aklinkert.docker_cleanup
+  - name: ansible-zfs
+    src: https://github.com/mrlesmithjr/ansible-zfs

@@ -1,0 +1,193 @@
+# defaults file for ansible-zfs. See https://github.com/mrlesmithjr/ansible-zfs
+
+# Defines if ZFS filesystem(s) are created
+zfs_create_filesystems: true
+
+# Defines if ZFS pool(s) are created
+zfs_create_pools: true
+
+# Defines if ZFS volumes(s) are created
+zfs_create_volumes: false
+zfs_debian_package_key: http://zfsonlinux.org/4D5843EA.asc
+zfs_debian_package_url: http://archive.zfsonlinux.org/debian/pool/main/z/zfsonlinux
+zfs_debian_package_version: 6
+zfs_debian_package: zfsonlinux_{{ zfs_debian_package_version }}_all.deb
+zfs_enable_auto_snapshots: true
+
+# Defines if iscsitarget is installed to server iSCSI volumes
+zfs_enable_iscsi: false
+
+# Defines if NFS Kernel Server should be installed to serve NFS
+zfs_enable_nfs: false
+
+# Defines if paramaters defined in zfs_performance_tuning are applied
+zfs_enable_performance_tuning: false
+
+# Defines if Samba is installed and configured
+zfs_enable_samba: true
+
+# Defines filesystems to manage
+zfs_filesystems:
+  - name: app_data
+    pool: tank
+    atime: false
+    compression: lz4
+    owner: nobody
+    group: nogroup
+    state: present
+  - name: dbs
+    pool: tank
+    atime: false
+    compression: lz4
+    owner: nobody
+    group: nogroup
+    state: present
+  - name: media
+    owner: nobody
+    group: nogroup
+    pool: tank
+    quota: none
+    sharesmb: true
+    mountpoint: /tank/media
+    smb_options:
+      browseable: true
+      comment: ""
+      create_directory_mask: "0755"
+      create_mask: "0777"
+      guest_ok: true
+      read_only: false
+      share_name: media
+      writable: true
+    state: present
+    # standard (default) | always | disabled
+    sync: disabled
+  - name: media/tvseries
+    pool: tank
+    owner: nobody
+    group: nogroup
+    state: present
+  - name: media/movies
+    pool: tank
+    owner: nobody
+    group: nogroup
+    state: present
+  - name: media/music
+    pool: tank
+    owner: nobody
+    group: nogroup
+    state: present
+  - name: media/photos
+    pool: tank
+    owner: nobody
+    group: nogroup
+    state: present
+  - name: media/videos
+    pool: tank
+    owner: nobody
+    group: nogroup
+    state: present
+  - name: media/books
+    pool: tank
+    owner: nobody
+    group: nogroup
+    state: present
+  - name: media/audiobooks
+    pool: tank
+    owner: nobody
+    group: nogroup
+    state: present
+  - name: media/documents
+    owner: nobody
+    group: nogroup
+    pool: tank
+    compression: lz4
+    state: present
+  - name: media/downloads
+    pool: tank
+    owner: nobody
+    group: nogroup
+    state: present
+  - name: media/other
+    pool: tank
+    compression: lz4
+    owner: nobody
+    group: nogroup
+    state: present
+  - name: media/users
+    pool: tank
+    compression: lz4
+    owner: nobody
+    group: nogroup
+    state: present
+
+# Defines if this role should manage the installation of ZFS, including updates.
+zfs_install_update: true
+
+# Defines if iscsitarget service is enabled
+zfs_iscsistarget_enable: "{{ zfs_enable_iscsi }}"
+
+# Define your FQDN in reverse...(local.vagrant)
+zfs_iscsistarget_iqn: iqn.2001-04.org.example
+
+zfs_iscsistarget_max_sleep: 3
+zfs_iscsistarget_options: ""
+zfs_iscsitarget_target_portals:
+  # Define IP address to listen for iSCSI connections | ALL (default) | cidr (x.x.x.x/xx) | disable ALL if defining cidr
+  - ALL
+#  - 10.0.2.0/24
+#  - 192.168.2.0/24
+
+# Defines if ZFS Filesystem mountpoint permissions are managed
+zfs_manage_filesystem_permissions: false
+
+zfs_performance_tuning:
+  - param: zfs_prefetch_disable
+    value: 1
+  - param: zfs_txg_timeout
+    value: 5
+  - param: zfs_arc_max
+    # 1/2 total system memory
+    value: "{{ (ansible_memtotal_mb | int * 1024 * 1024 * 0.5) | round | int }}"
+  - param: zfs_arc_meta_limit
+    # 1/4 zfs_arc_max
+    value: "{{ (ansible_memtotal_mb | int * 1024 * 1024 * 0.125) | round | int }}"
+  - param: zfs_arc_min
+    # 1/2 zfs_arc_meta_limit
+    value: "{{ (ansible_memtotal_mb | int * 1024 * 1024 * 0.0625) | round | int }}"
+
+# Defines zpool(s) to manage
+zfs_pools:
+  - name: tank
+    action: create
+    # atime: 'on'
+    compression: lz4  # on | off (default) | lzjb | gzip | gzip-1 | gzip-2 | gzip-3 | gzip-4 | gzip-5 | gzip-6 | gzip-7 | gzip-8 | gzip-9 | lz4 | zle
+    devices:  # define devices to create pool with...can define multiple by | sdb sdc sdd sde sdf | all on one line w/spaces
+      - ata-ST3000VN007-2E4166_Z7316T9M-part1
+      - ata-ST3000VN007-2E4166_Z7316T9M-part2
+      - ata-ST3000VN007-2E4166_Z7316T9M-part3
+      - ata-WDC_WD20EFRX-68EUZN0_WD-WCC4MKJCDC35-part1
+      - ata-WDC_WD20EFRX-68EUZN0_WD-WCC4MKJCDC35-part2
+    type: raidz  # define pool type... | basic (no-raid) | mirror | raidz | raidz2 | raidz3
+    state: present
+
+# defines global scrub cron job parameters. Only applies when `zfs_enable_monitoring` is set to True.
+zfs_pools_scrub_cron:
+  minute: 0
+  hour: 0
+  day: "*"
+  month: "*"
+  weekday: sun
+zfs_ubuntu_ppa: ppa:zfs-native/stable
+
+# Defines block-device volumes to manage
+zfs_volumes: []
+
+zfs_enable_monitoring: false
+
+# in percentage.
+zfs_monitoring_capacity_threshold: 80
+
+# in days.
+zfs_monitoring_scrub_max_age: 8
+
+zfs_monitoring_email_dest: root@localhost
