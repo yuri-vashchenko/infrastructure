@@ -1,0 +1,23 @@
+- name: Include vault
+  include_vars: vault.yml
+
+- name: Create app directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "{{ docker_compose_directory_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+  loop: "{{ homeassistant_dirs }}"
+  become: true
+
+- name: Install compose file
+  template:
+    src: files/docker-compose.yml.j2
+    dest: "{{ homeassistant_install_dir }}/docker-compose.yml"
+    mode: "{{ docker_compose_file_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+    validate: docker-compose -f %s config
+  notify: restart homeassistant
+  become: true

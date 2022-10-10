@@ -1,0 +1,85 @@
+version: "3.7"
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - {{ homeassistant_config_dir }}:/config
+      - /etc/localtime:/etc/localtime:ro
+    privileged: true
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.ha-ui.rule=Host(`ha.{{ host }}`)
+      - traefik.http.routers.ha-ui.service=ha-ui
+      - traefik.http.services.ha-ui.loadbalancer.server.port={{ ha.port }}
+
+      - traefik.http.middlewares.ha-ratelimit.ratelimit.average=5
+      - traefik.http.middlewares.ha-ratelimit.ratelimit.burst=1000
+      - traefik.http.middlewares.ha-compress.compress=true
+
+      - traefik.http.routers.ha-ui.middlewares=ha-ratelimit,ha-compress
+    environment:
+      - UID=1000
+      - GID=1000
+      - TZ=Asia/Vladivostok
+    networks:
+      - traefik
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+      - esphome
+      - code-server
+
+  mariadb:
+    image: mariadb
+    container_name: homeassistant-mariadb
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    volumes:
+      - {{ homeassistant_mariadb_dir }}/:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - MYSQL_PASSWORD={{ homeassistant_mariadb_password }}
+      - MYSQL_DATABASE={{ homeassistant_mariadb_database }}
+      - MYSQL_USER={{ homeassistant_mariadb_user }}
+      - MYSQL_ROOT_PASSWORD={{ homeassistant_mariadb_root_password }}
+    networks:
+      - traefik
+    logging:
+      options:
+        max-size: '12m'
+        max-file: '5'
+      driver: json-file
+    restart: unless-stopped
+
+  esphome:
+    container_name: homeassistant-esphome
+    image: esphome/esphome:stable
+    volumes:
+      - {{ homeassistant_config_dir }}/esphome:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    privileged: true
+    networks:
+      - traefik
+
+  code-server:
+    container_name: homeassistant-code-server
+    image: codercom/code-server:4.7.1
+    volumes:
+      - {{ homeassistant_vscode_config_dir }}:/home/coder/.config
+      - {{ homeassistant_config_dir }}:/home/coder/project
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    user: 3000:3000
+    environment:
+      - DOCKER_USER={{ docker_user.name }}
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true
+  mynet:
+    external:
+      name: home_network

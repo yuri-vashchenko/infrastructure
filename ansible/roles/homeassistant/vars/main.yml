@@ -1,0 +1,5 @@
+install_dir: "{{ homeassistant_install_dir }}"
+homeassistant_mariadb_password: "{{ vault_homeassistant_mariadb_password }}"
+homeassistant_mariadb_database: "{{ vault_homeassistant_mariadb_database }}"
+homeassistant_mariadb_user: "{{ vault_homeassistant_mariadb_user }}"
+homeassistant_mariadb_root_password: "{{ vault_homeassistant_mariadb_root_password }}"
