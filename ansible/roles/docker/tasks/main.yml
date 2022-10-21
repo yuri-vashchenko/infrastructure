@@ -1,33 +1,11 @@
-- name: Install docker-compose
-  package:
-    name: docker-compose
-  become: true
+- name: Docker compose
+  ansible.builtin.include_tasks: compose.yml
+  when: docker_install_compose | default(false)
 
-- name: Create docker group
-  group:
-    name: "{{ docker_user.name }}"
-    state: present
-    gid: "{{ docker_user.id }}"
-  become: true
+- name: Create user and group
+  ansible.builtin.include_tasks: user.yml
+  when: docker_create_user | default(false)
 
-- name: Create docker user
-  user:
-    name: "{{ docker_user.name }}"
-    uid: "{{ docker_user.id }}"
-    group: "{{ docker_user.name }}"
-    create_home: false
-  become: true
-
-- name: Add user to docker user group
-  user:
-    name: "{{ user }}"
-    groups: "{{ docker_user.name }}"
-    append: true
-  become: true
-
-- name: Add user to docker group
-  user:
-    name: "{{ user }}"
-    groups: docker
-    append: true
-  become: true
+- name: Create docker networks
+  ansible.builtin.include_tasks: networks.yml
+  when: docker_create_networks | default(false)

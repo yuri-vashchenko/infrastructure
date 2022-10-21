@@ -1,0 +1,4 @@
+- name: Install docker-compose
+  package:
+    name: docker-compose
+  become: true
