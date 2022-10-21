@@ -1,7 +1,9 @@
 version: "3.7"
 services:
   cgm-remote-monitor-yura:
-    image: pyrmon/nightscout:14.2.5
+    build:
+      dockerfile: Dockerfile
+      context: .
     labels:
       - traefik.enable=true
 
@@ -79,7 +81,9 @@ services:
       - traefik
 
   cgm-remote-monitor-lyuda:
-    image: pyrmon/nightscout:14.2.5
+    build:
+      dockerfile: Dockerfile
+      context: .
     labels:
       - traefik.enable=true
 
