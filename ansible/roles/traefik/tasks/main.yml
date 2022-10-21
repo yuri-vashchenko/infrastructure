@@ -2,15 +2,16 @@
   include_vars: vault.yml
 
 - include_tasks: check_status.yml
-  when: enable_traefik_public | default(false) or enable_traefik_internal | default(false)
+  when: enable_traefik | default(false)
 
 # - include_tasks: list_services.yml
-#   when: enable_traefik_public | default(false) or enable_traefik_internal | default(false)
+#   when: enable_traefik | default(false)
 
 - include_tasks: install_configs.yml
-  when: enable_traefik_public | default(false) or enable_traefik_internal | default(false)
+  when: enable_traefik | default(false)
 
 - include_tasks: networks.yml
+  when: enable_traefik | default(false)
 
 - include_tasks: docker.yml
-  when: enable_traefik_public | default(false) or enable_traefik_internal | default(false)
+  when: enable_traefik | default(false)

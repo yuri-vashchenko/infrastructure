@@ -2,10 +2,15 @@ entryPoints:
   web:
     address: :80
     http:
-      redirections:
-        entryPoint:
-          to: web-secure
-          scheme: https
+      middlewares:
+        - floc-block@file
+        - compress@file
+        - shenanigans@file
+        # redirections:
+        #   entryPoint:
+        #     to: web-secure
+        #     scheme: https
+
   web-secure:
     address: :443
     http:

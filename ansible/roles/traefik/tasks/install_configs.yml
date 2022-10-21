@@ -2,7 +2,7 @@
   file:
     path: "{{ app_data_dir }}/traefik/{{ item }}/conf/"
     state: directory
-    recurse: yes
+    recurse: true
     mode: 0755
   with_items:
     - internal
@@ -18,8 +18,7 @@
     - templates/internal/*.j2
     - templates/public/*.j2
   notify:
-    - restart traefik internal
-    - restart traefik public
+    - restart traefik
   register: traefik_config
 
 - name: Create install directory
@@ -46,15 +45,15 @@
     owner: "{{ docker_user.name }}"
   become: true
 
-- name: Install compose file
-  template:
-    src: files/docker-compose.yml
-    dest: "{{ traefik_install_dir }}/docker-compose.yml"
-    mode: "{{ docker_compose_file_mask }}"
-    owner: "{{ docker_user.name }}"
-    validate: docker-compose -f %s config
-  notify: restart traefik
-  become: true
+# - name: Install compose file
+#   template:
+#     src: files/docker-compose.yml
+#     dest: "{{ traefik_install_dir }}/docker-compose.yml"
+#     mode: "{{ docker_compose_file_mask }}"
+#     owner: "{{ docker_user.name }}"
+#     validate: docker-compose -f %s config
+#   notify: restart traefik
+#   become: true
 
 - name: Install config
   template:

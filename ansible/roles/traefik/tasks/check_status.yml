@@ -3,47 +3,36 @@
     name: "{{ item }}"
   register: traefik_docker_status
   with_items:
-    - traefik_internal
-    - traefik_public
+    - traefik
     - docker_proxy
     - shenanigans
 
-- name: Does internal container exist?
-  set_fact:
-    traefik_internal_exists: true
+- name: Does traefik container exist?
+  ansible.builtin.set_fact:
+    traefik_exists: true
   when: traefik_docker_status.results[0].exists
 
-- name: Does public container exist?
-  set_fact:
-    traefik_public_exists: true
+- name: Does docker proxy container exist?
+  ansible.builtin.set_fact:
+    docker_proxy_exists: true
   when: traefik_docker_status.results[1].exists
 
-- name: Does docker proxy container exist?
-  set_fact:
-    docker_proxy_exists: true
+- name: Does shenanigans container exist?
+  ansible.builtin.set_fact:
+    shenanigans_exists: true
   when: traefik_docker_status.results[2].exists
 
-- name: Does shenanigans container exist?
-  set_fact:
-    shenanigans_exists: true
-  when: traefik_docker_status.results[3].exists
-
-- name: Is internal container running?
-  set_fact:
+- name: Is traefik container running?
+  ansible.builtin.set_fact:
     traefik_internal_running: true
-  when: traefik_internal_exists is defined and traefik_docker_status.results[0].container['State']['Running']
-
-- name: Is public container running?
-  set_fact:
-    traefik_internal_running: true
-  when: traefik_public_exists is defined and traefik_docker_status.results[1].container['State']['Running']
+  when: traefik_exists is defined and traefik_docker_status.results[0].container['State']['Running']
 
 - name: Is docker proxy container running?
-  set_fact:
+  ansible.builtin.set_fact:
     docker_proxy_running: true
-  when: docker_proxy_exists is defined and traefik_docker_status.results[2].container['State']['Running']
+  when: docker_proxy_exists is defined and traefik_docker_status.results[1].container['State']['Running']
 
 - name: Is shenanigans container running?
-  set_fact:
+  ansible.builtin.set_fact:
     shenanigans_running: true
-  when: shenanigans_exists is defined and traefik_docker_status.results[3].container['State']['Running']
+  when: shenanigans_exists is defined and traefik_docker_status.results[2].container['State']['Running']
