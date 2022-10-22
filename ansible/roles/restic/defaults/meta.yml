@@ -1,0 +1,5 @@
+container_name: restic
+
+url: restic.{{ host_local }}
+
+homer_category: services

@@ -1,0 +1,5 @@
+container_name: nightscout
+
+url: ns.{{ host }}
+
+homer_category: health

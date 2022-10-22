@@ -1,0 +1,45 @@
+# Gets variables from all web applications recursively (for Homer and traefik)
+#
+
+- name: Get a list of containers
+  delegate_to: localhost
+  become: false
+  find:
+    paths: roles
+    file_type: directory
+    excludes:
+      - docker
+      - homer
+      - system
+      - traefik
+      - wireguard
+    recurse: false
+  register: containers
+
+- name: Include all default.yml files
+  ansible.builtin.include_vars:
+    dir: "{{ playbook_dir }}/{{ item.path }}/defaults"
+    files_matching: meta.yml
+    name: "{{ item.path.split('/')[-1] }}"
+  with_items: "{{ containers.files }}"
+
+- name: Empty the variables (In case the task is called twice)
+  set_fact:
+    web_applications: []
+    traefik_urls: {}
+  when: web_applications is defined
+
+- name: Populate the dictionary of all containers
+  set_fact:
+    web_applications: >
+      {{ web_applications | default({}) | combine({ item.path.split('/')[-1]: {
+        'logo': '/assets/tools/homer-icons/' + item.path.split('/')[-1] + '.png',
+        'ip_address': lookup('vars', item.path.split('/')[-1])['ip_address'] | default(''),
+        'name': lookup('vars', item.path.split('/')[-1])['dashboard_name'] | default(item.path.split('/')[-1] | title),
+        'url' : lookup('vars', item.path.split('/')[-1])['url'] | default(''),
+        'category': lookup('vars', item.path.split('/')[-1])['homer_category'] | default ('') }}) }}
+  with_items: "{{ containers.files }}"
+
+- name: Print collected variables
+  debug:
+    msg: "{{ web_applications }}"

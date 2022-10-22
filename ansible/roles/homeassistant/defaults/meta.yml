@@ -1,0 +1,7 @@
+container_name: homeassistant
+
+url: homeassistant.{{ host }}
+
+homer_category: smarthome
+
+dashboard_name: Home Assistant

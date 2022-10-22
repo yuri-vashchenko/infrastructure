@@ -1,0 +1,7 @@
+container_name: vaultwarden
+
+url: vaultwarden.{{ host }}
+
+homer_category: services
+
+dashboard_name: Vaultwarden
