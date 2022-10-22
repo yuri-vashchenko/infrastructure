@@ -41,7 +41,7 @@ providers:
     exposedByDefault: false
     network: traefik
   file:
-    directory: /etc/traefik/conf
+    directory: {{ traefik_config_dir }}/config
 
 api:
   dashboard: true
@@ -51,7 +51,7 @@ certificatesResolvers:
   letsEncrypt:
     acme:
       email: "{{ letsencrypt_email }}"
-      storage: /etc/traefik/acme.json
+      storage: {{ traefik_config_dir }}/acme.json
       # caServer: https://acme-staging-v02.api.letsencrypt.org/directory
       httpChallenge:
         entryPoint: web
