@@ -11,8 +11,7 @@ enable_ntp: false
 enable_plex: false
 enable_restic: false
 enable_syncthing: false
-enable_traefik_internal: true
-enable_traefik_public: true
+enable_traefik: true
 enable_vaultwarden: false
 enable_wireguard: false
 enable_zfs: false
