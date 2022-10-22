@@ -29,12 +29,11 @@
   when: enable_traefik | default(false) and docker_proxy_running | default(false) and shenanigans_running | default(false)
   docker_container:
     name: traefik
-    image: traefik:v2.9.1
+    image: traefik:{{ traefik_version }}
     pull: true
     networks:
       - name: traefik
-        ipv4_address: "{{ traefik_base }}.{{ traefik_ip }}"
-        internal: true
+        external: true
       - name: dmz
         ipv4_address: "{{ dmz_base }}.{{ traefik_ip }}"
         external: true
@@ -42,6 +41,7 @@
         ipv4_address: "{{ home_lan_base }}.{{ traefik_ip }}"
         external: true
       - name: proxy_private
+        internal: true
     security_opt:
       - no-new-privileges:true
     state: started

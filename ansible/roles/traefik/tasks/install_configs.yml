@@ -1,41 +1,24 @@
-- name: Create folders
-  file:
-    path: "{{ app_data_dir }}/traefik/{{ item }}/conf/"
+- name: Create directories
+  ansible.builtin.file:
+    path: "{{ item }}"
     state: directory
     recurse: true
-    mode: 0755
-  with_items:
-    - internal
-    - public
+    owner: "{{ docker_user.name }}"
+    mode: "{{ docker_compose_directory_mask }}"
+  become: true
+  with_items: "{{ traefik_dirs }}"
 
 - name: Install the traefik config files
   template:
     src: "{{ item }}"
-    dest: "{{ app_data_dir }}/traefik/{{ item.split('/')[-2] }}/conf/{{ item | basename | regex_replace('.j2$', '') }}"
+    dest: "{{ app_data_dir }}/traefik/{{ item.split('/')[-2] }}/config/{{ item | basename | regex_replace('.j2$', '') }}"
     mode: 0644
   when: (item | basename).split('.')[0] in web_applications
   with_fileglob:
-    - templates/internal/*.j2
-    - templates/public/*.j2
+    - files/*.j2
   notify:
     - restart traefik
   register: traefik_config
-
-- name: Create install directory
-  file:
-    path: /opt/traefik
-    state: directory
-    owner: "{{ docker_user.name }}"
-    mode: "{{ docker_compose_directory_mask }}"
-  become: true
-
-- name: Create config directory
-  file:
-    path: /opt/traefik/traefik/
-    state: directory
-    mode: "{{ docker_compose_directory_mask }}"
-    owner: "{{ docker_user.name }}"
-  become: true
 
 - name: Create file provider directory
   file:
