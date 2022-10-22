@@ -1,3 +1,10 @@
+- hosts: server-main.local
+  gather_facts: false
+  post_tasks:
+    - import_tasks: tasks/list_services.yml
+      tags:
+        - list_services
+
 - hosts: all
   gather_facts: false
   tasks:
@@ -47,9 +54,9 @@
       tags: zfs
       become: true
       when: enable_zfs | default(false)
-    # - role: traefik
-    #   tags: traefik
-    #   when: enable_traefik | default(false)
+    - role: traefik
+      tags: traefik
+      when: enable_traefik | default(false)
     - role: plex
       tags: plex
       become: true
@@ -88,18 +95,18 @@
       become: true
       when: enable_syncthing | default(false)
 
-- hosts:
-    - server-test.local
-  roles:
-    - role: traefik
-      tags: traefik
-      when: enable_traefik | default(false)
-      # - role: vaultwarden
-      #   tags: vaultwarden
-      #   when: enable_vaultwarden | default(false)
-      # - role: restic
-      #   tags: restic
-      #   when: enable_restic | default(false)
+# - hosts:
+#     - server-test.local
+#   roles:
+# - role: traefik
+#   tags: traefik
+#   when: enable_traefik | default(false)
+# - role: vaultwarden
+#   tags: vaultwarden
+#   when: enable_vaultwarden | default(false)
+# - role: restic
+#   tags: restic
+#   when: enable_restic | default(false)
 
 - hosts:
     - server-vpn.vashchenko.me
