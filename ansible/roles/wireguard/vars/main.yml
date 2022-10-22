@@ -1,8 +1,6 @@
 wireguard_server_public_key: "{{ vault_wireguard_server_public_key }}"
 wireguard_server_private_key: "{{ vault_wireguard_server_private_key }}"
 wireguard_server_public_ip: "{{ vault_wireguard_server_public_ip }}"
-wireguard_server_cidr: 10.3.0.1/24
-wireguard_server_port: 51820
 
 wireguard_client_02_private_key: "{{ vault_wireguard_client_02_private_key }}"
 wireguard_client_03_private_key: "{{ vault_wireguard_client_03_private_key }}"
