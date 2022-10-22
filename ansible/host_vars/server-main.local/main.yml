@@ -5,6 +5,10 @@ ansible_pass_first_run: "{{ vault_ansible_become_pass }}"
 app_data_root: /tank
 media_root: /tank
 
+traefik_ip: 24
+
+host_local: server-main.local
+
 private_ip: "{{ server_main.ip }}"
 
 # physical_netowrk_interface: eno2

@@ -5,6 +5,8 @@ ansible_pass_first_run: "{{ vault_ansible_become_pass }}"
 app_data_root: /mnt/storage
 media_root: /mnt/storage
 
+host_local: server-ns.local
+
 private_ip: "{{ server_ns.ip }}"
 
 physical_netowrk_interface: eth0

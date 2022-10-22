@@ -5,6 +5,8 @@ ansible_pass_first_run: "{{ vault_ansible_become_pass }}"
 app_data_root: /media/drive
 media_root: /media/drive
 
+host_local: london.local
+
 private_ip: "{{ london.ip }}"
 
 physical_netowrk_interface: enp4s0
