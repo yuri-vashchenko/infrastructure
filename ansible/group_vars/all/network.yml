@@ -17,11 +17,6 @@ home_lan_base: "{{ '.'.join(home_lan_network.split('.')[0:3]) }}"
 home_lan_gateway: "{{ home_lan_base }}.1"
 home_lan_interface: "{{ ethernet_interface }}"
 
-# traefic network
-# traefik_network: 10.0.0.0/27
-# traefik_base: "{{ '.'.join(traefik_network.split('.')[0:3]) }}"
-# traefik_gateway: "{{ traefik_base }}.1"
-
 # DMZ network
 dmz_network: "{{ '.'.join(lan_network.split('.')[0:2]) }}.{{ dmz_vlan_id }}.0/24"
 dmz_base: "{{ '.'.join(dmz_network.split('.')[0:3]) }}"
