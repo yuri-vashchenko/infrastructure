@@ -43,3 +43,4 @@
 - name: Print collected variables
   debug:
     msg: "{{ web_applications }}"
+  when: print_web_applications | default(false)
