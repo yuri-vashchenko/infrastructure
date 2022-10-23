@@ -1,6 +1,13 @@
+# ethernet interface
+ethernet_interface: eth0
+
 ansible_pass_first_run: "{{ vault_ansible_pass_first_run }}"
 ansible_become_pass: "{{ vault_ansible_become_pass }}"
 ansible_user_first_run: root
 
 app_data_root: /mnt/storage
 media_root: /mnt/storage
+
+create_docker_iot_network: false
+create_docker_dmz_network: false
+create_docker_home_lan_network: false

@@ -1,3 +1,6 @@
+# ethernet interface
+ethernet_interface: eth0
+
 ansible_become_pass: "{{ vault_ansible_become_pass }}"
 ansible_user_first_run: root
 ansible_pass_first_run: "{{ vault_ansible_become_pass }}"
@@ -9,4 +12,6 @@ host_local: server-ns.local
 
 private_ip: "{{ server_ns.ip }}"
 
-physical_netowrk_interface: eth0
+create_docker_iot_network: false
+create_docker_dmz_network: false
+create_docker_home_lan_network: true
