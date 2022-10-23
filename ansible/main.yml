@@ -1,17 +1,17 @@
-- hosts: server-main.local
+- hosts: localhost
   gather_facts: false
-  post_tasks:
+  pre_tasks:
     - import_tasks: tasks/list_services.yml
       tags:
         - list_services
 
-- hosts: all
+- hosts: servers
   gather_facts: false
   tasks:
     - name: Detect ssh port and check first run user
       include_tasks: roles/system/tasks/ssh_port_and_user.yml
 
-- hosts: all
+- hosts: servers
   roles:
     - system
 
@@ -84,29 +84,12 @@
       when: enable_nightscout | default(false)
 
 - hosts:
-    - mainsrv.local
-  roles:
-
-- hosts:
     - london.local
   roles:
     - role: syncthing
       tags: syncthing
       become: true
       when: enable_syncthing | default(false)
-
-# - hosts:
-#     - server-test.local
-#   roles:
-# - role: traefik
-#   tags: traefik
-#   when: enable_traefik | default(false)
-# - role: vaultwarden
-#   tags: vaultwarden
-#   when: enable_vaultwarden | default(false)
-# - role: restic
-#   tags: restic
-#   when: enable_restic | default(false)
 
 - hosts:
     - server-vpn.vashchenko.me

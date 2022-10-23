@@ -1,3 +1,13 @@
+[local_servers]
+london.local
+mainsrv.local
+server-main.local
+server-ns.local
+server-test.local
+
+[remote_servers]
+server-vpn.vashchenko.me
+
 [servers]
 london.local
 mainsrv.local
