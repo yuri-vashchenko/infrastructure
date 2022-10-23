@@ -1,29 +1,29 @@
-- name: Create home network
+- name: Create home lan network
   docker_network:
     name: home_lan
     driver: macvlan
     driver_options:
-      parent: "{{ home_lan_iterface }}"
+      parent: "{{ home_lan_interface }}"
     ipam_config:
       - subnet: "{{ home_lan_network }}"
-  when: enable_docker | default(false)
+  when: enable_docker | default(false) and create_docker_home_lan_network | default(false)
 
 - name: Create dmz network
   docker_network:
     name: dmz
     driver: macvlan
     driver_options:
-      parent: "{{ dms_iterface }}"
+      parent: "{{ dmz_interface }}"
     ipam_config:
-      - subnet: "{{ dms_network }}"
-  when: enable_docker | default(false)
+      - subnet: "{{ dmz_network }}"
+  when: enable_docker | default(false) and create_docker_dmz_network | default(false)
 
 - name: Create iot network
   docker_network:
     name: iot
     driver: macvlan
     driver_options:
-      parent: "{{ iot_iterface }}"
+      parent: "{{ iot_interface }}"
     ipam_config:
       - subnet: "{{ iot_network }}"
-  when: enable_docker | default(false)
+  when: enable_docker | default(false) and create_docker_iot_network | default(false)
