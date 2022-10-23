@@ -1,5 +1,7 @@
 enable_docker_proxy: true
+enable_shenanigans: true
 
+docker_proxy_version: 0.1
 traefik_version: v2.9.1
 
 traefik_provider_homeassistant: true
@@ -7,7 +9,7 @@ traefik_provider_nightscout: true
 traefik_provider_plex: true
 
 traefik_install_dir: /opt/traefik
-traefik_config_dir: "{{ app_data_dir }}/traefik"
+traefik_config_dir: "{{ traefik_install_dir }}/traefik"
 traefik_dirs:
   - "{{ traefik_install_dir }}"
-  - "{{ traefik_config_dir }}"
+  - "{{ traefik_config_dir }}/config"

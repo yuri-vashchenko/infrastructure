@@ -24,7 +24,7 @@
 
 - name: Is traefik container running?
   ansible.builtin.set_fact:
-    traefik_internal_running: true
+    traefik_running: true
   when: traefik_exists is defined and traefik_docker_status.results[0].container['State']['Running']
 
 - name: Is docker proxy container running?

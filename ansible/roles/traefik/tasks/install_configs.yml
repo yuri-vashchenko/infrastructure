@@ -4,96 +4,83 @@
     state: directory
     recurse: true
     owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     mode: "{{ docker_compose_directory_mask }}"
   become: true
   with_items: "{{ traefik_dirs }}"
 
 - name: Install the traefik config files
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ app_data_dir }}/traefik/{{ item.split('/')[-2] }}/config/{{ item | basename | regex_replace('.j2$', '') }}"
-    mode: 0644
-  when: (item | basename).split('.')[0] in web_applications
+    dest: "{{ traefik_config_dir }}/config/{{ item | basename | regex_replace('.j2$', '') }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+    mode: "{{ docker_compose_file_mask }}"
+  when: (item | basename).split('.')[0] in hostvars['localhost'].web_applications
   with_fileglob:
     - files/*.j2
   notify:
     - restart traefik
   register: traefik_config
-
-- name: Create file provider directory
-  file:
-    path: /opt/traefik/traefik/conf
-    state: directory
-    mode: "{{ docker_compose_directory_mask }}"
-    owner: "{{ docker_user.name }}"
   become: true
 
-# - name: Install compose file
-#   template:
-#     src: files/docker-compose.yml
-#     dest: "{{ traefik_install_dir }}/docker-compose.yml"
-#     mode: "{{ docker_compose_file_mask }}"
-#     owner: "{{ docker_user.name }}"
-#     validate: docker-compose -f %s config
-#   notify: restart traefik
-#   become: true
-
 - name: Install config
-  template:
-    src: files/traefik.yml
-    dest: /opt/traefik/traefik/traefik.yml
+  ansible.builtin.template:
+    src: files/traefik.yml.j2
+    dest: "{{ traefik_config_dir }}/traefik.yml"
     mode: "{{ docker_compose_file_mask }}"
     owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
   notify: restart traefik
   become: true
 
 - name: Install file provider
-  template:
+  ansible.builtin.template:
     src: files/file-provider-main.yml
-    dest: /opt/traefik/traefik/conf/main.yml
+    dest: "{{ traefik_config_dir }}/config/main.yml"
     mode: "{{ docker_compose_file_mask }}"
     owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
   notify: restart traefik
-  become: true
-
-# - name: Install homeassistant provider
-#   template:
-#     src: files/file-provider-homeassistant.yml
-#     dest: /opt/traefik/traefik/conf/homeassistant.yml
-#     mode: "{{ docker_compose_file_mask }}"
-#     owner: "{{ docker_user.name }}"
-#   notify: restart traefik
-#   when: traefik_provider_homeassistant
-#   become: true
-
-- name: Install plex provider
-  template:
-    src: files/file-provider-plex.yml
-    dest: /opt/traefik/traefik/conf/plex.yml
-    mode: "{{ docker_compose_file_mask }}"
-    owner: "{{ docker_user.name }}"
-  notify: restart traefik
-  when: traefik_provider_plex
   become: true
 
 - name: logrotate config
-  template:
+  ansible.builtin.template:
     src: files/logrotate.conf
     dest: /etc/logrotate.d/traefik
-    mode: "0600"
+    mode: 0600
   become: true
 
 - name: Check for nginx config
-  stat:
-    path: "{{ traefik_config_dir }}/nginx.conf"
+  ansible.builtin.stat:
+    path: "{{ traefik_install_dir }}/nginx.conf"
   register: nginx_file
   become: true
 
+- name: Check for acme.json
+  ansible.builtin.stat:
+    path: "{{ traefik_config_dir }}/acme.json"
+  register: acme_file
+  become: true
+
 - name: Create nginx config, if it doesn't exist already
-  template:
+  ansible.builtin.template:
     src: files/nginx.conf
-    dest: "{{ traefik_config_dir }}/nginx.conf"
-    mode: "0600"
+    dest: "{{ traefik_install_dir }}/nginx.conf"
+    mode: 0600
   when: not nginx_file.stat.exists
   notify: restart traefik
   become: true
+
+- name: Force permissions for nginx.conf
+  ansible.builtin.file:
+    dest: "{{ traefik_install_dir }}/nginx.conf"
+    mode: 0600
+  become: true
+
+- name: Force permissions for acme.json
+  ansible.builtin.file:
+    dest: "{{ traefik_config_dir }}/acme.json"
+    mode: 0600
+  become: true
+  when: (acme_file.stat.exists) and (acme_file.stat.mode != "0600")

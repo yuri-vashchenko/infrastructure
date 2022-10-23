@@ -2,7 +2,6 @@
   when: enable_traefik | default(false)
   docker_network:
     name: traefik
-    external: true
   notify:
     - restart traefik
 

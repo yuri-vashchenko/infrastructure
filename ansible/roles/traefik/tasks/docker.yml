@@ -1,48 +1,52 @@
 - name: Make sure the docker_proxy container is created and running
-  when: enable_docker_proxy default(false) and enable_traefik | default(false)
-  docker_container:
+  when: enable_docker_proxy | default(false) and enable_traefik | default(false)
+  community.docker.docker_container:
     name: docker_proxy
-    image: tecnativa/docker-socket-proxy:0.1
-    pull: true
-    environment:
-      - CONTAINERS=1
-      - INFO=1
+    image: tecnativa/docker-socket-proxy:{{ docker_proxy_version }}
+    state: started
+    restart_policy: unless-stopped
+    env:
+      CONTAINERS: "1"
+      INFO: "1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
-      - proxy_private
-    state: started
-    restart_policy: unless-stopped
+      - name: proxy_private
+
+- include_tasks: check_status.yml
 
 - name: Make sure the shenanigans container is created and running
-  when: enable_shenanigans default(false) and enable_traefik | default(false)
-  docker_container:
+  when: enable_shenanigans | default(false) and enable_traefik | default(false)
+  community.docker.docker_container:
     name: shenanigans
     image: nginx:alpine
+    pull: true
+    state: started
     volumes:
-      - "{{ traefik_config_dir }}/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
+      - "{{ traefik_install_dir }}/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
     networks:
-      - proxy_private
+      - name: proxy_private
+    links:
+      - docker_proxy
     restart_policy: unless-stopped
+
+- include_tasks: check_status.yml
 
 - name: Make sure the traefik container is created and running
   when: enable_traefik | default(false) and docker_proxy_running | default(false) and shenanigans_running | default(false)
-  docker_container:
+  community.docker.docker_container:
     name: traefik
     image: traefik:{{ traefik_version }}
-    pull: true
     networks:
       - name: traefik
-        external: true
       - name: dmz
         ipv4_address: "{{ dmz_base }}.{{ traefik_ip }}"
-        external: true
       - name: home_lan
         ipv4_address: "{{ home_lan_base }}.{{ traefik_ip }}"
-        external: true
       - name: proxy_private
-        internal: true
-    security_opt:
+        links:
+          - docker_proxy
+    security_opts:
       - no-new-privileges:true
     state: started
     user: "{{ docker_user.id }}"
@@ -53,5 +57,8 @@
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /tmp/traefik-logs:/var/log/traefik
-      - "{{ traefik_config_dir }}/internal:/etc/traefik"
+      - "{{ traefik_config_dir }}:/etc/traefik"
+    links:
+      - docker_proxy
+      - shenanigans
     restart_policy: unless-stopped

@@ -6,11 +6,10 @@ entryPoints:
         - floc-block@file
         - compress@file
         - shenanigans@file
-        # redirections:
-        #   entryPoint:
-        #     to: web-secure
-        #     scheme: https
-
+      redirections:
+        entryPoint:
+          to: web-secure
+          scheme: https
   web-secure:
     address: :443
     http:
@@ -41,7 +40,7 @@ providers:
     exposedByDefault: false
     network: traefik
   file:
-    directory: {{ traefik_config_dir }}/config
+    directory: /etc/traefik/config
 
 api:
   dashboard: true
@@ -51,7 +50,7 @@ certificatesResolvers:
   letsEncrypt:
     acme:
       email: "{{ letsencrypt_email }}"
-      storage: {{ traefik_config_dir }}/acme.json
+      storage: /etc/traefik/acme.json
       # caServer: https://acme-staging-v02.api.letsencrypt.org/directory
       httpChallenge:
         entryPoint: web

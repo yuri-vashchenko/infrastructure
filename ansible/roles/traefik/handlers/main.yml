@@ -1,10 +1,12 @@
 - name: restart traefik
-  ansible.builtin.docker_compose:
-    project_src: "{{ traefik_install_dir }}"
-    restarted: true
+  ansible.builtin.docker_container:
+    name: traefik
+    state: started
+    restart: true
+  when: enable_traefik | default(false) and traefik_exists is defined and traefik_running is defined
 
 - name: restart docker proxy
-  docker_container:
+  ansible.builtin.docker_container:
     name: docker_proxy
     state: started
     restart: true
