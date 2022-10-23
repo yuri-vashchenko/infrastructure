@@ -1,6 +1,3 @@
-# ethernet interface
-ethernet_interface: eth1
-
 # vlan ids
 home_vlan_id: 0
 dmz_vlan_id: 4
@@ -18,13 +15,13 @@ home_lan_gateway: "{{ home_lan_base }}.1"
 home_lan_interface: "{{ ethernet_interface }}"
 
 # DMZ network
-dmz_network: "{{ '.'.join(lan_network.split('.')[0:2]) }}.{{ dmz_vlan_id }}.0/24"
+dmz_network: "{{ '.'.join(home_lan_network.split('.')[0:2]) }}.{{ dmz_vlan_id }}.0/24"
 dmz_base: "{{ '.'.join(dmz_network.split('.')[0:3]) }}"
 dmz_gateway: "{{ dmz_base }}.1"
 dmz_interface: "{{ ethernet_interface }}.{{ dmz_vlan_id }}"
 
 # IOT network
-iot_network: "{{ '.'.join(lan_gateway.split('.')[0:2]) }}.{{ iot_vlan_id }}.0/24"
+iot_network: "{{ '.'.join(home_lan_gateway.split('.')[0:2]) }}.{{ iot_vlan_id }}.0/24"
 iot_base: "{{ '.'.join(iot_network.split('.')[0:3]) }}"
 iot_gateway: "{{ iot_base }}.1"
 iot_interface: "{{ ethernet_interface }}.{{ iot_vlan_id }}"
