@@ -3,11 +3,13 @@ plex_transcode_dir: "{{ app_data_dir }}/plex/transcode"
 plex_tvseries_dir: "{{ media_dir }}/tvseries"
 plex_movies_dir: "{{ media_dir }}/movies"
 plex_music_dir: "{{ media_dir }}/music"
-plex_install_dir: /opt/plex
+plex_photos_dir: "{{ media_dir }}/photos"
 plex_dirs:
   - "{{ plex_library_dir }}"
   - "{{ plex_transcode_dir }}"
+
+plex_media_dirs:
   - "{{ plex_tvseries_dir }}"
   - "{{ plex_movies_dir }}"
   - "{{ plex_music_dir }}"
-  - "{{ plex_install_dir }}"
+  - "{{ plex_photos_dir }}"
