@@ -1,11 +1,8 @@
 - name: Include vault
-  include_vars: vault.yml
+  ansible.builtin.include_vars: vault.yml
 
 - include_tasks: check_status.yml
   when: enable_traefik | default(false)
-
-# - include_tasks: list_services.yml
-#   when: enable_traefik | default(false)
 
 - include_tasks: install_configs.yml
   when: enable_traefik | default(false)

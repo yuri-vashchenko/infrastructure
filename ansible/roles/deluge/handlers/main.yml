@@ -1,4 +1,6 @@
 - name: restart deluge
-  shell:
-    chdir: "{{ deluge_install_dir }}"
-    cmd: "{{ docker_update_command }}"
+  ansible.builtin.docker_container:
+    name: "{{ container_name }}"
+    state: started
+    restart: true
+  when: enable_deluge | default(false) and deluge_exists is defined and deluge_running is defined

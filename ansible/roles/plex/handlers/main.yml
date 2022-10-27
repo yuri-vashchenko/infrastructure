@@ -1,4 +1,6 @@
-- name: restart plex
-  shell:
-    chdir: "{{ plex_install_dir }}"
-    cmd: "{{ docker_update_command }}"
+- name: restart traefik
+  ansible.builtin.docker_container:
+    name: plex
+    state: started
+    restart: true
+  when: enable_plex | default(false) and plex_exists is defined and plex_running is defined

@@ -1,14 +1,16 @@
 - name: Create traefik network
   when: enable_traefik | default(false)
-  docker_network:
+  community.docker.docker_network:
     name: traefik
+    state: present
   notify:
     - restart traefik
 
 - name: Create docker proxy network
   when: enable_docker_proxy | default(false)
-  docker_network:
+  community.docker.docker_network:
     name: proxy_private
+    state: present
     internal: true
   notify:
     - restart docker proxy

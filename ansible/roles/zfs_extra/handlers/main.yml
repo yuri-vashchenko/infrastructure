@@ -1,0 +1,8 @@
+---
+# handlers file for zfs_extra
+- name: restart samba
+  ansible.builtin.service:
+    name: smbd
+    state: restarted
+  become: true
+  when: enable_zfs | default(false)

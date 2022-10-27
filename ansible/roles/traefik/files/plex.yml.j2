@@ -1,10 +1,24 @@
 http:
   routers:
-    router-plex:
+    plex-web:
       rule: Host(`plex.{{ host }}`)
-      service: service-plex
+      entryPoints:
+        - web
+      middlewares:
+        - redirect-to-https
+      service: plex-ui
+    plex-web-secure:
+      rule: Host(`plex.{{ host }}`)
+      entryPoints:
+        - web-secure
+      service: plex-ui
+      tls: {}
   services:
-    service-plex:
+    plex-ui:
       loadBalancer:
         servers:
           - url: http://{{ plex_ip }}:32400
+  middlewares:
+    redirect-to-https:
+      redirectScheme:
+        scheme: https

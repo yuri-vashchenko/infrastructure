@@ -5,8 +5,11 @@ ansible_become_pass: "{{ vault_ansible_become_pass }}"
 ansible_user_first_run: root
 ansible_pass_first_run: "{{ vault_ansible_become_pass }}"
 
-app_data_root: /tank
-media_root: /tank
+zfs_pool: tank
+app_data_root: /{{ zfs_pool }}
+dbs_root: /{{ zfs_pool }}
+media_root: /{{ zfs_pool }}
+media_dir: /{{ media_root }}/media
 
 traefik_ip: 24
 

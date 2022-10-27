@@ -1,22 +1,62 @@
 - name: Include vault
   include_vars: vault.yml
 
-- name: Create directories
-  file:
+- name: Create plex directories
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-    mode: "{{ docker_compose_directory_mask }}"
     owner: "{{ docker_user.name }}"
     group: "{{ docker_user.name }}"
+    mode: "{{ docker_compose_directory_mask }}"
   loop: "{{ plex_dirs }}"
   become: true
 
-- name: Install compose file
-  template:
-    src: files/docker-compose.yml.j2
-    dest: "{{ plex_install_dir }}/docker-compose.yml"
-    mode: "{{ docker_compose_file_mask }}"
-    owner: "{{ docker_user.name }}"
-    validate: docker-compose -f %s config
-  notify: restart plex
+- name: Create media directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "{{ docker_compose_directory_mask }}"
+    owner: nobody
+    group: nogroup
+  loop: "{{ plex_dirs }}"
   become: true
+
+- name: Get infos on the plex container
+  community.docker.docker_container_info:
+    name: plex
+  register: plex_docker_status
+
+- name: Does plex container exist?
+  ansible.builtin.set_fact:
+    plex_exists: true
+  when: plex_docker_status.exists
+
+- name: Is docker container running?
+  ansible.builtin.set_fact:
+    plex_running: true
+  when: plex_exists is defined and plex_docker_status.container['State']['Running']
+
+- name: Make sure the plex container is created and running
+  when: enable_plex | default(false)
+  community.docker.docker_container:
+    name: plex
+    image: plexinc/pms-docker
+    env:
+      PLEX_UID: "3000"
+      PLEX_GID: "3000"
+      TZ: "{{ timezone }}"
+      PLEX_CLAIM: "{{ plex_claim }}"
+    networks:
+      - name: traefik
+      - name: home_lan
+        ipv4_address: "{{ plex.ip }}"
+    hostname: server-plex
+    state: started
+    volumes:
+      - "{{ plex_library_dir }}:/config"
+      - "{{ plex_transcode_dir }}:/transcode"
+      - "{{ plex_tvseries_dir }}:/tvseries"
+      - "{{ plex_movies_dir }}:/movies"
+      - "{{ plex_music_dir }}:/music"
+      - "{{ plex_photos_dir }}:/photos"
+    restart_policy: unless-stopped
