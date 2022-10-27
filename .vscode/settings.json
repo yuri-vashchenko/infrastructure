@@ -1,5 +1,10 @@
 {
     "yaml.schemas": {
-        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible-lint-config.json": "file:///src/infrastructure/ansible/group_vars/all/main.yml"
+        "https://raw.githubusercontent.com/ansible/schemas/main/f/ansible-vars.json": [
+            "file:///src/infrastructure/ansible/group_vars/all/main.yml",
+            "file:///src/infrastructure/ansible/host_vars/server-main.local/main.yml",
+            "file:///src/infrastructure/ansible/host_vars/server-main.local/zfs.yml"
+        ],
+        "https://raw.githubusercontent.com/ansible/schemas/main/f/ansible.json#/$defs/playbook": "file:///src/infrastructure/ansible/main.yml"
     }
 }

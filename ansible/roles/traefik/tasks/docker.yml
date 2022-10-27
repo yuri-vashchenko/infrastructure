@@ -13,7 +13,8 @@
     networks:
       - name: proxy_private
 
-- include_tasks: check_status.yml
+- name: Recheck container status
+  ansible.builtin.include_tasks: check_status.yml
 
 - name: Make sure the shenanigans container is created and running
   when: enable_shenanigans | default(false) and enable_traefik | default(false)
@@ -30,7 +31,8 @@
       - docker_proxy
     restart_policy: unless-stopped
 
-- include_tasks: check_status.yml
+- name: Recheck container status
+  ansible.builtin.include_tasks: check_status.yml
 
 - name: Make sure the traefik container is created and running
   when: enable_traefik | default(false) and docker_proxy_running | default(false) and shenanigans_running | default(false)
@@ -44,8 +46,6 @@
       - name: home_lan
         ipv4_address: "{{ home_lan_base }}.{{ traefik_ip }}"
       - name: proxy_private
-        links:
-          - docker_proxy
     security_opts:
       - no-new-privileges:true
     state: started
@@ -61,4 +61,10 @@
     links:
       - docker_proxy
       - shenanigans
+    labels:
+      # global redirect to https
+      traefik.http.routers.http-catchall.rule: hostregexp(`{host:.+}`)
+      traefik.http.routers.http-catchall.entrypoints: web
+      traefik.http.routers.http-catchall.middlewares: redirect-to-https
+      traefik.http.routers.http-catchall.priority: "1000"
     restart_policy: unless-stopped

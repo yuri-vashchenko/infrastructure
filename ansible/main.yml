@@ -54,6 +54,9 @@
       tags: zfs
       become: true
       when: enable_zfs | default(false)
+    - role: zfs_extra
+      tags: zfs_extra
+      when: enable_zfs | default(false)
     - role: traefik
       tags: traefik
       when: enable_traefik | default(false)

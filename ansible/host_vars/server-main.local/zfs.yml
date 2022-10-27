@@ -26,27 +26,23 @@ zfs_enable_performance_tuning: false
 # Defines if Samba is installed and configured
 zfs_enable_samba: true
 
-# Defines filesystems to manage
 zfs_filesystems:
   - name: app_data
     pool: tank
-    atime: false
     compression: lz4
-    owner: nobody
-    group: nogroup
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     state: present
   - name: dbs
     pool: tank
-    atime: false
     compression: lz4
-    owner: nobody
-    group: nogroup
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     state: present
   - name: media
-    owner: nobody
-    group: nogroup
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     pool: tank
-    quota: none
     sharesmb: true
     mountpoint: /tank/media
     smb_options:
@@ -54,7 +50,7 @@ zfs_filesystems:
       comment: ""
       create_directory_mask: "0755"
       create_mask: "0777"
-      guest_ok: true
+      guest_ok: false
       read_only: false
       share_name: media
       writable: true
@@ -63,61 +59,61 @@ zfs_filesystems:
     sync: disabled
   - name: media/tvseries
     pool: tank
-    owner: nobody
-    group: nogroup
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     state: present
   - name: media/movies
     pool: tank
-    owner: nobody
-    group: nogroup
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     state: present
   - name: media/music
     pool: tank
-    owner: nobody
-    group: nogroup
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     state: present
   - name: media/photos
     pool: tank
-    owner: nobody
-    group: nogroup
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     state: present
   - name: media/videos
     pool: tank
-    owner: nobody
-    group: nogroup
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     state: present
   - name: media/books
     pool: tank
-    owner: nobody
-    group: nogroup
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     state: present
   - name: media/audiobooks
     pool: tank
-    owner: nobody
-    group: nogroup
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     state: present
   - name: media/documents
-    owner: nobody
-    group: nogroup
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     pool: tank
     compression: lz4
     state: present
   - name: media/downloads
     pool: tank
-    owner: nobody
-    group: nogroup
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     state: present
   - name: media/other
     pool: tank
     compression: lz4
-    owner: nobody
-    group: nogroup
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     state: present
   - name: media/users
     pool: tank
     compression: lz4
-    owner: nobody
-    group: nogroup
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
     state: present
 
 # Defines if this role should manage the installation of ZFS, including updates.

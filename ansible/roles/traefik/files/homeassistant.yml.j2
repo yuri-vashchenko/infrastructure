@@ -1,10 +1,24 @@
 http:
   routers:
-    router-homeassistant:
+    homeassistant-web:
       rule: Host(`homeassistant.{{ host }}`)
-      service: service-homeassistant
+      entryPoints:
+        - web
+      middlewares:
+        - redirect-to-https
+      service: homeassistant-ui
+    homeassistant-web-secure:
+      rule: Host(`homeassistant.{{ host }}`)
+      entryPoints:
+        - web-secure
+      service: homeassistant-ui
+      tls: {}
   services:
-    service-homeassistant:
+    homeassistant-ui:
       loadBalancer:
         servers:
           - url: http://{{ homeassistant_ip }}:8123
+  middlewares:
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
