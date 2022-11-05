@@ -1,0 +1,12 @@
+enable_mosquitto: true
+
+mosquitto_config_dir: "{{ app_data_dir }}/mosquitto"
+mosquitto_dirs:
+  - "{{ mosquitto_config_dir }}/config"
+  - "{{ mosquitto_config_dir }}/data"
+  - "{{ mosquitto_config_dir }}/log"
+
+mosquitto_version: 2.0.15
+
+mosquitto_port: "1883"
+mosquitto_websocket_port: "9001"

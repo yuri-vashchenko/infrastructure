@@ -1,0 +1,7 @@
+enable_esphome: true
+
+esphome_config_dir: "{{ app_data_dir }}/esphome"
+
+esphome_version: stable
+
+esphome_port: "6052"

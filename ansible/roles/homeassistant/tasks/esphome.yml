@@ -1,0 +1,43 @@
+- name: Create esphome app directory
+  ansible.builtin.file:
+    path: "{{ esphome_config_dir }}"
+    state: directory
+    mode: "{{ docker_compose_directory_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+  become: true
+
+- name: Make sure the esphome container is created and running
+  when: enable_esphome | default(false)
+  community.docker.docker_container:
+    name: esphome
+    image: esphome/esphome:{{ esphome_version }}
+    pull: true
+    privileged: true
+    networks:
+      - name: traefik
+    volumes:
+      - "{{ esphome_config_dir }}:/config"
+      - /etc/localtime:/etc/localtime:ro
+    env:
+      TZ: "{{ timezone }}"
+      ESPHOME_DASHBOARD_USE_PING: "true"
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: traefik
+      # routers
+      traefik.http.routers.esphome-web.rule: Host(`esphome.local`)
+      traefik.http.routers.esphome-web.service: esphome-ui
+      traefik.http.routers.esphome-web.entrypoints: web
+      traefik.http.routers.esphome-web.priority: "2000"
+      # services
+      traefik.http.services.esphome-ui.loadbalancer.server.port: "{{ esphome_port }}"
+      # middlewares
+      traefik.http.middlewares.esphome-ratelimit.ratelimit.average: "5"
+      traefik.http.middlewares.esphome-ratelimit.ratelimit.burst: "1000"
+      traefik.http.middlewares.esphome-compress.compress: "true"
+      # middlewares for routers
+      traefik.http.routers.esphome-web.middlewares: esphome-ratelimit,esphome-compress
+    hostname: esphome
+    state: started
+    restart_policy: unless-stopped

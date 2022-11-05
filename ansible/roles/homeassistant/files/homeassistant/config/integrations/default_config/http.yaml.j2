@@ -1,0 +1,14 @@
+# HTTP
+# https://home-assistant.io/components/http/
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - {{ home_lan_network }}
+    - {{ traefik_ip }}
+
+  # IP Banning
+  ip_ban_enabled: true
+
+  # Number of failed login attempts from an IP Address before becoming banned
+  login_attempts_threshold: 5

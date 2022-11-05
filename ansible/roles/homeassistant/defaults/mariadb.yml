@@ -1,0 +1,7 @@
+enable_mariadb: true
+
+mariadb_database_dir: "{{ database_dir }}/mariadb"
+
+mariadb_version: 10.9.3
+
+mariadb_port: "3306"

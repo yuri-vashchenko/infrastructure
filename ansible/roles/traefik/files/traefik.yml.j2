@@ -1,4 +1,12 @@
 entryPoints:
+  mariadb:
+    address: :3306
+  mqtt:
+    address: :1883
+  mqtt_websocket:
+    address: :9001
+  traefik:
+    address: :8080
   web:
     address: :80
     http:
@@ -24,8 +32,6 @@ entryPoints:
               - nsl.{{ host }}
               - plex.{{ host }}
               - vaultwarden.{{ host }}
-  traefik:
-    address: :8080
 
 ping: {}
 
