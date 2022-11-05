@@ -1,0 +1,44 @@
+- name: Create code-server config directory
+  ansible.builtin.file:
+    path: "{{ code_server_config_dir }}"
+    state: directory
+    mode: "{{ docker_compose_directory_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+  become: true
+
+- name: Make sure the code-server container is created and running
+  when: enable_code_server | default(false)
+  community.docker.docker_container:
+    name: code_server
+    image: codercom/code-server:{{ code_server_version }}
+    pull: true
+    networks:
+      - name: traefik
+    user: "{{ docker_user.id }}:{{ docker_user.id }}"
+    volumes:
+      - "{{ code_server_config_dir }}:/home/coder/.config"
+      - "{{ homeassistant_config_dir }}:/home/coder/project"
+      - /etc/localtime:/etc/localtime:ro
+    env:
+      DOCKER_USER: "{{ docker_user.name }}"
+      TZ: "{{ timezone }}"
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: traefik
+      # routers
+      traefik.http.routers.code-server-web.rule: Host(`code.local`)
+      traefik.http.routers.code-server-web.service: code-server-ui
+      traefik.http.routers.code-server-web.entrypoints: web
+      traefik.http.routers.code-server-web.priority: "2000"
+      # services
+      traefik.http.services.code-server-ui.loadbalancer.server.port: "{{ code_server_port }}"
+      # middlewares
+      traefik.http.middlewares.code-server-ratelimit.ratelimit.average: "5"
+      traefik.http.middlewares.code-server-ratelimit.ratelimit.burst: "1000"
+      traefik.http.middlewares.code-server-compress.compress: "true"
+      # middlewares for routers
+      traefik.http.routers.code-server-web.middlewares: code-server-ratelimit,code-server-compress
+    hostname: code-server
+    state: started
+    restart_policy: unless-stopped

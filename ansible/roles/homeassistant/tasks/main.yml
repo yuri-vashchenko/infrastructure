@@ -1,23 +1,33 @@
 - name: Include vault
-  include_vars: vault.yml
+  ansible.builtin.include_vars: vault.yml
 
-- name: Create app directory
-  file:
-    path: "{{ item }}"
-    state: directory
-    mode: "{{ docker_compose_directory_mask }}"
-    owner: "{{ docker_user.name }}"
-    group: "{{ docker_user.name }}"
-  loop: "{{ homeassistant_dirs }}"
-  become: true
+- name: Include variables
+  ansible.builtin.include_vars:
+    file: "{{ item }}"
+  with_items:
+    - defaults/code-server.yml
+    - defaults/esphome.yml
+    - defaults/homeassistant.yml
+    - defaults/mariadb.yml
+    - defaults/mosquitto.yml
+  when: enable_homeassistant | default(false)
 
-- name: Install compose file
-  template:
-    src: files/docker-compose.yml.j2
-    dest: "{{ homeassistant_install_dir }}/docker-compose.yml"
-    mode: "{{ docker_compose_file_mask }}"
-    owner: "{{ docker_user.name }}"
-    group: "{{ docker_user.name }}"
-    validate: docker-compose -f %s config
-  notify: restart homeassistant
-  become: true
+- name: mariadb
+  ansible.builtin.include_tasks: mariadb.yml
+  when: enable_mariadb | default(false)
+
+- name: esphome
+  ansible.builtin.include_tasks: esphome.yml
+  when: enable_esphome | default(false)
+
+- name: code-server
+  ansible.builtin.include_tasks: code-server.yml
+  when: enable_code_server | default(false)
+
+- name: mosquitto
+  ansible.builtin.include_tasks: mosquitto.yml
+  when: enable_mosquitto | default(false)
+
+- name: homeassistant
+  ansible.builtin.include_tasks: homeassistant.yml
+  when: enable_homeassistant | default(false)

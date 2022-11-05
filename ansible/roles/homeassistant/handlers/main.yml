@@ -1,4 +1,18 @@
-- name: restart homeassistant
-  shell:
-    chdir: "{{ homeassistant_install_dir }}"
-    cmd: "{{ docker_update_command }}"
+- name: Restart mosquitto
+  community.docker.docker_container:
+    name: mosquitto
+    state: started
+    restart: true
+
+- name: Generate mosquitto password
+  community.docker.docker_container_exec:
+    container: mosquitto
+    argv:
+      - mosquitto_passwd
+      - -b
+      - -c
+      - /mosquitto/config/mosquitto.passwd
+      - "{{ mosquitto_user }}"
+      - "{{ mosquitto_password }}"
+    user: "{{ docker_user.id }}"
+  notify: Restart mosquitto

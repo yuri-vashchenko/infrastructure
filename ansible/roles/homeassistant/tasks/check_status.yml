@@ -1,0 +1,74 @@
+- name: Get info on the code-server container
+  community.docker.docker_container_info:
+    name: code_server
+  register: code_server_docker_status
+
+- name: Does code-server container exist?
+  ansible.builtin.set_fact:
+    code_server_exists: true
+  when: code_server_docker_status.exists
+
+- name: Is code-server container running?
+  ansible.builtin.set_fact:
+    code_server_running: true
+  when: code_server_exists is defined and code_server_docker_status.container['State']['Running']
+
+- name: Get info on the esphome container
+  community.docker.docker_container_info:
+    name: esphome
+  register: esphome_docker_status
+
+- name: Does esphome container exist?
+  ansible.builtin.set_fact:
+    esphome_exists: true
+  when: esphome_docker_status.exists
+
+- name: Is esphome container running?
+  ansible.builtin.set_fact:
+    esphome_running: true
+  when: esphome_exists is defined and esphome_docker_status.container['State']['Running']
+
+- name: Get info on the homeassistant container
+  community.docker.docker_container_info:
+    name: homeassistant
+  register: homeassistant_docker_status
+
+- name: Does homeassistant container exist?
+  ansible.builtin.set_fact:
+    homeassistant_exists: true
+  when: homeassistant_docker_status.exists
+
+- name: Is homeassistant container running?
+  ansible.builtin.set_fact:
+    homeassistant_running: true
+  when: homeassistant_exists is defined and homeassistant_docker_status.container['State']['Running']
+
+- name: Get info on the mariadb container
+  community.docker.docker_container_info:
+    name: mariadb
+  register: mariadb_docker_status
+
+- name: Does mariadb container exist?
+  ansible.builtin.set_fact:
+    mariadb_exists: true
+  when: mariadb_docker_status.exists
+
+- name: Is mariadb container running?
+  ansible.builtin.set_fact:
+    mariadb_running: true
+  when: mariadb_exists is defined and mariadb_docker_status.container['State']['Running']
+
+- name: Get info on the mosquitto container
+  community.docker.docker_container_info:
+    name: mosquitto
+  register: mosquitto_docker_status
+
+- name: Does mosquitto container exist?
+  ansible.builtin.set_fact:
+    mosquitto_exists: true
+  when: mosquitto_docker_status.exists
+
+- name: Is mosquitto container running?
+  ansible.builtin.set_fact:
+    mosquitto_running: true
+  when: mosquitto_exists is defined and mosquitto_docker_status.container['State']['Running']

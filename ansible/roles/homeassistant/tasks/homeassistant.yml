@@ -1,0 +1,102 @@
+- name: Create homeassistant app directory
+  ansible.builtin.file:
+    path: "{{ homeassistant_config_dir }}/integrations/default_config"
+    state: directory
+    recurse: true
+    mode: "{{ docker_compose_directory_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+  become: true
+
+- name: Check status
+  ansible.builtin.include_tasks: check_status.yml
+
+- name: Get infos on traefik container
+  community.docker.docker_container_info:
+    name: traefik
+  register: result
+
+- name: Get traefik ip
+  ansible.builtin.set_fact:
+    traefik_ip: >
+      {{ result["container"]["NetworkSettings"]["Networks"]["traefik"]["IPAddress"] }}
+  when: result.exists
+
+- name: Create http integration
+  ansible.builtin.template:
+    src: files/homeassistant/config/integrations/default_config/http.yaml.j2
+    dest: "{{ homeassistant_config_dir }}/integrations/default_config/http.yaml"
+    mode: "{{ docker_compose_file_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+    backup: true
+
+- name: Check if packages line is already defined in config
+  ansible.builtin.lineinfile:
+    state: absent
+    path: "{{ homeassistant_config_dir }}/configuration.yaml"
+    regexp: "^  packages: !include_dir_named integrations"
+  check_mode: true
+  changed_when: false  # This just makes things look prettier in the logs
+  register: check_for_packages_line
+
+- name: Make sure packages are included
+  ansible.builtin.lineinfile:
+    state: present
+    path: "{{ homeassistant_config_dir }}/configuration.yaml"
+    create: true
+    mode: "{{ docker_compose_file_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+    line: |
+      # Do not edit or remove the lines below as they are added automatically
+      homeassistant:
+        packages: !include_dir_named integrations
+  when: not check_for_packages_line.found
+
+- name: Make sure the homeassistant container is created and running
+  when: enable_homeassistant | default(false) and mariadb_running | default(false) and mosquitto_running | default(false)
+  community.docker.docker_container:
+    name: homeassistant
+    pull: true
+    image: ghcr.io/home-assistant/home-assistant:{{ homeassistant_version }}
+    networks:
+      - name: traefik
+      - name: home_lan
+        ipv4_address: "{{ ha.ip }}"
+    user: "{{ docker_user.id }}:{{ docker_user.id }}"
+    volumes:
+      - "{{ homeassistant_config_dir }}:/config"
+      - /etc/localtime:/etc/localtime:ro
+    privileged: true
+    env:
+      TZ: "{{ timezone }}"
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: traefik
+      # routers
+      traefik.http.routers.ha-web.rule: Host(`ha.{{ host }}`)
+      traefik.http.routers.ha-web.service: ha-ui
+      traefik.http.routers.ha-web.entrypoints: web
+      traefik.http.routers.ha-web-secure.rule: Host(`ha.{{ host }}`)
+      traefik.http.routers.ha-web-secure.service: ha-ui
+      traefik.http.routers.ha-web-secure.entrypoints: web-secure
+      # services
+      traefik.http.services.ha-ui.loadbalancer.server.port: "{{ ha.port }}"
+      # middlewares
+      traefik.http.middlewares.ha-ratelimit.ratelimit.average: "5"
+      traefik.http.middlewares.ha-ratelimit.ratelimit.burst: "1000"
+      traefik.http.middlewares.ha-compress.compress: "true"
+      traefik.http.middlewares.redirect-to-https.redirectScheme.scheme: https
+
+      # middlewares for routers
+      traefik.http.routers.ha-web.middlewares: ha-ratelimit,ha-compress,redirect-to-https
+      traefik.http.routers.ha-web-secure.middlewares: ha-ratelimit,ha-compress
+    links:
+      - mosquitto
+      - mariadb
+      - esphome
+      - code_server
+    hostname: ha
+    state: started
+    restart_policy: unless-stopped

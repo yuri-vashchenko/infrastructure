@@ -1,0 +1,3 @@
+homeassistant_config_dir: "{{ app_data_dir }}/homeassistant/config"
+
+homeassistant_version: stable

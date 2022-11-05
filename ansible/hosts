@@ -1,5 +1,5 @@
 [local_servers]
-london.local
+# london.local
 mainsrv.local
 server-main.local
 server-ns.local
@@ -9,7 +9,7 @@ server-test.local
 server-vpn.vashchenko.me
 
 [servers]
-london.local
+# london.local
 mainsrv.local
 server-main.local
 server-ns.local
