@@ -31,7 +31,7 @@
   when: enable_deluge | default(false)
   community.docker.docker_container:
     name: "{{ container_name }}"
-    image: linuxserver/deluge
+    image: linuxserver/deluge:{{ deluge_version }}
     volumes:
       - "{{ deluge_config_dir }}:/config"
       - "{{ deluge_download_dir }}:/data"

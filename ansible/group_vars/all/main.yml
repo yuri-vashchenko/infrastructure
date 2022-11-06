@@ -4,7 +4,7 @@ timezone: "{{ vault_timezone }}"
 enable_deluge: false
 enable_docker: false
 enable_docker_cleanup: false
-enable_homeassistant: false
+enable_homeassistant: true
 enable_homer: false
 enable_nightscout: false
 enable_ntp: false

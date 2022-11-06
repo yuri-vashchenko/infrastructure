@@ -3,3 +3,5 @@ deluge_download_dir: "{{ media_root }}/media"
 deluge_dirs:
   - "{{ deluge_config_dir }}"
   - "{{ deluge_download_dir }}"
+
+deluge_version: latest
