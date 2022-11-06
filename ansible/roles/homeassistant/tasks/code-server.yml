@@ -11,7 +11,7 @@
   when: enable_code_server | default(false)
   community.docker.docker_container:
     name: code_server
-    image: codercom/code-server:{{ code_server_version }}
+    image: linuxserver/code-server:{{ code_server_version }}
     pull: true
     networks:
       - name: traefik
