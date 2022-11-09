@@ -2,6 +2,7 @@ collections:
   - ansible.posix
   - community.general
   - community.docker
+  - community.libvirt
 
 roles:
   - src: geerlingguy.docker
