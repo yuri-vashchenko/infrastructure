@@ -5,6 +5,7 @@ mainsrv:
     ip: 192.168.0.10
 server_main:
     ip: 192.168.0.34
+    wifi_ip: 192.168.0.35
 server_ns:
     ip: 192.168.0.8
 server_test:
