@@ -1,0 +1,14 @@
+- name: Get wifi interface
+  ansible.builtin.set_fact:
+    wifi_interface: "{{ item }}"
+  loop: "{{ ansible_facts.interfaces }}"
+  when: item.startswith("wl")
+
+- name: Configure wifi with netplan
+  ansible.builtin.template:
+    src: files/02-wifi.yaml.j2
+    dest: /etc/netplan/02-wifi.yaml
+    mode: 0644
+  notify: netplan generate config
+  when: wifi_interface is defined and enable_wifi
+  become: true

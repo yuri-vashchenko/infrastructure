@@ -1,3 +1,6 @@
+- name: Netplan
+  include_tasks: netplan.yml
+  when: install_netplan | default(false)
 - name: Update
   include_tasks: update.yml
   when: update_packages | default(false)
