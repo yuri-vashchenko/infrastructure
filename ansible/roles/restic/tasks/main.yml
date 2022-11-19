@@ -8,7 +8,7 @@
     owner: "{{ docker_user.name }}"
     group: "{{ docker_user.name }}"
     mode: "{{ docker_compose_directory_mask }}"
-  with_items:
+  loop:
     - /opt/restic-rclone/config
     - "{{ restic_config_directory }}"
   become: true

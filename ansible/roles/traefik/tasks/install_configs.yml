@@ -7,7 +7,7 @@
     group: "{{ docker_user.name }}"
     mode: "{{ docker_compose_directory_mask }}"
   become: true
-  with_items: "{{ traefik_dirs }}"
+  loop: "{{ traefik_dirs }}"
 
 - name: Install the traefik config files
   ansible.builtin.template:

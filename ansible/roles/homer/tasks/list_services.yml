@@ -16,7 +16,7 @@
     dir: "{{ playbook_dir }}/{{ item.path }}/defaults"
     files_matching: main.yml
     name: "{{ item.path.split('/')[-1] }}"
-  with_items: "{{ containers.files }}"
+  loop: "{{ containers.files }}"
 
 - name: Populate the dictionary of all containers
   set_fact:
@@ -28,4 +28,4 @@
       'endpoint': lookup('vars', item.path.split('/')[-1])['health_url'] | default(''),
       'category': lookup('vars', item.path.split('/')[-1])['homer_category'] | default ('') }] }}"
   when: lookup('vars', 'enable_' + item.path.split('/')[-1]) | default(false)
-  with_items: "{{ containers.files }}"
+  loop: "{{ containers.files }}"
