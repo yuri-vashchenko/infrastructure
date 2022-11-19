@@ -12,6 +12,8 @@ host_local: server-ns.local
 
 private_ip: "{{ server_ns.ip }}"
 
+enable_wifi: false
+
 create_docker_iot_network: false
 create_docker_dmz_network: false
 create_docker_home_lan_network: true

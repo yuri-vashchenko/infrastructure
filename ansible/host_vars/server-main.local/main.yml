@@ -22,3 +22,6 @@ include_vars: zfs.yml
 create_docker_iot_network: true
 create_docker_dmz_network: true
 create_docker_home_lan_network: true
+
+enable_wifi: true
+wifi_cidr: "{{ server_main.wifi_ip }}/24"
