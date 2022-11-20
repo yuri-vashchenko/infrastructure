@@ -1,5 +1,5 @@
 - name: Include vault
-  include_vars: vault.yml
+  ansible.builtin.include_vars: vault.yml
 
 - name: Create plex directories
   ansible.builtin.file:
@@ -41,6 +41,7 @@
   community.docker.docker_container:
     name: plex
     image: plexinc/pms-docker
+    pull: true
     env:
       PLEX_UID: "3000"
       PLEX_GID: "3000"
