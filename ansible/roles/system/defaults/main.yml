@@ -1,4 +1,4 @@
-install_netplan: true
+install_netplan: false
 create_user: false
 install_packages: false
 modify_barhrc: false

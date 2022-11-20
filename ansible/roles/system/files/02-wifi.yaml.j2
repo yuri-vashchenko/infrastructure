@@ -6,4 +6,10 @@ network:
         {{ wifi_ssid }}:
           password: {{ wifi_password }}
       dhcp4: false
+      dhcp6: false
       addresses: [ {{ wifi_cidr }} ]
+      routes:
+        - to: default
+          via: {{ home_lan_gateway }}
+      nameservers:
+        addresses: [{{ home_lan_gateway }}, 8.8.8.8]

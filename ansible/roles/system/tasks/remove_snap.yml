@@ -17,13 +17,13 @@
         state: absent
 
     - name: Remove the snap package from apt
-      apt:
+      ansible.builtin.apt:
         package: snapd
         state: absent
         purge: true
 
     - name: Remove the snap folders
-      file:
+      ansible.builtin.file:
         name: "{{ item }}"
         state: absent
       loop:
