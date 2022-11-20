@@ -1,5 +1,7 @@
 # ethernet interface
-ethernet_interface: br0
+# ethernet_interface: br0
+# ethernet_interface: enp1s0
+home_lan_interface: br0
 
 ansible_become_pass: "{{ vault_ansible_become_pass }}"
 ansible_user_first_run: root

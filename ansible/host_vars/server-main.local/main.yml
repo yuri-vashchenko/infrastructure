@@ -1,5 +1,6 @@
 # ethernet interface
-ethernet_interface: eno2
+# ethernet_interface: eno2
+home_lan_interface: br0
 
 ansible_become_pass: "{{ vault_ansible_become_pass }}"
 ansible_user_first_run: root
@@ -23,5 +24,7 @@ create_docker_iot_network: true
 create_docker_dmz_network: true
 create_docker_home_lan_network: true
 
-enable_wifi: true
+enable_wifi: false
+enable_network_bridge: false
 wifi_cidr: "{{ server_main.wifi_ip }}/24"
+ethernet_cidr: "{{ server_main.ip }}/24"

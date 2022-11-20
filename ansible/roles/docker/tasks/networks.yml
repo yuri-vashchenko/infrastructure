@@ -1,5 +1,11 @@
+- name: Get ethernet interface
+  ansible.builtin.set_fact:
+    ethernet_interface: "{{ item }}"
+  loop: "{{ ansible_facts.interfaces }}"
+  when: item.startswith("en") and "." not in item
+
 - name: Create home lan network
-  docker_network:
+  community.docker.docker_network:
     name: home_lan
     driver: macvlan
     driver_options:
@@ -9,7 +15,7 @@
   when: enable_docker | default(false) and create_docker_home_lan_network | default(false)
 
 - name: Create dmz network
-  docker_network:
+  community.docker.docker_network:
     name: dmz
     driver: macvlan
     driver_options:
@@ -19,7 +25,7 @@
   when: enable_docker | default(false) and create_docker_dmz_network | default(false)
 
 - name: Create iot network
-  docker_network:
+  community.docker.docker_network:
     name: iot
     driver: macvlan
     driver_options:
