@@ -30,7 +30,7 @@
   when: web_applications is defined
 
 - name: Populate the dictionary of all containers
-  set_fact:
+  ansible.builtin.set_fact:
     web_applications: >
       {{ web_applications | default({}) | combine({ item.path.split('/')[-1]: {
         'logo': '/assets/tools/homer-icons/' + item.path.split('/')[-1] + '.png',
@@ -41,6 +41,6 @@
   loop: "{{ containers.files }}"
 
 - name: Print collected variables
-  debug:
+  ansible.builtin.debug:
     msg: "{{ web_applications }}"
   when: print_web_applications | default(false)
