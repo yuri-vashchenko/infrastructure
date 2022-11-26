@@ -1,4 +1,4 @@
-- name: restart homer
-  shell:
+- name: Restart homer
+  ansible.builtin.shell:
     chdir: "{{ homer_install_dir }}"
     cmd: "{{ docker_update_command }}"

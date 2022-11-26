@@ -1,4 +1,4 @@
-- name: Check port "{{ ansible_port }}"
+- name: Check port {{ ansible_port }}
   ansible.builtin.wait_for:
     port: "{{ ansible_port }}"
     state: started
@@ -47,7 +47,7 @@
     ssh_port_22_with_user_works is defined and ssh_port_22_with_user_works is changed or
     ssh_port_22_user_first_run is defined and ssh_port_22_user_first_run is changed
 
-- name: Set SSH user to {{ ansible_user_first_run }} and password to ansible_pass_first_run
+- name: Set SSH user to ansible_user_first_run and password to ansible_pass_first_run
   ansible.builtin.set_fact:
     ansible_user: "{{ ansible_user_first_run }}"
     ansible_ssh_pass: "{{ ansible_pass_first_run }}"

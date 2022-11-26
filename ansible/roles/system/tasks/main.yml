@@ -19,6 +19,6 @@
 - name: Modify .bashrc
   ansible.builtin.include_tasks: bashrc.yml
   when: modify_barhrc | default(false)
-- name: set locale
+- name: Set locale
   ansible.builtin.include_tasks: locale.yml
   when: set_locale | default(false)

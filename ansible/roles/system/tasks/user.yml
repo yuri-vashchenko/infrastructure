@@ -1,4 +1,4 @@
-- name: Creating user "{{ user }}" with admin access
+- name: Creating user with admin access
   ansible.builtin.user:
     name: "{{ user }}"
     password: "{{ ansible_become_pass | password_hash('sha512') }}"

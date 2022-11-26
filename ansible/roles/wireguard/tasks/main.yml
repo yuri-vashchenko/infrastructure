@@ -1,8 +1,8 @@
 - name: Include vault
-  include_vars: vault.yml
+  ansible.builtin.include_vars: vault.yml
 
 - name: Install wireguard tools
-  package:
+  ansible.builtin.package:
     name: "{{ item }}"
   become: true
   loop:
@@ -10,8 +10,10 @@
     - qrencode
 
 - name: Wireguard server config
+  become: true
+  notify: Restart wireguard
   block:
-    - name: create peer list
+    - name: Create peer list
       vars:
         public_key: wireguard_client_{{ "{:02}".format(item | int) }}_public_key
         allowed_ips: wireguard_client_{{ "{:02}".format(item | int) }}_cidr
@@ -19,18 +21,16 @@
           [Peer]
           PublicKey = {{ lookup("vars", public_key) }}
           AllowedIPs = {{ lookup("vars", allowed_ips) }}
-      set_fact:
+      ansible.builtin.set_fact:
         peer_list: >
           {{ peer_list | default("") }} {{ peer }}
       with_sequence: start=2 count=13
     - name: Generate server config
-      template:
+      ansible.builtin.template:
         src: files/server.conf
         dest: /etc/wireguard/wg0.conf
         mode: "0600"
         backup: true
-  become: true
-  notify: restart wireguard
 
 - name: Wireguard client config
   vars:
@@ -38,16 +38,16 @@
     private_key: wireguard_client_{{ "{:02}".format(item | int) }}_private_key
     wireguard_client_cidr: "{{ lookup('vars', cidr) }}"
     wireguard_client_private_key: "{{ lookup('vars', private_key) }}"
-  template:
+  ansible.builtin.template:
     src: files/client.conf
     dest: "{{ home }}/wg_client_{{ '{:02}'.format(item | int) }}.conf"
     mode: "0600"
   with_sequence: start=2 count=13
   become: true
-  notify: restart wireguard
+  notify: Restart wireguard
 
 - name: Enable wireguard
-  service:
+  ansible.builtin.service:
     name: wg-quick@wg0
     enabled: true
   become: true

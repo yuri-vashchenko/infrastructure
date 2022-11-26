@@ -1,8 +1,8 @@
 - name: Include vault
-  include_vars: vault.yml
+  ansible.builtin.include_vars: vault.yml
 
 - name: Create directories
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: "{{ docker_user.name }}"
@@ -14,7 +14,7 @@
   become: true
 
 - name: Install rclone config
-  template:
+  ansible.builtin.template:
     src: files/rclone.conf.j2
     dest: "{{ rclone_config_path }}"
     mode: "{{ docker_compose_file_mask }}"
@@ -23,7 +23,7 @@
   notify: rebuild and restart
 
 - name: Install scripts and files
-  copy:
+  ansible.builtin.copy:
     src: files/root
     dest: /opt/restic-rclone
     owner: "{{ docker_user.name }}"
@@ -32,7 +32,7 @@
   notify: rebuild and restart
 
 - name: Install Dockerfile
-  template:
+  ansible.builtin.template:
     src: files/Dockerfile
     dest: /opt/restic-rclone/Dockerfile
     mode: "{{ docker_compose_file_mask }}"
@@ -40,7 +40,7 @@
   become: true
 
 - name: Install compose file
-  template:
+  ansible.builtin.template:
     src: files/docker-compose.yml.j2
     dest: /opt/restic-rclone/docker-compose.yml
     mode: "{{ docker_compose_file_mask }}"

@@ -44,7 +44,7 @@
   notify: restart traefik
   become: true
 
-- name: logrotate config
+- name: Logrotate config
   ansible.builtin.template:
     src: files/logrotate.conf
     dest: /etc/logrotate.d/traefik

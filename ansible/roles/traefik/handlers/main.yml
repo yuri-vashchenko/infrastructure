@@ -1,12 +1,12 @@
-- name: restart traefik
-  ansible.builtin.docker_container:
+- name: Restart traefik
+  community.docker.docker_container:
     name: traefik
     state: started
     restart: true
   when: enable_traefik | default(false) and traefik_exists is defined and traefik_running is defined
 
-- name: restart docker proxy
-  ansible.builtin.docker_container:
+- name: Restart docker proxy
+  community.docker.docker_container:
     name: docker_proxy
     state: started
     restart: true

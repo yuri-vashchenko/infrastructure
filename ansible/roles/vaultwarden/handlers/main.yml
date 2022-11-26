@@ -1,4 +1,4 @@
-- name: restart vaultwarden
-  shell:
+- name: Restart vaultwarden
+  ansible.builtin.shell:
     chdir: /opt/vaultwarden
     cmd: "{{ docker_update_command }}"

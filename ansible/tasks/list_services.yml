@@ -4,7 +4,7 @@
 - name: Get a list of containers
   delegate_to: localhost
   become: false
-  find:
+  ansible.builtin.find:
     paths: roles
     file_type: directory
     excludes:
@@ -24,7 +24,7 @@
   loop: "{{ containers.files }}"
 
 - name: Empty the variables (In case the task is called twice)
-  set_fact:
+  ansible.builtin.set_fact:
     web_applications: []
     traefik_urls: {}
   when: web_applications is defined

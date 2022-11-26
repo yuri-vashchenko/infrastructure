@@ -12,7 +12,7 @@
   loop: "{{ deluge_dirs }}"
   become: true
 
-- name: Get info on the {{ container_name }} container
+- name: Get info on the container {{ container_name }}
   community.docker.docker_container_info:
     name: "{{ container_name }}"
   register: deluge_docker_status
