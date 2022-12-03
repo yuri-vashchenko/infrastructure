@@ -63,8 +63,8 @@ RUN dpkg --add-architecture i386 && \
         rsync \
         gpg-agent \
         locales \
-        curl
-
+        curl \
+        fish
 
 #--- Create user -----------------------------------------------------------------------------------
 
@@ -125,6 +125,8 @@ RUN sed -i -e 's/# ru_RU.UTF-8 UTF-8/ru_RU.UTF-8 UTF-8/' /etc/locale.gen && \
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
+
+RUN python3 -m pip install --upgrade pip
 
 COPY ./files/python/requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt ; rm requirements.txt
