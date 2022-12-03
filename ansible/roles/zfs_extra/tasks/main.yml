@@ -1,6 +1,6 @@
 ---
 # tasks file for zfs_extra
-- name: set Samba passwords for each user
+- name: Set Samba passwords for each user
   ansible.builtin.shell: |
     set -o pipefail
     printf '{{ docker_user.password }}\n{{ docker_user.password }}\n' | smbpasswd -a {{ docker_user.name }}
@@ -10,4 +10,4 @@
   become: true
   register: smbpasswd
   changed_when: "'Added user' in smbpasswd.stdout"
-  notify: restart samba
+  notify: Restart samba

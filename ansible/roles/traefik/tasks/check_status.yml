@@ -2,7 +2,7 @@
   community.docker.docker_container_info:
     name: "{{ item }}"
   register: traefik_docker_status
-  with_items:
+  loop:
     - traefik
     - docker_proxy
     - shenanigans

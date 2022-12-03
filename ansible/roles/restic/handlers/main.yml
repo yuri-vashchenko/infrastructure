@@ -1,11 +1,11 @@
-- name: build container
-  shell:
+- name: Build container
+  ansible.builtin.shell:
     chdir: /opt/restic-rclone
     cmd: "{{ docker_build_command }}"
   listen: rebuild and restart
 
-- name: restart restic-rclone
-  shell:
+- name: Restart restic-rclone
+  ansible.builtin.shell:
     chdir: /opt/restic-rclone
     cmd: "{{ docker_update_command }}"
   listen: rebuild and restart

@@ -1,6 +1,6 @@
 ---
 # handlers file for zfs_extra
-- name: restart samba
+- name: Restart samba
   ansible.builtin.service:
     name: smbd
     state: restarted

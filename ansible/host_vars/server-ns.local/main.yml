@@ -1,5 +1,6 @@
 # ethernet interface
-ethernet_interface: eth0
+# ethernet_interface: eth0
+home_lan_interface: eth0
 
 ansible_become_pass: "{{ vault_ansible_become_pass }}"
 ansible_user_first_run: root
@@ -11,6 +12,8 @@ media_root: /mnt/storage
 host_local: server-ns.local
 
 private_ip: "{{ server_ns.ip }}"
+
+enable_wifi: false
 
 create_docker_iot_network: false
 create_docker_dmz_network: false

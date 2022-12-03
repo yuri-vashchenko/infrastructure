@@ -1,14 +1,18 @@
 - name: Include vault
   ansible.builtin.include_vars: vault.yml
 
-- include_tasks: check_status.yml
+- name: Include check_status.yml
+  ansible.builtin.include_tasks: check_status.yml
   when: enable_traefik | default(false)
 
-- include_tasks: install_configs.yml
+- name: Include install_configs.yml
+  ansible.builtin.include_tasks: install_configs.yml
   when: enable_traefik | default(false)
 
-- include_tasks: networks.yml
+- name: Include networks.yml
+  ansible.builtin.include_tasks: networks.yml
   when: enable_traefik | default(false)
 
-- include_tasks: docker.yml
+- name: Include docker.yml
+  ansible.builtin.include_tasks: docker.yml
   when: enable_traefik | default(false)

@@ -1,5 +1,5 @@
 - name: Check if snap is installed
-  package_facts:
+  ansible.builtin.package_facts:
     manager: auto
 
 - name: Remove snap functionality
@@ -7,26 +7,26 @@
   become: true
   block:
     - name: Unmount the core* snaps
-      mount:
+      ansible.posix.mount:
         name: /snap/core*
         state: unmounted
 
     - name: Remove the pre-installed snaps
-      snap:
+      community.general.snap:
         name: "*"
         state: absent
 
     - name: Remove the snap package from apt
-      apt:
+      ansible.builtin.apt:
         package: snapd
         state: absent
         purge: true
 
     - name: Remove the snap folders
-      file:
+      ansible.builtin.file:
         name: "{{ item }}"
         state: absent
-      with_items:
+      loop:
         - /home/{{ user }}/snap
         - /var/snap
         - /var/lib/snap

@@ -20,7 +20,7 @@
     - mainsrv.local
     - server-main.local
     - server-ns.local
-    - server-test.local
+    # - server-test.local
     - server-vpn.vashchenko.me
   roles:
     - role: docker
@@ -37,7 +37,7 @@
     - mainsrv.local
     - server-main.local
     - server-ns.local
-    - server-test.local
+    # - server-test.local
   roles:
     - role: geerlingguy.ntp
       tags: ntp

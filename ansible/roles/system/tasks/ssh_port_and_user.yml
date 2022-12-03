@@ -1,5 +1,5 @@
-- name: Check port "{{ ansible_port }}"
-  wait_for:
+- name: Check port {{ ansible_port }}
+  ansible.builtin.wait_for:
     port: "{{ ansible_port }}"
     state: started
     host: "{{ inventory_hostname }}"
@@ -10,7 +10,8 @@
   register: ssh_port_works
 
 - name: Check port 22 with ssh key
-  command: ssh -o User={{ user }} -o ConnectTimeout=5 -o PreferredAuthentications=publickey -o PubkeyAuthentication=yes {{ inventory_hostname }} echo "Worked"
+  ansible.builtin.command: >
+    ssh -o User={{ user }} -o ConnectTimeout=5 -o PreferredAuthentications=publickey -o PubkeyAuthentication=yes {{ inventory_hostname }} echo "Worked"
   delegate_to: localhost
   ignore_errors: true
   register: ssh_port_22_with_key_works
@@ -19,7 +20,7 @@
     - ssh_port_works is failed
 
 - name: Check port 22 with User={{ user }}
-  command: sshpass -p{{ ansible_become_pass }} ssh -o User={{ user }} \
+  ansible.builtin.command: sshpass -p{{ ansible_become_pass }} ssh -o User={{ user }} \
                -o ConnectTimeout=5 -o PreferredAuthentications=password -o PubkeyAuthentication=no {{ inventory_hostname }} echo "Worked"
   delegate_to: localhost
   ignore_errors: true
@@ -29,7 +30,7 @@
     - ssh_port_22_with_key_works is failed
 
 - name: Check port 22 with User={{ ansible_user_first_run }}
-  command: sshpass -p{{ ansible_pass_first_run }} ssh -o User={{ ansible_user_first_run }} \
+  ansible.builtin.command: sshpass -p{{ ansible_pass_first_run }} ssh -o User={{ ansible_user_first_run }} \
                -o ConnectTimeout=5 -o PreferredAuthentications=password -o PubkeyAuthentication=no {{ inventory_hostname }} echo "Worked"
   delegate_to: localhost
   ignore_errors: true
@@ -39,15 +40,15 @@
     - ssh_port_22_with_user_works is failed
 
 - name: Set SSH port to 22
-  set_fact:
+  ansible.builtin.set_fact:
     ansible_port: 22
   when:
     ssh_port_22_with_key_works is defined and ssh_port_22_with_key_works is changed or
     ssh_port_22_with_user_works is defined and ssh_port_22_with_user_works is changed or
     ssh_port_22_user_first_run is defined and ssh_port_22_user_first_run is changed
 
-- name: Set SSH user to {{ ansible_user_first_run }} and password to ansible_pass_first_run
-  set_fact:
+- name: Set SSH user to ansible_user_first_run and password to ansible_pass_first_run
+  ansible.builtin.set_fact:
     ansible_user: "{{ ansible_user_first_run }}"
     ansible_ssh_pass: "{{ ansible_pass_first_run }}"
   when:

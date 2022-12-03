@@ -1,4 +1,4 @@
-- name: restart syncthing
-  shell:
+- name: Restart syncthing
+  ansible.builtin.shell:
     chdir: "{{ syncthing_install_dir }}"
     cmd: "{{ docker_update_command }}"

@@ -1,5 +1,5 @@
 # localhost tasks do not need any passwords
-connection: local
+# connection: local
 password: ""
 ansible_become_pass: ""
 host_local: local

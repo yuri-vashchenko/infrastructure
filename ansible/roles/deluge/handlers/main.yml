@@ -1,5 +1,5 @@
-- name: restart deluge
-  ansible.builtin.docker_container:
+- name: Restart deluge
+  community.docker.docker_container:
     name: "{{ container_name }}"
     state: started
     restart: true

@@ -1,21 +1,24 @@
+- name: Netplan
+  ansible.builtin.include_tasks: netplan.yml
+  when: install_netplan | default(false)
 - name: Update
-  include_tasks: update.yml
+  ansible.builtin.include_tasks: update.yml
   when: update_packages | default(false)
 - name: Packages
-  include_tasks: packages.yml
+  ansible.builtin.include_tasks: packages.yml
   when: install_packages | default(false)
 - name: Snap
-  include_tasks: remove_snap.yml
+  ansible.builtin.include_tasks: remove_snap.yml
   when: remove_snap | default(false)
 - name: User
-  include_tasks: user.yml
+  ansible.builtin.include_tasks: user.yml
   when: create_user | default(false)
 - name: SSH
-  include_tasks: ssh.yml
+  ansible.builtin.include_tasks: ssh.yml
   when: update_ssh | default(false)
 - name: Modify .bashrc
-  include_tasks: bashrc.yml
+  ansible.builtin.include_tasks: bashrc.yml
   when: modify_barhrc | default(false)
-- name: set locale
-  include_tasks: locale.yml
+- name: Set locale
+  ansible.builtin.include_tasks: locale.yml
   when: set_locale | default(false)

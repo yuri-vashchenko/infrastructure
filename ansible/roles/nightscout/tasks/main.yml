@@ -1,8 +1,8 @@
 - name: Include vault
-  include_vars: vault.yml
+  ansible.builtin.include_vars: vault.yml
 
 - name: Create directories
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     mode: "{{ docker_compose_directory_mask }}"
@@ -12,21 +12,21 @@
   become: true
 
 - name: Install Dockerfile
-  template:
+  ansible.builtin.template:
     src: files/Dockerfile.j2
     dest: "{{ nightscout_install_dir }}/Dockerfile.yml"
     mode: "{{ docker_compose_file_mask }}"
     owner: "{{ docker_user.name }}"
     validate: docker-compose -f %s config
-  notify: restart nightscout
+  notify: Restart nightscout
   become: true
 
 - name: Install compose file
-  template:
+  ansible.builtin.template:
     src: files/docker-compose.yml.j2
     dest: "{{ nightscout_install_dir }}/docker-compose.yml"
     mode: "{{ docker_compose_file_mask }}"
     owner: "{{ docker_user.name }}"
     validate: docker-compose -f %s config
-  notify: restart nightscout
+  notify: Restart nightscout
   become: true

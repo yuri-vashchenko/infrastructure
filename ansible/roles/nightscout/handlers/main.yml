@@ -1,4 +1,4 @@
-- name: restart nightscout
-  shell:
+- name: Restart nightscout
+  ansible.builtin.shell:
     chdir: "{{ nightscout_install_dir }}"
     cmd: "{{ docker_update_command }}"

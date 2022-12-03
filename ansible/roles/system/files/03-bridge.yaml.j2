@@ -1,0 +1,31 @@
+network:
+  version: 2
+  renderer: networkd
+
+  ethernets:
+    {{ ethernet_interface }}:
+      dhcp4: false
+      dhcp6: false
+      # addresses: [{{ ethernet_cidr }}]
+      # routes:
+      #   - to: default
+      #     via: {{ home_lan_gateway }}
+      # mtu: 1500
+      # nameservers:
+      #   addresses: [8.8.8.8]
+
+  bridges:
+    br0:
+      interfaces: [{{ ethernet_interface }}]
+      addresses: [{{ ethernet_cidr }}]
+      routes:
+        - to: default
+          via: {{ home_lan_gateway }}
+      mtu: 1500
+      nameservers:
+        addresses: [{{ home_lan_gateway }}, 8.8.8.8]
+      parameters:
+        stp: true
+        forward-delay: 4
+      dhcp4: no
+      dhcp6: no

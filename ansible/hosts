@@ -3,7 +3,7 @@
 mainsrv.local
 server-main.local
 server-ns.local
-server-test.local
+# server-test.local
 
 [remote_servers]
 server-vpn.vashchenko.me
@@ -13,5 +13,5 @@ server-vpn.vashchenko.me
 mainsrv.local
 server-main.local
 server-ns.local
-server-test.local
+# server-test.local
 server-vpn.vashchenko.me

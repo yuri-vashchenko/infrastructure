@@ -1,5 +1,5 @@
-- name: restart traefik
-  ansible.builtin.docker_container:
+- name: Restart plex
+  community.docker.docker_container:
     name: plex
     state: started
     restart: true

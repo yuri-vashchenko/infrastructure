@@ -12,7 +12,6 @@ vpn_gateway: "{{ vpn_base }}.1"
 home_lan_network: 192.168.{{ home_vlan_id }}.0/24
 home_lan_base: "{{ '.'.join(home_lan_network.split('.')[0:3]) }}"
 home_lan_gateway: "{{ home_lan_base }}.1"
-home_lan_interface: "{{ ethernet_interface }}"
 
 # DMZ network
 dmz_network: "{{ '.'.join(home_lan_network.split('.')[0:2]) }}.{{ dmz_vlan_id }}.0/24"
