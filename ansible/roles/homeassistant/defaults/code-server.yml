@@ -1,6 +1,0 @@
-enable_code_server: true
-
-code_server_config_dir: "{{ app_data_dir }}/code-server/.vscode"
-
-code_server_version: latest
-code_server_port: "8080"
