@@ -1,5 +1,5 @@
 container_name: syncthing
 
-url: syncthing.{{ host_local }}
+url: http://syncthing.{{ host_local }}
 
 homer_category: services

@@ -1,6 +1,6 @@
 container_name: deluge
 
-url: deluge.{{ host_local }}
+url: http://deluge.{{ host_local }}
 
 homer_category: media
 

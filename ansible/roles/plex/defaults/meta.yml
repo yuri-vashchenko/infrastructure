@@ -1,6 +1,6 @@
 container_name: plex
 
-url: plex.{{ host_local }}
+url: http://plex.{{ host_local }}
 
 homer_category: media
 

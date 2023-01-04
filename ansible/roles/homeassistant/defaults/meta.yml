@@ -1,6 +1,6 @@
 container_name: homeassistant
 
-url: homeassistant.{{ host }}
+url: https://homeassistant.{{ host }}
 
 homer_category: smarthome
 

@@ -1,4 +1,6 @@
 - name: Restart homer
-  ansible.builtin.shell:
-    chdir: "{{ homer_install_dir }}"
-    cmd: "{{ docker_update_command }}"
+  community.docker.docker_container:
+    name: homer
+    state: started
+    restart: true
+  when: enable_homer | default(false) and homer_exists is defined

@@ -1,6 +1,6 @@
 container_name: vaultwarden
 
-url: vaultwarden.{{ host }}
+url: https://vaultwarden.{{ host }}
 
 homer_category: services
 

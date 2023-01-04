@@ -1,5 +1,5 @@
 container_name: nightscout
 
-url: ns.{{ host }}
+url: https://ns.{{ host }}
 
 homer_category: health

@@ -1,0 +1,7 @@
+container_name: homer
+
+url: http://homer.local
+
+homer_category: media
+
+dashboard_name: Homer

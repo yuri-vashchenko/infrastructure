@@ -1,5 +1,5 @@
 container_name: restic
 
-url: restic.{{ host_local }}
+url: http://restic.{{ host_local }}
 
 homer_category: services
