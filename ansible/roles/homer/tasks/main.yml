@@ -1,4 +1,7 @@
-- name: Create directories
+# - name: Include vault
+#   ansible.builtin.include_vars: vault.yml
+
+- name: Create homer directories
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -8,12 +11,71 @@
   loop: "{{ homer_dirs }}"
   become: true
 
-- name: Install compose file
-  ansible.builtin.template:
-    src: files/docker-compose.yml.j2
-    dest: "{{ homer_install_dir }}/docker-compose.yml"
+- name: Get infos on the homer container
+  community.docker.docker_container_info:
+    name: homer
+  register: homer_docker_status
+
+- name: Does homer container exist?
+  ansible.builtin.set_fact:
+    homer_exists: true
+  when: homer_docker_status.exists
+
+- name: Is docker container running?
+  ansible.builtin.set_fact:
+    homer_running: true
+  when: homer_exists is defined and homer_docker_status.container['State']['Running']
+
+- name: Copy assets
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ homer_config_dir }}"
     mode: "{{ docker_compose_file_mask }}"
     owner: "{{ docker_user.name }}"
-    validate: docker-compose -f %s config
+    group: "{{ docker_user.name }}"
+  loop:
+    - files/icons
+    - files/tools
+
+- name: Crate homer config
+  ansible.builtin.template:
+    src: templates/config.yml.j2
+    dest: "{{ homer_config_dir }}/config.yml"
+    mode: "{{ docker_compose_file_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
   notify: Restart homer
-  become: true
+
+- name: Make sure the homer container is created and running
+  when: enable_homer | default(false)
+  community.docker.docker_container:
+    name: homer
+    image: b4bz/homer:latest
+    pull: true
+    env:
+      TZ: "{{ timezone }}"
+    networks:
+      - name: traefik
+      - name: home_lan
+        ipv4_address: "{{ homer.ip }}"
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: traefik
+      # routers
+      traefik.http.routers.homer-web.rule: Host(`homer.local`)
+      traefik.http.routers.homer-web.service: homer-ui
+      traefik.http.routers.homer-web.entrypoints: web
+      traefik.http.routers.homer-web.priority: "2000"
+      # services
+      traefik.http.services.homer-ui.loadbalancer.server.port: "{{ homer.port }}"
+      # middlewares
+      traefik.http.middlewares.homer-ratelimit.ratelimit.average: "5"
+      traefik.http.middlewares.homer-ratelimit.ratelimit.burst: "1000"
+      traefik.http.middlewares.homer-compress.compress: "true"
+      # middlewares for routers
+      traefik.http.routers.homer-web.middlewares: homer-ratelimit,homer-compress
+    hostname: server-homer
+    state: started
+    volumes:
+      - "{{ homer_config_dir }}:/www/assets"
+    restart_policy: unless-stopped

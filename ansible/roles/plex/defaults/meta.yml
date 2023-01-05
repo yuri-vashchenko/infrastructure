@@ -1,7 +1,7 @@
 container_name: plex
-
-url: plex.{{ host_local }}
-
-homer_category: media
-
+homer_category: Media
 dashboard_name: Plex
+logo: assets/tools/plex.png
+subtitle: TV Shows & Movie Collection
+tag: app
+url: http://plex.{{ host_local }}

@@ -1,5 +1,6 @@
 container_name: restic
-
-url: restic.{{ host_local }}
-
-homer_category: services
+# homer_category: Services
+logo: assets/tools/restic.png
+subtitle: Backup
+tag: app
+# url: http://restic.{{ host_local }}

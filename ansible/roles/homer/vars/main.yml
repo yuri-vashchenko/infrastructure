@@ -1,1 +1,1 @@
-install_dir: "{{ homer_install_dir }}"
+# install_dir: "{{ homer_install_dir }}"

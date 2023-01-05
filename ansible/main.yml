@@ -71,6 +71,8 @@
     - role: homer
       tags: homer
       become: true
+      vars:
+        apps: "{{ hostvars['localhost'].web_applications }}"
       when: enable_homer | default(false)
     - role: homeassistant
       tags: homeassistant

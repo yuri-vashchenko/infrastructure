@@ -1,7 +1,7 @@
 container_name: vaultwarden
-
-url: vaultwarden.{{ host }}
-
-homer_category: services
-
+homer_category: Services
 dashboard_name: Vaultwarden
+logo: assets/tools/bitwarden.png
+subtitle: Password manager
+tag: app
+url: https://vaultwarden.{{ host }}

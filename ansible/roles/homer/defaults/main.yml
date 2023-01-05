@@ -1,5 +1,102 @@
 homer_config_dir: "{{ app_data_dir }}/homer/config"
-homer_install_dir: /opt/homer
 homer_dirs:
   - "{{ homer_config_dir }}"
-  - "{{ homer_install_dir }}"
+  - "{{ homer_config_dir }}/icons"
+  - "{{ homer_config_dir }}/tools"
+
+homer_categories:
+  - name: Media
+    icon: fas fa-cloud
+  - name: Downloads
+    icon: fas fa-cloud-download-alt
+  - name: Devices
+    icon: fas fa-wifi
+  - name: Services
+    icon: fas fa-wifi
+  - name: Home Assistant
+    icon: fas fa-home
+  - name: Backup and sync
+    icon: fas fa-hdd
+
+homer_apps:
+  - name: Youtube
+    category: Media
+    logo: assets/tools/youtube.svg
+    subtitle: ""
+    tag: url
+    url: https://youtube.com
+  - name: ESPHome
+    category: Devices
+    logo: assets/tools/esphome.png
+    subtitle: ""
+    tag: app
+    url: http://192.168.0.5:6052/
+  - name: Home Assistant Glow
+    category: Devices
+    logo: assets/tools/electric-meter.png
+    subtitle: ""
+    tag: app
+    url: http://192.168.0.233/
+  - name: Water meter
+    category: Devices
+    logo: assets/tools/water-meter.png
+    subtitle: Kitchen hot
+    tag: app
+    url: http://192.168.0.229/
+  - name: Water meter
+    category: Devices
+    logo: assets/tools/water-meter.png
+    subtitle: Kitchen cold
+    tag: app
+    url: http://192.168.0.228/
+  - name: Water meter
+    category: Devices
+    logo: assets/tools/water-meter.png
+    subtitle: Bathroom warm
+    tag: app
+    url: http://192.168.0.230/
+
+  - name: Keenetic router
+    category: Services
+    logo: assets/tools/wifi.png
+    subtitle: ""
+    tag: app
+    url: http://192.168.0.1
+  - name: AdGuardHome
+    category: Services
+    logo: assets/tools/adguardhome.png
+    subtitle: ""
+    tag: app
+    url: http://192.168.0.1:8181/
+  - name: Zigbee2MQTT
+    category: Services
+    logo: assets/tools/zigbee2mqtt.png
+    subtitle: ""
+    tag: app
+    url: http://192.168.0.1:8080/
+  - name: RTSPtoWEB
+    category: Services
+    logo: assets/tools/RTSPtoWEB.svg
+    subtitle: ""
+    tag: app
+    url: http://192.168.0.5:8083/
+  - name: Ip Table
+    category: Services
+    logo: assets/tools/ip.png
+    subtitle: ""
+    tag: web
+    url: https://docs.google.com/spreadsheets/d/1iHm01ehdf4iPwgbJXPKL2bOvgjLLD-_TzNcOQAJ1p_4/edit#gid=0
+
+  - name: Home Assistant
+    category: Home Assistant
+    logo: assets/tools/home-assistant.png
+    subtitle: ""
+    tag: app
+    url: https://192.168.0.6:8123/
+
+  - name: Syncthing
+    category: Backup and sync
+    logo: assets/tools/syncthing.png
+    subtitle: server-syncthing
+    tag: app
+    url: https://192.168.0.30:8384/
