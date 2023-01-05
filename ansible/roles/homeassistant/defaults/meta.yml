@@ -1,7 +1,7 @@
 container_name: homeassistant
-
-url: https://homeassistant.{{ host }}
-
-homer_category: smarthome
-
+homer_category: Home Assistant
 dashboard_name: Home Assistant
+logo: assets/tools/home-assistant.png
+subtitle: Main server
+tag: app
+url: https://homeassistant.{{ host }}

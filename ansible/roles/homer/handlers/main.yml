@@ -3,4 +3,4 @@
     name: homer
     state: started
     restart: true
-  when: enable_homer | default(false) and homer_exists is defined
+  when: enable_homer | default(false) and homer_exists is defined and homer_running is defined

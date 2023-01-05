@@ -26,6 +26,17 @@
     homer_running: true
   when: homer_exists is defined and homer_docker_status.container['State']['Running']
 
+- name: Copy assets
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ homer_config_dir }}"
+    mode: "{{ docker_compose_file_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+  loop:
+    - files/icons
+    - files/tools
+
 - name: Crate homer config
   ansible.builtin.template:
     src: templates/config.yml.j2

@@ -1,7 +1,7 @@
 container_name: deluge
-
-url: http://deluge.{{ host_local }}
-
-homer_category: media
-
+homer_category: Downloads
 dashboard_name: Deluge
+logo: assets/tools/deluge.png
+subtitle: Deluge
+tag: app
+url: http://deluge.{{ host_local }}

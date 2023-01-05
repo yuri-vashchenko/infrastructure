@@ -1,5 +1,7 @@
 container_name: nightscout
-
+homer_category: Health
+dashboard_name: Nightscout
+logo: assets/tools/nightscout.png
+subtitle: Yuri
+tag: app
 url: https://ns.{{ host }}
-
-homer_category: health

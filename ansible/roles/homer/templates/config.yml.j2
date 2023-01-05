@@ -76,24 +76,32 @@ colors:
 # First level array represent a group.
 # Leave only a "items" key if not using group (group name, icon & tagstyle are optional, section separation will not be displayed).
 services:
-{% for category in categories %}
-  - name: {{ category }}
+{% for category in homer_categories %}
+  - name: {{ category.name }}
+    icon: {{ category.icon }}
     items:
 {% for app in apps %}
-{% if apps[app].category == category %}
+{% if apps[app].category == category.name %}
       - name: {{ apps[app].name }}
+        logo: {{ apps[app].logo }}
+        subtitle: {{ apps[app].subtitle }}
+        tag: {{ apps[app].tag }}
         url: {{ apps[app].url }}
+        target: "_blank"
+{% endif %}
+{% endfor %}
+{% for app in homer_apps %}
+{% if app.category == category.name %}
+      - name: {{ app.name }}
+        logo: {{ app.logo }}
+        subtitle: {{ app.subtitle }}
+        tag: {{ app.tag }}
+        url: {{ app.url }}
         target: "_blank"
 {% endif %}
 {% endfor %}
 {% endfor %}
 
-# {% for app in apps %}
-#   - name: {{ apps[app].category }}
-#     items:
-#       - name: {{ apps[app].name }}
-#       - url: {{ apps[app].url }}
-# {% endfor %}
 #  - name: "Media"
 #    icon: "fas fa-cloud"
 #    items:

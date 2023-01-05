@@ -33,11 +33,14 @@
   ansible.builtin.set_fact:
     web_applications: >
       {{ web_applications | default({}) | combine({ item.path.split('/')[-1]: {
-        'logo': '/assets/tools/homer-icons/' + item.path.split('/')[-1] + '.png',
-        'ip_address': lookup('vars', item.path.split('/')[-1])['ip_address'] | default(''),
+        'category': lookup('vars', item.path.split('/')[-1])['homer_category'] | default (''),
         'name': lookup('vars', item.path.split('/')[-1])['dashboard_name'] | default(item.path.split('/')[-1] | title),
+        'logo': lookup('vars', item.path.split('/')[-1])['logo'] | default(''),
+        'subtitle': lookup('vars', item.path.split('/')[-1])['subtitle'] | default(''),
+        'tag': lookup('vars', item.path.split('/')[-1])['tag'] | default(''),
+        'ip_address': lookup('vars', item.path.split('/')[-1])['ip_address'] | default(''),
         'url' : lookup('vars', item.path.split('/')[-1])['url'] | default(''),
-        'category': lookup('vars', item.path.split('/')[-1])['homer_category'] | default ('') }}) }}
+         }}) }}
   loop: "{{ containers.files }}"
 
 - name: Print collected variables
