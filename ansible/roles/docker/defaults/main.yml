@@ -1,3 +1,4 @@
 docker_install_compose: true
 docker_create_user: true
 docker_create_networks: true
+docker_install_package: true

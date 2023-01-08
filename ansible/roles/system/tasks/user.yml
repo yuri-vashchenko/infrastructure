@@ -3,7 +3,7 @@
     name: "{{ user }}"
     password: "{{ ansible_become_pass | password_hash('sha512') }}"
     home: "{{ home }}"
-    comment: "{{ name }}"
+    comment: "{{ fullname }}"
     shell: /bin/bash
     system: true
   become: true

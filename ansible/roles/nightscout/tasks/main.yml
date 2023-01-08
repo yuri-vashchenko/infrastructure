@@ -14,10 +14,9 @@
 - name: Install Dockerfile
   ansible.builtin.template:
     src: files/Dockerfile.j2
-    dest: "{{ nightscout_install_dir }}/Dockerfile.yml"
+    dest: "{{ nightscout_install_dir }}/Dockerfile"
     mode: "{{ docker_compose_file_mask }}"
     owner: "{{ docker_user.name }}"
-    validate: docker-compose -f %s config
   notify: Restart nightscout
   become: true
 

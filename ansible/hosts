@@ -9,7 +9,7 @@ server-ns.local
 server-vpn.vashchenko.me
 
 [servers]
-# london.local
+london.local
 mainsrv.local
 server-main.local
 server-ns.local

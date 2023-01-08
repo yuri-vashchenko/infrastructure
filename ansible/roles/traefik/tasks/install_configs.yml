@@ -20,7 +20,7 @@
   with_fileglob:
     - files/*.j2
   notify:
-    - restart traefik
+    - Restart traefik
   register: traefik_config
   become: true
 
@@ -31,7 +31,7 @@
     mode: "{{ docker_compose_file_mask }}"
     owner: "{{ docker_user.name }}"
     group: "{{ docker_user.name }}"
-  notify: restart traefik
+  notify: Restart traefik
   become: true
 
 - name: Install file provider
@@ -41,7 +41,7 @@
     mode: "{{ docker_compose_file_mask }}"
     owner: "{{ docker_user.name }}"
     group: "{{ docker_user.name }}"
-  notify: restart traefik
+  notify: Restart traefik
   become: true
 
 - name: Logrotate config
@@ -69,7 +69,7 @@
     dest: "{{ traefik_install_dir }}/nginx.conf"
     mode: 0600
   when: not nginx_file.stat.exists
-  notify: restart traefik
+  notify: Restart traefik
   become: true
 
 - name: Force permissions for nginx.conf

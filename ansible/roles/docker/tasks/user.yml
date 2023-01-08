@@ -1,11 +1,24 @@
 - name: Create docker group
+  become: true
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Add user to group
+  become: true
+  ansible.builtin.user:
+    name: "{{ user }}"
+    groups: docker
+    append: true
+
+- name: Create docker_user group
   ansible.builtin.group:
     name: "{{ docker_user.name }}"
     state: present
     gid: "{{ docker_user.id }}"
   become: true
 
-- name: Create docker user
+- name: Create docker_user user
   ansible.builtin.user:
     name: "{{ docker_user.name }}"
     uid: "{{ docker_user.id }}"
@@ -19,3 +32,6 @@
     groups: "{{ docker_user.name }}"
     append: true
   become: true
+
+- name: Reset connection
+  ansible.builtin.meta: reset_connection                # <--- must do this if using pipelining

@@ -1,10 +1,14 @@
-- name: Docker compose
-  ansible.builtin.include_tasks: compose.yml
-  when: docker_install_compose | default(false)
-
 - name: Create user and group
   ansible.builtin.include_tasks: user.yml
   when: docker_create_user | default(false)
+
+- name: Install docker package
+  ansible.builtin.include_tasks: package.yml
+  when: docker_install_package | default(false)
+
+- name: Docker compose
+  ansible.builtin.include_tasks: compose.yml
+  when: docker_install_compose | default(false)
 
 - name: Create docker networks
   ansible.builtin.include_tasks: networks.yml

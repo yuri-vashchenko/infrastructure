@@ -4,7 +4,7 @@
     name: traefik
     state: present
   notify:
-    - restart traefik
+    - Restart traefik
 
 - name: Create docker proxy network
   when: enable_docker_proxy | default(false)
@@ -13,4 +13,4 @@
     state: present
     internal: true
   notify:
-    - restart docker proxy
+    - Restart docker proxy

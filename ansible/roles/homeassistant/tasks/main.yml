@@ -15,10 +15,16 @@
     name: "{{ item }}"
     state: present
   loop:
-    - qemu-kvm
-    - libvirt-daemon-system
-    - libvirt-clients
     - bridge-utils
+    - cpu-checker
+    - libvirt-clients
+    - libvirt-daemon-system
+    - libvirt-dev
+    - qemu
+    - qemu-kvm
+    - qemu-system-x86
+    - virt-manager
+    - virt-viewer
     - virtinst
 
 - name: Add users to groups

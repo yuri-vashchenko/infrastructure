@@ -26,7 +26,7 @@ create_docker_iot_network: true
 create_docker_dmz_network: true
 create_docker_home_lan_network: true
 
-enable_wifi: false
-enable_network_bridge: false
+enable_wifi: true
+enable_network_bridge: true
 wifi_cidr: "{{ server_main.wifi_ip }}/24"
 ethernet_cidr: "{{ server_main.ip }}/24"

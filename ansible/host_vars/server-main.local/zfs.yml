@@ -7,7 +7,7 @@ zfs_create_filesystems: true
 zfs_create_pools: true
 
 # Defines if ZFS volumes(s) are created
-zfs_create_volumes: false
+zfs_create_volumes: true
 zfs_debian_package_key: http://zfsonlinux.org/4D5843EA.asc
 zfs_debian_package_url: http://archive.zfsonlinux.org/debian/pool/main/z/zfsonlinux
 zfs_debian_package_version: 6
@@ -158,11 +158,9 @@ zfs_pools:
     # atime: 'on'
     compression: lz4  # on | off (default) | lzjb | gzip | gzip-1 | gzip-2 | gzip-3 | gzip-4 | gzip-5 | gzip-6 | gzip-7 | gzip-8 | gzip-9 | lz4 | zle
     devices:  # define devices to create pool with...can define multiple by | sdb sdc sdd sde sdf | all on one line w/spaces
+      - ata-2TB_AA000000000000001080-part1
       - ata-ST3000VN007-2E4166_Z7316T9M-part1
-      - ata-ST3000VN007-2E4166_Z7316T9M-part2
-      - ata-ST3000VN007-2E4166_Z7316T9M-part3
       - ata-WDC_WD20EFRX-68EUZN0_WD-WCC4MKJCDC35-part1
-      - ata-WDC_WD20EFRX-68EUZN0_WD-WCC4MKJCDC35-part2
     type: raidz  # define pool type... | basic (no-raid) | mirror | raidz | raidz2 | raidz3
     state: present
 

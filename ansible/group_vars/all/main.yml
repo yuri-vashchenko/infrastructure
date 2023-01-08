@@ -8,8 +8,8 @@ enable_deluge: false
 enable_docker: false
 enable_docker_cleanup: false
 enable_homeassistant: false
-enable_homer: true
-enable_nightscout: false
+enable_homer: false
+enable_nightscout: true
 enable_ntp: false
 enable_plex: false
 enable_restic: false
