@@ -9,7 +9,7 @@ enable_docker: false
 enable_docker_cleanup: false
 enable_homeassistant: false
 enable_homer: false
-enable_nightscout: true
+enable_nightscout: false
 enable_ntp: false
 enable_plex: false
 enable_restic: false

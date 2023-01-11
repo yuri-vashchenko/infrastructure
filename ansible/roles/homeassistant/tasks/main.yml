@@ -1,145 +1,22 @@
 - name: Include vault
   ansible.builtin.include_vars: vault.yml
 
-- name: Create homeassistant directories
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    mode: "{{ docker_compose_directory_mask }}"
-    owner: "{{ docker_user.name }}"
-    group: "{{ docker_user.name }}"
-  loop: "{{ homeassistant_dirs }}"
+- name: Create directories
+  ansible.builtin.include_tasks: directories.yml
+  when: create_directories | default(false)
 
-- name: Install dependencies
-  ansible.builtin.package:
-    name: "{{ item }}"
-    state: present
-  loop:
-    - bridge-utils
-    - cpu-checker
-    - libvirt-clients
-    - libvirt-daemon-system
-    - libvirt-dev
-    - qemu
-    - qemu-kvm
-    - qemu-system-x86
-    - virt-manager
-    - virt-viewer
-    - virtinst
+- name: Prepare kvm
+  ansible.builtin.include_tasks: kvm.yml
+  when: prepare_kvm | default(false)
 
-- name: Add users to groups
-  ansible.builtin.user:
-    name: "{{ item }}"
-    groups: kvm,libvirt
-    append: true
-  loop:
-    - "{{ user }}"
-    - "{{ docker_user.name }}"
+- name: Create network bridge
+  ansible.builtin.include_tasks: bridge.yml
+  when: create_bridge | default(false)
 
-- name: Create network bridge xml
-  ansible.builtin.template:
-    src: files/host-bridge.xml.j2
-    dest: "{{ hassos_host_vm_storage }}/host-bridge.xml"
-    mode: "{{ docker_compose_file_mask }}"
-    owner: "{{ docker_user.name }}"
-    group: "{{ docker_user.name }}"
+- name: Download hassio image
+  ansible.builtin.include_tasks: image.yml
+  when: download_image | default(false)
 
-- name: Check if image exists on system
-  ansible.builtin.stat:
-    path: "{{ hassos_host_vm_storage }}/{{ homeassistant_vm_name }}.qcow2"
-  register: hassos_image
-
-- name: Download hassos img archive
-  ansible.builtin.get_url:
-    url: "{{ hassos_vm_img_url }}"
-    dest: "{{ hassos_host_vm_storage }}/{{ homeassistant_vm_name }}.qcow2.xz"
-    mode: "{{ docker_compose_file_mask }}"
-    owner: "{{ docker_user.name }}"
-    group: "{{ docker_user.name }}"
-  when: not hassos_image.stat.exists
-
-- name: Uncompress hassos img archive
-  ansible.builtin.command:
-    cmd: /usr/bin/xz --uncompress {{ hassos_host_vm_storage }}/{{ homeassistant_vm_name }}.qcow2.xz
-    creates: "{{ hassos_host_vm_storage }}/{{ homeassistant_vm_name }}.qcow2"
-  when: not hassos_image.stat.exists
-
-- name: Get info on virtual machine
-  ansible.builtin.command:
-    cmd: virsh list --all
-  register: vminfo
-  changed_when: false
-
-- name: Get info on virtual networks
-  ansible.builtin.command:
-    cmd: virsh net-list --all
-  register: vm_net_info
-  changed_when: false
-
-- name: Check if vm exists
-  ansible.builtin.set_fact:
-    vm_exists: true
-  when: homeassistant_vm_name in vminfo.stdout
-
-- name: Disable netfilter for the bridge
-  ansible.builtin.copy:
-    src: files/bridge.conf
-    dest: /etc/sysctl.d/bridge.conf
-    mode: 0644
-
-- name: Check if qemu bridge network exists
-  ansible.builtin.set_fact:
-    vm_bridge_net_exists: true
-  when: vm_net_info.stdout_lines | regex_search("^.*host-bridge.*$")
-
-- name: Add bridge network
-  ansible.builtin.command:
-    cmd: virsh net-define --file {{ hassos_host_vm_storage }}/host-bridge.xml
-  when: vm_bridge_net_exists is not defined
-
-- name: Disable default network autostart
-  ansible.builtin.command:
-    cmd: virsh net-autostart --disable --network default
-  when: vm_net_info.stdout_lines | regex_search("^.*default\s*\w*\s*yes.*$")
-
-- name: Stop default network
-  ansible.builtin.command:
-    cmd: virsh net-destroy --network default
-  when: vm_net_info.stdout_lines | regex_search("^.*default\s*active.*$")
-
-- name: Enable bridge network autostart
-  ansible.builtin.command:
-    cmd: virsh net-autostart --network host-bridge
-  when: vm_net_info.stdout_lines | regex_search("^.*host-bridge\s*\w*\s*no.*$")
-
-- name: Start bridge network
-  ansible.builtin.command:
-    cmd: virsh net-start --network host-bridge
-  when: vm_net_info.stdout_lines | regex_search("^.*host-bridge.*inactive.*$")
-
-- name: Create virtual machine
-  ansible.builtin.command:
-    cmd: >-
-      virt-install --name {{ homeassistant_vm_name }} --description "Home Assistant OS"
-      --os-variant=generic --ram=2048 --vcpus=2
-      --disk {{ hassos_host_vm_storage }}/{{ homeassistant_vm_name }}.qcow2,bus=sata
-      --graphics none --boot uefi
-    creates: /var/lib/libvirt/qemu/nvram/{{ homeassistant_vm_name }}_VARS.fd
-  when: vm_exists is not defined
-
-- name: Dump vm xml
-  ansible.builtin.command:
-    cmd: virsh dumpxml {{ homeassistant_vm_name }}
-  register: vm_xml
-  changed_when: false
-
-- name: Find vm mac from xml
-  vars:
-    pattern: mac address='(.{17})'
-  ansible.builtin.set_fact:
-    vm_mac: "{{ vm_xml.stdout_lines | regex_search(pattern, '\\1') }}"
-
-- name: Autostart vm
-  ansible.builtin.command:
-    cmd: virsh autostart {{ homeassistant_vm_name }}
-  when: vminfo.stdout_lines | regex_search("shut off")
+- name: Create hassio virtual machine
+  ansible.builtin.include_tasks: vm.yml
+  when: create_vm | default(false)

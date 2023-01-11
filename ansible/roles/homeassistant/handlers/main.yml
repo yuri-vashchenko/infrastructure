@@ -1,1 +1,16 @@
-#
+- name: Regenerate grub configs
+  ansible.builtin.command:
+    cmd: "{{ item }}"
+  loop:
+    - grub-mkconfig -o /boot/grub/grub.cfg
+    - grub-mkconfig -o /boot/efi/EFI/ubuntu/grub.cfg
+  changed_when: true
+  notify: Reboot
+
+- name: Restart libvirtd
+  ansible.builtin.systemd:
+    service: libvirtd
+    state: restarted
+
+- name: Reboot
+  ansible.builtin.reboot:

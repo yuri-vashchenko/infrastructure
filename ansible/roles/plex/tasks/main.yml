@@ -8,17 +8,9 @@
     owner: "{{ docker_user.name }}"
     group: "{{ docker_user.name }}"
     mode: "{{ docker_compose_directory_mask }}"
-  loop: "{{ plex_dirs }}"
-  become: true
-
-- name: Create media directories
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    mode: "{{ docker_compose_directory_mask }}"
-    owner: nobody
-    group: nogroup
-  loop: "{{ plex_dirs }}"
+  loop:
+    - "{{ plex_dirs }}"
+    - "{{ plex_media_dirs }}"
   become: true
 
 - name: Get infos on the plex container

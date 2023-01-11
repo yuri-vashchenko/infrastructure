@@ -1,3 +1,9 @@
+create_bridge: false
+create_directories: false
+create_vm: true
+download_image: true
+prepare_kvm: false
+
 homeassistant_root_dir: "{{ app_data_dir }}/homeassistant"
 hassos_host_vm_storage: /opt/homeassistant/vm
 hassos_version: 9.4

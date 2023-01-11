@@ -1,0 +1,49 @@
+- name: Create network bridge xml
+  ansible.builtin.template:
+    src: files/host-bridge.xml.j2
+    dest: "{{ hassos_host_vm_storage }}/host-bridge.xml"
+    mode: "{{ docker_compose_file_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+
+- name: Disable netfilter for the bridge
+  ansible.builtin.copy:
+    src: files/bridge.conf
+    dest: /etc/sysctl.d/bridge.conf
+    mode: 0644
+
+- name: Get info on virtual networks
+  ansible.builtin.command:
+    cmd: virsh net-list --all
+  register: vm_net_info
+  changed_when: false
+
+- name: Check if qemu bridge network exists
+  ansible.builtin.set_fact:
+    vm_bridge_net_exists: true
+  when: vm_net_info.stdout_lines | regex_search("^.*host-bridge.*$")
+
+- name: Add bridge network
+  ansible.builtin.command:
+    cmd: virsh net-define --file {{ hassos_host_vm_storage }}/host-bridge.xml
+  when: vm_bridge_net_exists is not defined
+
+- name: Disable default network autostart
+  ansible.builtin.command:
+    cmd: virsh net-autostart --disable --network default
+  when: vm_net_info.stdout_lines | regex_search("^.*default\s*\w*\s*yes.*$")
+
+- name: Stop default network
+  ansible.builtin.command:
+    cmd: virsh net-destroy --network default
+  when: vm_net_info.stdout_lines | regex_search("^.*default\s*active.*$")
+
+- name: Enable bridge network autostart
+  ansible.builtin.command:
+    cmd: virsh net-autostart --network host-bridge
+  when: vm_net_info.stdout_lines | regex_search("^.*host-bridge\s*\w*\s*no.*$")
+
+- name: Start bridge network
+  ansible.builtin.command:
+    cmd: virsh net-start --network host-bridge
+  when: vm_net_info.stdout_lines | regex_search("^.*host-bridge.*inactive.*$")
