@@ -1,0 +1,75 @@
+- name: Install dependencies
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - bridge-utils
+    - cpu-checker
+    - libvirt-clients
+    - libvirt-daemon-system
+    - libvirt-dev
+    - qemu
+    - qemu-kvm
+    - qemu-system-x86
+    - virt-manager
+    - virt-viewer
+    - virtinst
+
+- name: Add users to groups
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: kvm,libvirt
+    append: true
+  loop:
+    - "{{ user }}"
+    - "{{ docker_user.name }}"
+
+- name: Modify grub config to disable virt-host-validate failures
+  ansible.builtin.lineinfile:
+    dest: /etc/default/grub
+    line: GRUB_CMDLINE_LINUX=""
+    state: absent
+
+- name: Modify grub config to disable virt-host-validate failures
+  ansible.builtin.lineinfile:
+    dest: /etc/default/grub
+    line: GRUB_CMDLINE_LINUX="rhgb quiet intel_iommu=on systemd.unified_cgroup_hierarchy=0"
+    state: present
+    insertafter: ^GRUB_CMDLINE_LINUX_DEFAULT=.*$
+  notify: Regenerate grub configs
+
+- name: Relax permissions in qemu.conf
+  ansible.builtin.lineinfile:
+    dest: /etc/libvirt/qemu.conf
+    line: "{{ item }}"
+    state: present
+  notify: Restart libvirtd
+  loop:
+    - security_driver = "none"
+    - namespaces = []
+
+- name: Relax permissions in libvirtd.conf
+  ansible.builtin.lineinfile:
+    dest: /etc/libvirt/libvirtd.conf
+    line: unix_sock_group = "libvirt"
+    state: present
+  notify: Restart libvirtd
+
+- name: Add user to related groups
+  ansible.builtin.user:
+    name: "{{ user }}"
+    groups:
+      - libvirt
+      - libvirt-qemu
+      - libvirt-dnsmasq
+    append: true
+
+- name: Update bashrc to set locale environment variables
+  ansible.builtin.lineinfile:
+    dest: "{{ home }}/.bashrc"
+    line: export LIBVIRT_DEFAULT_URI=qemu:///system
+    mode: "{{ docker_compose_directory_mask }}"
+    owner: "{{ user }}"
+    state: present
+    insertafter: EOF
+    create: true

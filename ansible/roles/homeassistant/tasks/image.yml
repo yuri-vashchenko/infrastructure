@@ -1,0 +1,19 @@
+- name: Check if image exists on system
+  ansible.builtin.stat:
+    path: "{{ hassos_host_vm_storage }}/{{ homeassistant_vm_name }}.qcow2"
+  register: hassos_image
+
+- name: Download hassos img archive
+  ansible.builtin.get_url:
+    url: "{{ hassos_vm_img_url }}"
+    dest: "{{ hassos_host_vm_storage }}/{{ homeassistant_vm_name }}.qcow2.xz"
+    mode: "{{ docker_compose_file_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+  when: not hassos_image.stat.exists
+
+- name: Uncompress hassos img archive
+  ansible.builtin.command:
+    cmd: /usr/bin/xz --uncompress {{ hassos_host_vm_storage }}/{{ homeassistant_vm_name }}.qcow2.xz
+    creates: "{{ hassos_host_vm_storage }}/{{ homeassistant_vm_name }}.qcow2"
+  when: not hassos_image.stat.exists

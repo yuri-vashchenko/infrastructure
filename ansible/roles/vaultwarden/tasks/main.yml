@@ -11,20 +11,46 @@
   loop: "{{ vaultwarden_dirs }}"
   become: true
 
-- name: Create install directory
-  ansible.builtin.file:
-    path: /opt/vaultwarden
-    state: directory
-    owner: "{{ docker_user.name }}"
-    mode: "{{ docker_compose_directory_mask }}"
-  become: true
-
-- name: Install compose file
-  ansible.builtin.template:
-    src: files/docker-compose.yml
-    dest: /opt/vaultwarden/docker-compose.yml
-    mode: "{{ docker_compose_file_mask }}"
-    owner: "{{ docker_user.name }}"
-    validate: docker-compose -f %s config
-  notify: Restart vaultwarden
-  become: true
+- name: Make sure the vaultwarden container is created and running
+  when: enable_vaultwarden | default(false)
+  community.docker.docker_container:
+    name: valutwarden
+    image: vaultwarden/server:latest
+    pull: true
+    env:
+      TZ: "{{ timezone }}"
+      SIGNUPS_ALLOWED: "true"
+      DOMAIN: https://vaultwarden.{{ host }}
+      SHOW_PASSWORD_HINT: "false"
+      INVITATIONS_ALLOWED: "true"
+      ROCKET_WORKERS: "{{ ansible_processor_nproc // 2 }}"
+      WEBSOCKET_ENABLED: "true"
+      ADMIN_TOKEN: "{{ vaultwarden_admin_token }}"
+      YUBICO_CLIENT_ID: "{{ vaultwarden_yubico_client_id }}"
+      YUBICO_SECRET_KEY: "{{ vaultwarden_yubico_secret_key }}"
+    networks:
+      - name: traefik
+    hostname: server-vaultwarden
+    state: started
+    volumes:
+      - "{{ vaultwarden_data_dir }}:/data/"
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: traefik
+      # routers // ui
+      traefik.http.routers.vaultwarden-ui.rule: Host(`vaultwarden.{{ host }}`)
+      traefik.http.routers.vaultwarden-ui.service: vaultwarden-ui
+      # routers // websocket
+      traefik.http.routers.vaultwarden-websocket.rule: Host(`vaultwarden.{{ host }}`) && Path(`/notifications/hub`)
+      traefik.http.routers.vaultwarden-websocket.service: vaultwarden-websocket
+      # services
+      traefik.http.services.vaultwarden-ui.loadbalancer.server.port: "80"
+      traefik.http.services.vaultwarden-websocket.loadbalancer.server.port: "3012"
+      # middlewares
+      traefik.http.middlewares.vaultwarden-ratelimit.ratelimit.average: "5"
+      traefik.http.middlewares.vaultwarden-ratelimit.ratelimit.burst: "1000"
+      traefik.http.middlewares.vaultwarden-compress.compress: "true"
+      # middlewares for routers
+      traefik.http.routers.vaultwarden-ui.middlewares: vaultwarden-ratelimit,vaultwarden-compress
+      traefik.http.routers.vaultwarden-websocket.middlewares: vaultwarden-ratelimit,vaultwarden-compress
+    restart_policy: unless-stopped

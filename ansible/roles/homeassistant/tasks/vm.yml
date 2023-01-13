@@ -1,0 +1,38 @@
+- name: Get info on virtual machine
+  ansible.builtin.command:
+    cmd: virsh list --all
+  register: vminfo
+  changed_when: false
+
+- name: Check if vm exists
+  ansible.builtin.set_fact:
+    vm_exists: true
+  when: homeassistant_vm_name in vminfo.stdout
+
+- name: Create virtual machine
+  ansible.builtin.command:
+    cmd: >-
+      virt-install --import --name {{ homeassistant_vm_name }} --description "Home Assistant OS"
+      --os-variant=generic --ram=2048 --vcpus=2
+      --disk {{ hassos_host_vm_storage }}/{{ homeassistant_vm_name }}.qcow2,bus=sata
+      --network bridge=br0
+      --graphics none --boot uefi
+    creates: /var/lib/libvirt/qemu/nvram/{{ homeassistant_vm_name }}_VARS.fd
+  when: vm_exists is not defined
+
+- name: Dump vm xml
+  ansible.builtin.command:
+    cmd: virsh dumpxml {{ homeassistant_vm_name }}
+  register: vm_xml
+  changed_when: false
+
+- name: Find vm mac from xml
+  vars:
+    pattern: mac address='(.{17})'
+  ansible.builtin.set_fact:
+    vm_mac: "{{ vm_xml.stdout_lines | regex_search(pattern, '\\1') }}"
+
+- name: Autostart vm
+  ansible.builtin.command:
+    cmd: virsh autostart {{ homeassistant_vm_name }}
+  when: vminfo.stdout_lines | regex_search("shut off")
