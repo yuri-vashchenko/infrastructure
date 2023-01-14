@@ -4,6 +4,9 @@
     upgrade: true
     autoremove: true
     update_cache: true
+    purge: true
+    autoclean: true
+    clean: true
   become: true
 
 - name: Check if reboot required
