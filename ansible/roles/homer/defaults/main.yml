@@ -100,3 +100,10 @@ homer_apps:
     subtitle: server-syncthing
     tag: app
     url: https://192.168.0.30:8384/
+
+  - name: Syncthing
+    category: Backup and sync
+    logo: assets/tools/syncthing.png
+    subtitle: server-main-syncthing
+    tag: app
+    url: http://server-main-syncthing.local

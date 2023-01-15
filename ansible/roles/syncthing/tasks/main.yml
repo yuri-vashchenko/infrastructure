@@ -1,3 +1,7 @@
+# - name: Include syncthing vars
+#   ansible.builtin.include_vars: syncthing.yml
+#   when: host_enable_syncthing | default(false)
+
 - name: Create directories
   ansible.builtin.file:
     path: "{{ item }}"
@@ -7,14 +11,37 @@
     group: "{{ docker_user.name }}"
   loop: "{{ syncthing_dirs }}"
   become: true
+  when: host_enable_syncthing | default(false)
 
-- name: Install compose file
-  ansible.builtin.template:
-    src: files/docker-compose.yml.j2
-    dest: "{{ syncthing_install_dir }}/docker-compose.yml"
-    mode: "{{ docker_compose_file_mask }}"
-    owner: "{{ docker_user.name }}"
-    group: "{{ docker_user.name }}"
-    validate: docker-compose -f %s config
-  notify: Restart syncthing
-  become: true
+- name: Make sure the syncthing container is created and running
+  when: host_enable_syncthing | default(false)
+  community.docker.docker_container:
+    name: syncthing
+    image: syncthing/syncthing:latest
+    pull: true
+    env:
+      TZ: "{{ timezone }}"
+      PUID: "{{ docker_user.id }}"
+      PGID: "{{ docker_user.id }}"
+    networks: "{{ host_syncthing_networks }}"
+    exposed_ports: "{{ host_syncthing_ports }}"
+    hostname: "{{ host_server_syncthing_hostname }}"
+    state: started
+    volumes:
+      - "{{ syncthing_data_dir }}:/var/syncthing"
+      - "{{ syncthing_backup_dir }}:/data"
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: traefik
+      # routers // ui
+      traefik.http.routers.syncthing-ui.rule: Host(`{{ host_syncthing_url }}`)
+      traefik.http.routers.syncthing-ui.service: syncthing-ui
+      # services
+      traefik.http.services.syncthing-ui.loadbalancer.server.port: "8384"
+      # middlewares
+      traefik.http.middlewares.syncthing-ui-ratelimit.ratelimit.average: "5"
+      traefik.http.middlewares.syncthing-ui-ratelimit.ratelimit.burst: "1000"
+      traefik.http.middlewares.syncthing-ui-compress.compress: "true"
+      # middlewares for routers
+      traefik.http.routers.syncthing-ui.middlewares: syncthing-ui-ratelimit,syncthing-ui-compress
+    restart_policy: unless-stopped

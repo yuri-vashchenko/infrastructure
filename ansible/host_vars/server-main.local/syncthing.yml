@@ -1,0 +1,10 @@
+host_enable_syncthing: true
+
+host_syncthing_networks:
+  - name: traefik
+
+host_syncthing_ports: []
+
+host_syncthing_url: server-main-syncthing.local
+
+host_server_syncthing_hostname: server-main-syncthing

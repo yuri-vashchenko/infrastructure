@@ -15,7 +15,7 @@ enable_plex: false
 enable_restic: false
 enable_syncthing: false
 enable_traefik: false
-enable_vaultwarden: true
+enable_vaultwarden: false
 enable_wireguard: false
 enable_zfs: false
 
