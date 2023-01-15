@@ -13,9 +13,10 @@ enable_nightscout: false
 enable_ntp: false
 enable_plex: false
 enable_restic: false
-enable_syncthing: true
+enable_syncthing: false
 enable_traefik: false
 enable_vaultwarden: false
+enable_vaultwarden_backup: false
 enable_wireguard: false
 enable_zfs: false
 

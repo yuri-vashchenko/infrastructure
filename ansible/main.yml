@@ -80,7 +80,7 @@
       when: enable_homeassistant | default(false)
     - role: vaultwarden
       tags: vaultwarden
-      when: enable_vaultwarden | default(false)
+      when: enable_vaultwarden | default(false) or enable_vaultwarden_backup | default(false)
     - role: restic
       tags: restic
       when: enable_restic | default(false)

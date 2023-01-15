@@ -1,3 +1,9 @@
 vaultwarden_data_dir: "{{ app_data_dir }}/vaultwarden"
 vaultwarden_dirs:
   - "{{ vaultwarden_data_dir }}"
+
+vaultwarden_backup_setup_dir: /opt/vaultwarden/backup
+vaultwarden_backup_dir: "{{ app_data_root }}/sync/vaultwarden"
+vaultwarden_backup_dirs:
+  - "{{ vaultwarden_data_dir }}"
+  - "{{ vaultwarden_backup_dir }}"

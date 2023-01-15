@@ -14,7 +14,7 @@
 - name: Make sure the vaultwarden container is created and running
   when: enable_vaultwarden | default(false)
   community.docker.docker_container:
-    name: valutwarden
+    name: vaultwarden
     image: vaultwarden/server:latest
     pull: true
     env:
@@ -53,4 +53,51 @@
       # middlewares for routers
       traefik.http.routers.vaultwarden-ui.middlewares: vaultwarden-ratelimit,vaultwarden-compress
       traefik.http.routers.vaultwarden-websocket.middlewares: vaultwarden-ratelimit,vaultwarden-compress
+    restart_policy: unless-stopped
+
+- name: Create vaultwarden backup directories
+  when: enable_vaultwarden_backup | default(false)
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "{{ docker_compose_directory_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+  loop: "{{ vaultwarden_backup_dirs }}"
+  become: true
+
+- name: Copy vaultwarden backup setup files
+  when: enable_vaultwarden_backup | default(false)
+  ansible.builtin.copy:
+    src: files/backup/
+    dest: "{{ vaultwarden_backup_setup_dir }}"
+    mode: "{{ docker_compose_directory_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+  become: true
+
+- name: Build vaultwarden backup image
+  when: enable_vaultwarden_backup | default(false)
+  community.docker.docker_image:
+    name: vaultwarden_backup
+    state: present
+    build:
+      path: "{{ vaultwarden_backup_setup_dir }}"
+    source: build
+
+- name: Create backup container
+  when: enable_vaultwarden_backup | default(false)
+  community.docker.docker_container:
+    name: vaultwarden_backup
+    image: vaultwarden_backup
+    state: started
+    env:
+      DELETE_AFTER: "30"
+      CRON_TIME: "* */24 * * *"  # Runs at 12:00 AM.
+      UID: "{{ docker_user.id }}"
+      GID: "{{ docker_user.id }}"
+    volumes:
+      - "{{ vaultwarden_data_dir }}:/data:ro"  # Read-only
+      - "{{ vaultwarden_backup_dir }}:/backups"
+      - /etc/localtime:/etc/localtime:ro  # Container uses date from host.
     restart_policy: unless-stopped
