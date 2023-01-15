@@ -16,7 +16,7 @@
     - system
 
 - hosts:
-    # - london.local
+    - london.local
     - mainsrv.local
     - server-main.local
     - server-ns.local
@@ -33,7 +33,7 @@
       become: true
 
 - hosts:
-    # - london.local
+    - london.local
     - mainsrv.local
     - server-main.local
     - server-ns.local
@@ -87,14 +87,17 @@
     - role: nightscout
       tags: nightscout
       when: enable_nightscout | default(false)
+    - role: syncthing
+      tags: syncthing
+      when: enable_syncthing | default(false)
 
-# - hosts:
-#     - london.local
-#   roles:
-#     - role: syncthing
-#       tags: syncthing
-#       become: true
-#       when: enable_syncthing | default(false)
+- hosts:
+    - london.local
+  roles:
+    - role: syncthing
+      tags: syncthing
+      become: true
+      when: enable_syncthing | default(false)
 
 - hosts:
     - server-vpn.vashchenko.me

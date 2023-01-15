@@ -1,0 +1,15 @@
+host_enable_syncthing: true
+
+host_syncthing_networks:
+  - name: home_lan
+    ipv4_address: "{{ syncthing.ip }}"
+
+host_syncthing_ports:
+  - 8384:8384
+  - 22000:22000/tcp
+  - 22000:22000/udp
+  - 21027:21027/udp
+
+host_syncthing_url: http://{{ syncthing.ip }}
+
+host_server_syncthing_hostname: server-london-syncthing
