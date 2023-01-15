@@ -27,17 +27,21 @@
     exposed_ports: "{{ host_syncthing_ports }}"
     hostname: "{{ host_server_syncthing_hostname }}"
     state: started
-    volumes:
-      - "{{ syncthing_data_dir }}:/var/syncthing"
-      - "{{ syncthing_backup_dir }}:/data"
+    volumes: "{{ host_syncthing_volumes }}"
     labels:
       traefik.enable: "true"
       traefik.docker.network: traefik
       # routers // ui
       traefik.http.routers.syncthing-ui.rule: Host(`{{ host_syncthing_url }}`)
       traefik.http.routers.syncthing-ui.service: syncthing-ui
+      traefik.http.routers.syncthing-sync.rule: Host(`{{ host_syncthing_url }}`)
+      traefik.http.routers.syncthing-sync.service: syncthing-sync
+      traefik.http.routers.syncthing-sync-udp.rule: Host(`{{ host_syncthing_url }}`)
+      traefik.http.routers.syncthing-sync-udp.service: syncthing-sync-udp
       # services
       traefik.http.services.syncthing-ui.loadbalancer.server.port: "8384"
+      traefik.http.services.syncthing-sync.loadbalancer.server.port: "22000/udp"
+      traefik.http.services.syncthing-sync-udp.loadbalancer.server.port: "21027/udp"
       # middlewares
       traefik.http.middlewares.syncthing-ui-ratelimit.ratelimit.average: "5"
       traefik.http.middlewares.syncthing-ui-ratelimit.ratelimit.burst: "1000"

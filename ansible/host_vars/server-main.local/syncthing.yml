@@ -8,3 +8,8 @@ host_syncthing_ports: []
 host_syncthing_url: server-main-syncthing.local
 
 host_server_syncthing_hostname: server-main-syncthing
+
+host_syncthing_volumes:
+  - "{{ syncthing_data_dir }}:/var/syncthing"
+  - "{{ syncthing_backup_dir }}:/data"
+  - "{{ media_dir }}/photos:/photos"
