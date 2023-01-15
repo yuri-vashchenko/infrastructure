@@ -1,4 +1,4 @@
-host_enable_syncthing: true
+host_enable_syncthing: false
 
 host_syncthing_networks:
   - name: home_lan
