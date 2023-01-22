@@ -1,8 +1,11 @@
 nightscout_version: 14.2.6
+nightscout_backup_dir: "{{ app_data_dir }}/nightscout/backup"
 nightscout_config_dir: "{{ app_data_dir }}/nightscout/config"
 nightscout_db_dir: "{{ database_dir }}/mongo/nightscout"
 nightscout_install_dir: /opt/nightscout
 nightscout_dirs:
+  - "{{ nightscout_backup_dir }}"
   - "{{ nightscout_config_dir }}"
   - "{{ nightscout_db_dir }}"
   - "{{ nightscout_install_dir }}"
+  - "{{ nightscout_install_dir }}/backup"

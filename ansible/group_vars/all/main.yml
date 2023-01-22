@@ -18,6 +18,6 @@ enable_traefik: false
 enable_vaultwarden: false
 enable_vaultwarden_backup: false
 enable_wireguard: false
-enable_zfs: true
+enable_zfs: false
 
 print_web_applications: false
