@@ -10,9 +10,9 @@
 - name: Snap
   ansible.builtin.include_tasks: remove_snap.yml
   when: remove_snap | default(false)
-- name: User
-  ansible.builtin.include_tasks: user.yml
-  when: create_user | default(false)
+- name: Users
+  ansible.builtin.include_tasks: users.yml
+  when: create_users | default(false)
 - name: SSH
   ansible.builtin.include_tasks: ssh.yml
   when: update_ssh | default(false)

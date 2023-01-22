@@ -1,3 +1,0 @@
-user: "{{ vault_username }}"
-home: /home/{{ user }}
-fullname: "{{ vault_userfullname }}"

@@ -3,9 +3,10 @@
 - name: Set Samba passwords for each user
   ansible.builtin.shell: |
     set -o pipefail
-    printf '{{ docker_user.password }}\n{{ docker_user.password }}\n' | smbpasswd -a {{ docker_user.name }}
+    printf '{{ item.password }}\n{{ item.password }}\n' | smbpasswd -a {{ item.name }}
   args:
     executable: /usr/bin/bash
+  loop: "{{ users }}"
   tags: smbpasswd
   become: true
   register: smbpasswd

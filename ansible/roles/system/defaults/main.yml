@@ -1,5 +1,5 @@
 install_netplan: false
-create_user: false
+create_users: false
 install_packages: false
 modify_barhrc: false
 remove_snap: false

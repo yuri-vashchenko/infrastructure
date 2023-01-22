@@ -1,0 +1,21 @@
+- name: Create groups
+  ansible.builtin.group:
+    name: "{{ item.1 }}"
+    state: present
+  with_subelements:
+    - "{{ users }}"
+    - groups
+  become: true
+
+- name: Create users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    password: "{{ item.password | password_hash('sha512') }}"
+    home: /home/{{ item.name }}
+    comment: "{{ item.fullname }}"
+    shell: "{{ item.shell | default('/bin/bash') }}"
+    append: true
+    groups: "{{ item.groups }}"
+    state: present
+  loop: "{{ users }}"
+  become: true
