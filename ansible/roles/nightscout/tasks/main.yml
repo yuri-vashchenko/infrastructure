@@ -11,6 +11,27 @@
   loop: "{{ nightscout_dirs }}"
   become: true
 
+- name: Install backup
+  ansible.builtin.template:
+    src: files/backup/Dockerfile.j2
+    dest: "{{ nightscout_install_dir }}/backup/Dockerfile"
+    mode: "{{ docker_compose_file_mask }}"
+    owner: "{{ docker_user.name }}"
+  notify: Restart nightscout
+  become: true
+
+- name: Install scripts
+  ansible.builtin.template:
+    src: files/backup/{{ item }}
+    dest: "{{ nightscout_install_dir }}/backup/{{ item }}"
+    mode: "0755"
+    owner: "{{ docker_user.name }}"
+  loop:
+    - entrypoint.sh
+    - script.sh
+  notify: Restart nightscout
+  become: true
+
 - name: Install Dockerfile
   ansible.builtin.template:
     src: files/Dockerfile.j2
@@ -26,6 +47,5 @@
     dest: "{{ nightscout_install_dir }}/docker-compose.yml"
     mode: "{{ docker_compose_file_mask }}"
     owner: "{{ docker_user.name }}"
-    validate: docker-compose -f %s config
   notify: Restart nightscout
   become: true

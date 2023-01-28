@@ -1,5 +1,11 @@
-- name: Install docker-compose
+- name: Remove docker-compose
   ansible.builtin.package:
     name: docker-compose
+    state: absent
+  become: true
+
+- name: Install docker compose plugin
+  ansible.builtin.package:
+    name: docker-compose-plugin
     state: present
   become: true

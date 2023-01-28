@@ -169,6 +169,22 @@ services:
     networks:
       - traefik
 
+  backup:
+    build:
+      context: ./backup
+      dockerfile: Dockerfile
+    volumes:
+      - /etc/localtime:/etc/localtime:ro  # Container uses date from host.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - {{ nightscout_backup_dir }}:/backups
+      - {{ nightscout_db_dir }}:/data
+    environment:
+      - DELETE_AFTER="30"
+      - CRON_TIME="* */24 * * *"  # Runs at 12:00 AM.
+      - UID="{{ docker_user.id }}"
+      - GID="{{ docker_user.id }}"
+    restart: unless-stopped
+
 networks:
   traefik:
     external: true
