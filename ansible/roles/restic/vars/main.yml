@@ -1,10 +1,10 @@
-rclone_version: 1.59.2
-restic_version: 0.14.0
-overlay_version: v2.2.0.3
+rclone_version: 1.61.1
+restic_version: 0.15.0
+overlay_version: v3.1.3.0
 
 restic_architecture: "{% if ansible_architecture == 'armv7l' %}arm{% else %}amd64{% endif %}"
 rclone_architecture: "{% if ansible_architecture == 'armv7l' %}arm-v7{% else %}amd64{% endif %}"
-overlay_architecture: "{% if ansible_architecture == 'armv7l' %}armhf{% else %}amd64{% endif %}"
+overlay_architecture: "{% if ansible_architecture == 'armv7l' %}armhf{% else %}x86_64{% endif %}"
 
 restic_cron: 0 2 * * *
 restic_repository: rest:http://0.0.0.0:8080/
