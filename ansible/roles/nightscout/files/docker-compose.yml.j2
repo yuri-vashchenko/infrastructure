@@ -179,10 +179,10 @@ services:
       - {{ nightscout_backup_dir }}:/backups
       - {{ nightscout_db_dir }}:/data
     environment:
-      - DELETE_AFTER="30"
-      - CRON_TIME="* */24 * * *"  # Runs at 12:00 AM.
-      - UID="{{ docker_user.id }}"
-      - GID="{{ docker_user.id }}"
+      - DELETE_AFTER=30
+      - CRON_TIME=34 02 * * *  # Runs at 02:34:00 every day
+      - UID={{ docker_user.id }}
+      - GID={{ docker_user.id }}
     restart: unless-stopped
 
 networks:
