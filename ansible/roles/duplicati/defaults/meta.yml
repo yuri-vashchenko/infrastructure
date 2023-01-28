@@ -1,7 +1,7 @@
 container_name: duplicati
-homer_category: Backup
+homer_category: Backup and sync
 dashboard_name: duplicati
 logo: assets/tools/duplicati.png
-subtitle: Duplicati
+subtitle: Duplicati on server-main
 tag: app
 url: http://duplicati.{{ host_local }}
