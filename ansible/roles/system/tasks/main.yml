@@ -22,3 +22,6 @@
 - name: Set locale
   ansible.builtin.include_tasks: locale.yml
   when: set_locale | default(false)
+- name: Mount volumes
+  ansible.builtin.include_tasks: mount.yml
+  when: do_mount | default(false)
