@@ -1,0 +1,7 @@
+container_name: duplicati
+homer_category: Backup
+dashboard_name: duplicati
+logo: assets/tools/duplicati.png
+subtitle: Duplicati
+tag: app
+url: http://duplicati.{{ host_local }}

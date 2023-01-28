@@ -1,11 +1,12 @@
-install_netplan: false
 create_users: false
+do_mount: false
+install_netplan: false
 install_packages: false
 modify_barhrc: false
 remove_snap: false
+set_locale: false
 update_packages: false
 update_ssh: false
-set_locale: false
 
 packages_to_install:
   - speedtest-cli

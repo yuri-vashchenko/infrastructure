@@ -1,0 +1,6 @@
+- name: Restart duplicati
+  community.docker.docker_container:
+    name: "{{ container_name }}"
+    state: started
+    restart: true
+  when: enable_duplicati | default(false) and duplicati_exists is defined and duplicati_running is defined

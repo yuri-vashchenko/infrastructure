@@ -1,0 +1,65 @@
+- name: Include variables
+  ansible.builtin.include_vars:
+    file: defaults/meta.yml
+
+- name: Create duplicati directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "{{ docker_compose_directory_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+  loop: "{{ duplicati_dirs }}"
+  become: true
+
+- name: Get info on the container {{ container_name }}
+  community.docker.docker_container_info:
+    name: "{{ container_name }}"
+  register: duplicati_docker_status
+
+- name: Does duplicati container exist?
+  ansible.builtin.set_fact:
+    duplicati_exists: true
+  when: duplicati_docker_status.exists
+
+- name: Is duplicati container running?
+  ansible.builtin.set_fact:
+    duplicati_running: true
+  when: duplicati_exists is defined and duplicati_docker_status.container['State']['Running']
+
+- name: Make sure the duplicati container is created and running
+  when: enable_duplicati | default(false)
+  community.docker.docker_container:
+    name: "{{ container_name }}"
+    image: linuxserver/duplicati:{{ duplicati_version }}
+    volumes:
+      - "{{ duplicati_backup_dir }}:/backups"
+      - "{{ duplicati_config_dir }}:/config"
+      - "{{ duplicati_source_dir }}:/source"
+
+    env:
+      PUID: "3000"
+      PGID: "3000"
+      TZ: "{{ timezone }}"
+      UMASK_SET: "002"
+    networks:
+      - name: traefik
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: traefik
+      # routers
+      traefik.http.routers.duplicati-web.rule: Host(`{{ container_name }}.local`)
+      traefik.http.routers.duplicati-web.service: duplicati-ui
+      traefik.http.routers.duplicati-web.entrypoints: web
+      traefik.http.routers.duplicati-web.priority: "2000"
+      # services
+      traefik.http.services.duplicati-ui.loadbalancer.server.port: "{{ duplicati.port }}"
+      # middlewares
+      traefik.http.middlewares.duplicati-ratelimit.ratelimit.average: "5"
+      traefik.http.middlewares.duplicati-ratelimit.ratelimit.burst: "1000"
+      traefik.http.middlewares.duplicati-compress.compress: "true"
+      # middlewares for routers
+      traefik.http.routers.duplicati-web.middlewares: duplicati-ratelimit,duplicati-compress
+    hostname: server-duplicati
+    state: started
+    restart_policy: unless-stopped

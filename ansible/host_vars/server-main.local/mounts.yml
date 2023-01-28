@@ -1,0 +1,3 @@
+mounts:
+  - volume: ID=ata-ST3000VN007-2E4166_Z7316T9M-part2
+    path: /mnt/backups

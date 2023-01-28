@@ -7,6 +7,7 @@ wifi_password: "{{ vault_wifi_password }}"
 enable_deluge: false
 enable_docker: false
 enable_docker_cleanup: false
+enable_duplicati: false
 enable_homeassistant: false
 enable_homer: false
 enable_nightscout: false

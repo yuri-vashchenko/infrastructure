@@ -1,0 +1,9 @@
+duplicati_backup_dir: /mnt/backups
+duplicati_config_dir: "{{ app_data_dir }}/duplicati/config"
+duplicati_source_dir: "{{ app_data_root }}/sync"
+duplicati_dirs:
+  - "{{ duplicati_backup_dir }}"
+  - "{{ duplicati_config_dir }}"
+  - "{{ duplicati_source_dir }}"
+
+duplicati_version: latest

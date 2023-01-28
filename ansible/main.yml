@@ -90,6 +90,9 @@
     - role: syncthing
       tags: syncthing
       when: enable_syncthing | default(false)
+    - role: duplicati
+      tags: duplicati
+      when: enable_duplicati | default(false)
 
 - hosts:
     - london.local
