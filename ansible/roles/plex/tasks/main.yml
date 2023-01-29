@@ -32,13 +32,14 @@
   when: enable_plex | default(false)
   community.docker.docker_container:
     name: plex
-    image: plexinc/pms-docker
+    image: lscr.io/linuxserver/plex:{{ plex_version }}
     pull: true
     env:
-      PLEX_UID: "3000"
-      PLEX_GID: "3000"
+      PUID: "3000"
+      PGID: "3000"
       TZ: "{{ timezone }}"
       PLEX_CLAIM: "{{ plex_claim }}"
+      VERSION: docker
     networks:
       - name: traefik
       - name: home_lan
@@ -52,4 +53,6 @@
       - "{{ plex_movies_dir }}:/movies"
       - "{{ plex_music_dir }}:/music"
       - "{{ plex_photos_dir }}:/photos"
+    devices:
+      - /dev/dri:/dev/dri
     restart_policy: unless-stopped
