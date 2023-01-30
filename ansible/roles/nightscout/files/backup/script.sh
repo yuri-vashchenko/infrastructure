@@ -11,7 +11,7 @@ BACKUP_FILENAME="${BACKUPS_DIR}/$(date +"%F_%H-%M-%S").${EXTENSION}"
 # ------------------ [ BACKUP ] ------------------
 
 # cleanup
-rm -rf BACKUP_TO_DIR/*
+rm -rf ${BACKUP_TO_DIR}/*
 # Back up database.
 docker exec nightscout_mongo_1 mongodump --out "${BACKUP_TO_DIR}"
 
