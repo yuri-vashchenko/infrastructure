@@ -22,3 +22,5 @@ enable_wireguard: false
 enable_zfs: false
 
 print_web_applications: false
+
+home: /home/{{ user.name }}

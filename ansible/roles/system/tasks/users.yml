@@ -1,3 +1,49 @@
+- name: Make sure we have a 'wheel' group
+  ansible.builtin.group:
+    name: wheel
+    state: present
+  become: true
+  when: ansible_os_family == 'Alpine'
+
+- name: Make sure we have a 'sudo' group
+  ansible.builtin.group:
+    name: sudo
+    state: present
+  become: true
+  when: ansible_os_family == 'Debian'
+
+- name: Setup passwordless sudo
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: ^%sudo
+    line: "%sudo ALL=(ALL) NOPASSWD: ALL"
+    validate: /usr/sbin/visudo -cf %s
+  become: true
+  when: ansible_os_family == 'Debian'
+
+- name: Allow 'wheel' group to have passwordless sudo
+  ansible.builtin.lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: ^%wheel
+    line: "%wheel ALL=(ALL) NOPASSWD: ALL"
+    validate: visudo -cf %s
+  become: true
+  when: ansible_os_family == 'Alpine'
+
+- name: Create user
+  ansible.builtin.user:
+    name: "{{ user.name }}"
+    password: "{{ user.password | password_hash('sha512') }}"
+    home: /home/{{ user.name }}
+    comment: "{{ user.fullname }}"
+    shell: "{{ user.shell | default('/bin/bash') }}"
+    append: true
+    groups: "{{ 'sudo' if ansible_os_family == 'Debian' else 'wheel' }}"
+    state: present
+  become: true
+
 - name: Create groups
   ansible.builtin.group:
     name: "{{ item.1 }}"

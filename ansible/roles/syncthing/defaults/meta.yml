@@ -1,6 +1,1 @@
 container_name: syncthing
-homer_category: Backup and sync
-logo: assets/tools/syncthing.png
-subtitle: Backup
-tag: app
-url: http://syncthing.{{ host_local }}

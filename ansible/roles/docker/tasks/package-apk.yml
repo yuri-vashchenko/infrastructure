@@ -1,0 +1,37 @@
+##### setup docker
+- name: Install Docker
+  become: true
+  ansible.builtin.package:
+    update_cache: true
+    state: present
+    name:
+      - docker
+      - py3-pip
+
+- name: Install 'Docker SDK for Python'
+  ansible.builtin.pip:
+    name:
+      - setuptools
+      - docker
+    state: present
+  become: true
+
+- name: Start docker service
+  ansible.builtin.service:
+    name: cgroups
+    enabled: true
+    state: started
+  become: true
+
+- name: Start docker service
+  ansible.builtin.service:
+    name: docker
+    enabled: true
+    state: started
+  become: true
+
+- name: Autostart docker service on boot
+  ansible.builtin.command:
+    cmd: rc-update add docker default
+  register: add_service_result
+  changed_when: add_service_result.stdout.find("service docker added to runlevel default") > 0

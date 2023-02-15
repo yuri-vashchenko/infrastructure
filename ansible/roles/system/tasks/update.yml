@@ -9,6 +9,13 @@
     clean: true
   become: true
 
+- name: Update and upgrade apt packages (Alpine)
+  when: ansible_os_family == 'Alpine'
+  community.general.apk:
+    upgrade: true
+    update_cache: true
+  become: true
+
 - name: Check if reboot required
   ansible.builtin.stat:
     path: /var/run/reboot-required

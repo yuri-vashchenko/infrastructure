@@ -9,6 +9,7 @@ update_packages: false
 update_ssh: false
 
 packages_to_install:
+  - tzdata
   - speedtest-cli
   - htop
   - git
@@ -18,7 +19,7 @@ packages_to_install:
   - sudo
   - fish
 
-ssh_extra_allowed_users: "{{ user }}"
+ssh_extra_allowed_users: "{{ user.name }}"
 
 config_system_locale: ru_RU.UTF-8
 config_system_language: en_US.UTF-8

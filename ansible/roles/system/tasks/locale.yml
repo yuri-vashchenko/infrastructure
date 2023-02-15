@@ -29,6 +29,7 @@
   changed_when: locale_lang != config_system_locale or locale_language != config_system_language
 
 - name: Update bashrc to set locale environment variables
+  when: ansible_os_family == 'Debian'
   ansible.builtin.lineinfile:
     dest: "{{ home }}/.bashrc"
     line: "{{ item }}"

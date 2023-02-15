@@ -1,2 +1,5 @@
-wireguard_server_cidr: 10.3.0.1/24
-wireguard_server_port: 51820
+wireguard_config_dir: /opt/wireguard/config
+wireguard_dirs:
+  - "{{ wireguard_config_dir }}"
+
+wireguard_version: latest

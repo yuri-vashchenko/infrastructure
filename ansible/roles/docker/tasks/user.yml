@@ -7,7 +7,7 @@
 - name: Add user to group
   become: true
   ansible.builtin.user:
-    name: "{{ user }}"
+    name: "{{ user.name }}"
     groups: docker
     append: true
 
@@ -28,7 +28,7 @@
 
 - name: Add user to docker user group
   ansible.builtin.user:
-    name: "{{ user }}"
+    name: "{{ user.name }}"
     groups: "{{ docker_user.name }}"
     append: true
   become: true

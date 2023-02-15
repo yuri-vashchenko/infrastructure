@@ -1,7 +1,3 @@
-# - name: Include syncthing vars
-#   ansible.builtin.include_vars: syncthing.yml
-#   when: host_enable_syncthing | default(false)
-
 - name: Create directories
   ansible.builtin.file:
     path: "{{ item }}"
@@ -17,14 +13,14 @@
   when: host_enable_syncthing | default(false)
   community.docker.docker_container:
     name: syncthing
-    image: syncthing/syncthing:latest
+    image: lscr.io/linuxserver/syncthing:{{ syncthing_version }}
     pull: true
     env:
       TZ: "{{ timezone }}"
       PUID: "{{ docker_user.id }}"
       PGID: "{{ docker_user.id }}"
-    networks: "{{ host_syncthing_networks }}"
-    exposed_ports: "{{ host_syncthing_ports }}"
+    networks: "{{ host_syncthing_networks | default([{}]) }}"
+    exposed_ports: "{{ host_syncthing_ports | default([]) }}"
     hostname: "{{ host_server_syncthing_hostname }}"
     state: started
     volumes: "{{ host_syncthing_volumes }}"

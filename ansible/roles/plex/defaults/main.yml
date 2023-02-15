@@ -13,3 +13,5 @@ plex_media_dirs:
   - "{{ plex_movies_dir }}"
   - "{{ plex_music_dir }}"
   - "{{ plex_photos_dir }}"
+
+plex_version: latest

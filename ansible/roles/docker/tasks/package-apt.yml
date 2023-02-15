@@ -1,7 +1,7 @@
 ##### setup docker
 - name: Install packages required by docker
   become: true
-  ansible.builtin.apt:
+  ansible.builtin.package:
     update_cache: true
     state: present
     name:

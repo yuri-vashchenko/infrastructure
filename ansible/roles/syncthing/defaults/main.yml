@@ -3,3 +3,5 @@ syncthing_backup_dir: "{{ app_data_root }}/sync"
 syncthing_dirs:
   - "{{ syncthing_data_dir }}"
   - "{{ syncthing_backup_dir }}"
+
+syncthing_version: latest

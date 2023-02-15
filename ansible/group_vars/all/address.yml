@@ -1,37 +1,37 @@
 # servers
 london:
-    ip: 192.168.0.20
+  ip: 192.168.0.20
 mainsrv:
-    ip: 192.168.0.10
+  ip: 192.168.0.10
 server_main:
-    ip: 192.168.0.34
-    wifi_ip: 192.168.0.35
+  ip: 192.168.0.34
+  wifi_ip: 192.168.0.35
 server_ns:
-    ip: 192.168.0.8
+  ip: 192.168.0.8
 server_test:
-    ip: 192.168.0.6
+  ip: 192.168.0.6
 
 # services
 homeassistant:
-    ip: 192.168.0.5
+  ip: 192.168.0.5
 ha:
-    ip: 192.168.0.7
-    port: 8123
+  ip: 192.168.0.7
+  port: 8123
 nightscout:
-    ip: 192.168.0.8
+  ip: 192.168.0.8
 plex:
-    ip: 192.168.0.11
+  ip: 192.168.0.11
 homer:
-    ip: 192.168.0.12
-    port: 8080
+  ip: 192.168.0.12
+  port: 8080
 deluge:
-    ip: 192.168.0.15
-    port: 8112
+  ip: 192.168.0.15
+  port: 8112
 duplicati:
-    ip: 192.168.0.16
-    port: 8200
+  ip: 192.168.0.16
+  port: 8200
 syncthing:
-    ip: 192.168.0.30
+  ip: 192.168.0.30
 
 plex_ip: 192.168.0.11
 homeassistant_ip: 192.168.0.5
