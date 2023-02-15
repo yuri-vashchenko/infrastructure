@@ -11,7 +11,7 @@
 
 - name: Check port 22 with ssh key
   ansible.builtin.command: >
-    ssh -o User={{ user }} -o ConnectTimeout=5 -o PreferredAuthentications=publickey -o PubkeyAuthentication=yes {{ inventory_hostname }} echo "Worked"
+    ssh -o User={{ user.name }} -o ConnectTimeout=5 -o PreferredAuthentications=publickey -o PubkeyAuthentication=yes {{ inventory_hostname }} echo "Worked"
   delegate_to: localhost
   ignore_errors: true
   register: ssh_port_22_with_key_works
@@ -19,8 +19,8 @@
     - ssh_port_works is defined
     - ssh_port_works is failed
 
-- name: Check port 22 with User={{ user }}
-  ansible.builtin.command: sshpass -p{{ ansible_become_pass }} ssh -o User={{ user }} \
+- name: Check port 22 with User={{ user.name }}
+  ansible.builtin.command: sshpass -p{{ ansible_become_pass }} ssh -o User={{ user.name }} \
                -o ConnectTimeout=5 -o PreferredAuthentications=password -o PubkeyAuthentication=no {{ inventory_hostname }} echo "Worked"
   delegate_to: localhost
   ignore_errors: true
