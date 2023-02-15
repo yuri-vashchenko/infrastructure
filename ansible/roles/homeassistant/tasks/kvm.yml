@@ -65,6 +65,7 @@
     append: true
 
 - name: Update bashrc to set locale environment variables
+  when: ansible_os_family == 'Debian'
   ansible.builtin.lineinfile:
     dest: "{{ home }}/.bashrc"
     line: export LIBVIRT_DEFAULT_URI=qemu:///system
