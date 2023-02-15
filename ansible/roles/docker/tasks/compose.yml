@@ -3,9 +3,18 @@
     name: docker-compose
     state: absent
   become: true
+  when: ansible_os_family == 'Debian'
 
 - name: Install docker compose plugin
   ansible.builtin.package:
     name: docker-compose-plugin
     state: present
   become: true
+  when: ansible_os_family == 'Debian'
+
+- name: Install docker compose (Alpine)
+  ansible.builtin.package:
+    name: docker-compose
+    state: present
+  become: true
+  when: ansible_os_family == 'Alpine'

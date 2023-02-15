@@ -2,9 +2,13 @@
   ansible.builtin.include_tasks: user.yml
   when: docker_create_user | default(false)
 
-- name: Install docker package
-  ansible.builtin.include_tasks: package.yml
-  when: docker_install_package | default(false)
+- name: Install docker package (apt)
+  ansible.builtin.include_tasks: package-apt.yml
+  when: ansible_os_family == 'Debian' and docker_install_package | default(false)
+
+- name: Install docker package (apk)
+  ansible.builtin.include_tasks: package-apk.yml
+  when: ansible_os_family == 'Alpine' and docker_install_package | default(false)
 
 - name: Docker compose
   ansible.builtin.include_tasks: compose.yml
