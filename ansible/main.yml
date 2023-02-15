@@ -1,21 +1,26 @@
-- hosts: localhost
+- name: Do list services
+  hosts: localhost
   gather_facts: false
   pre_tasks:
-    - import_tasks: tasks/list_services.yml
+    - name: Run list services
+      ansible.builtin.import_tasks: tasks/list_services.yml
       tags:
         - list_services
 
-- hosts: servers
+- name: Setup ssh port and user
+  hosts: servers
   gather_facts: false
   tasks:
     - name: Detect ssh port and check first run user
-      include_tasks: roles/system/tasks/ssh_port_and_user.yml
+      ansible.builtin.include_tasks: roles/system/tasks/ssh_port_and_user.yml
 
-- hosts: servers
+- name: Common system role
+  hosts: servers
   roles:
     - system
 
-- hosts:
+- name: Install docker and docker cleanup
+  hosts:
     - london.local
     - mainsrv.local
     - server-main.local
@@ -29,10 +34,11 @@
       when: enable_docker | default(false)
     - role: aklinkert.docker_cleanup
       tags: docker_cleanup
-      when: enable_docker_cleanup | default(false)
+      when: ansible_os_family == 'Debian' and enable_docker_cleanup | default(false)
       become: true
 
-- hosts:
+- name: Install ntp
+  hosts:
     - london.local
     - mainsrv.local
     - server-main.local
@@ -47,7 +53,8 @@
         ntp_manage_config: true
       when: enable_ntp | default(false)
 
-- hosts:
+- name: Server main specific tasks
+  hosts:
     - server-main.local
   roles:
     - role: ansible-zfs
@@ -94,7 +101,8 @@
       tags: duplicati
       when: enable_duplicati | default(false)
 
-- hosts:
+- name: Server london specific tasks
+  hosts:
     - london.local
   roles:
     - role: syncthing
@@ -102,7 +110,8 @@
       become: true
       when: enable_syncthing | default(false)
 
-- hosts:
+- name: Servier vpn specific tasks
+  hosts:
     - server-vpn.vashchenko.me
   roles:
     - role: wireguard
