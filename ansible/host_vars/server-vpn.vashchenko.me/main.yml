@@ -12,3 +12,11 @@ media_root: /mnt/storage
 create_docker_iot_network: false
 create_docker_dmz_network: false
 create_docker_home_lan_network: false
+
+host_enable_wireguard: true
+
+host_wireguard_server_url: "{{ vault_host_wireguard_server_url }}"
+host_wireguard_server_port: "{{ vault_host_wireguard_server_port }}"
+host_wireguard_hostname: server-wireguard
+
+host_wireguard_peers: am1,am2,ap1,ap2,em1,em2,ep1,ep2,mm1,mm2,mp1,mp2,sm1,sm2,sp1,sp2,ym1,ym2,yp1,yp2,hr1,hr2
