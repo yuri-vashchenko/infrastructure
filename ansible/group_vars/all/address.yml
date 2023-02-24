@@ -32,6 +32,8 @@ duplicati:
   port: 8200
 syncthing:
   ip: 192.168.0.30
+gotify:
+  port: 80
 
 plex_ip: 192.168.0.11
 homeassistant_ip: 192.168.0.5

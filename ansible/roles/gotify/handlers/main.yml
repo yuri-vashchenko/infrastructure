@@ -1,0 +1,6 @@
+- name: Restart gotify
+  community.docker.docker_container:
+    name: "{{ container_name }}"
+    state: started
+    restart: true
+  when: enable_gotify | default(false) and gotify_exists is defined and gotify_running is defined

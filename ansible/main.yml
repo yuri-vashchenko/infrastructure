@@ -100,6 +100,9 @@
     - role: duplicati
       tags: duplicati
       when: enable_duplicati | default(false)
+    - role: gotify
+      tags: gotify
+      when: enable_gotify | default(false)
     - role: watchtower
       tags: watchtower
       when: enable_watchtower | default(false)
