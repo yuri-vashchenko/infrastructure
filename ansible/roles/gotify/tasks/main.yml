@@ -1,0 +1,70 @@
+- name: Include vault
+  ansible.builtin.include_vars: vault.yml
+
+- name: Include variables
+  ansible.builtin.include_vars:
+    file: defaults/meta.yml
+
+- name: Create gotify directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "{{ docker_compose_directory_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+  loop: "{{ gotify_dirs }}"
+  become: true
+
+- name: Get info on the container {{ container_name }}
+  community.docker.docker_container_info:
+    name: "{{ container_name }}"
+  register: gotify_docker_status
+
+- name: Does gotify container exist?
+  ansible.builtin.set_fact:
+    gotify_exists: true
+  when: gotify_docker_status.exists
+
+- name: Is docker container running?
+  ansible.builtin.set_fact:
+    gotify_running: true
+  when: gotify_exists is defined and gotify_docker_status.container['State']['Running']
+
+- name: Make sure the gotify container is created and running
+  when: enable_gotify | default(false)
+  community.docker.docker_container:
+    name: "{{ container_name }}"
+    image: gotify/server:{{ gotify_version }}
+    volumes:
+      - "{{ gotify_data_dir }}:/app/data"
+    env:
+      PUID: "3000"
+      PGID: "3000"
+      TZ: "{{ timezone }}"
+      UMASK_SET: "002"
+      GOTIFY_DEFAULTUSER_NAME: "{{ user.name }}"
+      GOTIFY_DEFAULTUSER_PASS: "{{ gotify_password }}"
+    networks:
+      - name: traefik
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: traefik
+      # routers
+      traefik.http.routers.gotify-web.rule: Host(`{{ container_name }}.local`)
+      traefik.http.routers.gotify-web.service: gotify-ui
+      traefik.http.routers.gotify-web.entrypoints: web
+      traefik.http.routers.gotify-web.priority: "2000"
+      # services
+      traefik.http.services.gotify-ui.loadbalancer.server.port: "{{ gotify.port }}"
+      # middlewares
+      traefik.http.middlewares.gotify-ratelimit.ratelimit.average: "5"
+      traefik.http.middlewares.gotify-ratelimit.ratelimit.burst: "1000"
+      traefik.http.middlewares.gotify-compress.compress: "true"
+      # middlewares for routers
+      traefik.http.routers.gotify-web.middlewares: gotify-ratelimit,gotify-compress
+      #
+      # Watchtower
+      com.centurylinklabs.watchtower.enable: "true"
+    hostname: server-gotify
+    state: started
+    restart_policy: unless-stopped

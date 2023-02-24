@@ -1,0 +1,5 @@
+gotify_data_dir: "{{ app_data_dir }}/gotify"
+gotify_dirs:
+  - "{{ gotify_data_dir }}"
+
+gotify_version: latest
