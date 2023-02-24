@@ -3,8 +3,8 @@ docker_user:
   name: dockeruser
   password: "{{ vault_dockeruser_password }}"
 
-docker_compose_file_mask: 0664
-docker_compose_directory_mask: 0775
+docker_compose_file_mask: "0664"
+docker_compose_directory_mask: "0775"
 
 docker_update_command: docker compose pull && docker compose down --remove-orphans && docker compose rm && docker compose up -d
 docker_build_command: docker compose build

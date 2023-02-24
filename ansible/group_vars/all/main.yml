@@ -4,7 +4,7 @@ timezone: "{{ vault_timezone }}"
 wifi_ssid: "{{ vault_wifi_ssid }}"
 wifi_password: "{{ vault_wifi_password }}"
 
-enable_deluge: false
+enable_deluge: true
 enable_docker: false
 enable_docker_cleanup: false
 enable_duplicati: false
@@ -19,6 +19,7 @@ enable_traefik: false
 enable_vaultwarden: false
 enable_vaultwarden_backup: false
 enable_wireguard: false
+enable_watchtower: false
 enable_zfs: false
 
 print_web_applications: false

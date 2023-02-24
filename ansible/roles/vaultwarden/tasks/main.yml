@@ -53,6 +53,9 @@
       # middlewares for routers
       traefik.http.routers.vaultwarden-ui.middlewares: vaultwarden-ratelimit,vaultwarden-compress
       traefik.http.routers.vaultwarden-websocket.middlewares: vaultwarden-ratelimit,vaultwarden-compress
+      #
+      # Watchtower
+      com.centurylinklabs.watchtower.enable: "true"
     restart_policy: unless-stopped
 
 - name: Create vaultwarden backup directories

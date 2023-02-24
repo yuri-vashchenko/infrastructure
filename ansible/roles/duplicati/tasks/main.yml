@@ -60,6 +60,9 @@
       traefik.http.middlewares.duplicati-compress.compress: "true"
       # middlewares for routers
       traefik.http.routers.duplicati-web.middlewares: duplicati-ratelimit,duplicati-compress
+      #
+      # Watchtower
+      com.centurylinklabs.watchtower.enable: "true"
     hostname: server-duplicati
     state: started
     restart_policy: unless-stopped

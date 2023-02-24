@@ -53,6 +53,7 @@
       - "{{ plex_movies_dir }}:/movies"
       - "{{ plex_music_dir }}:/music"
       - "{{ plex_photos_dir }}:/photos"
+      - "{{ plex_videos_dir }}:/videos"
     devices:
       - /dev/dri:/dev/dri
     restart_policy: unless-stopped

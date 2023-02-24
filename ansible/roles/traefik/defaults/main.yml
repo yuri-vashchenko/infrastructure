@@ -2,7 +2,7 @@ enable_docker_proxy: true
 enable_shenanigans: true
 
 docker_proxy_version: 0.1
-traefik_version: v2.9.1
+traefik_version: latest
 
 traefik_provider_homeassistant: true
 traefik_provider_plex: true

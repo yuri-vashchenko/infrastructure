@@ -96,6 +96,8 @@ services:
       - traefik.http.middlewares.nsl-compress.compress=true
 
       - traefik.http.routers.nsl-ui.middlewares=nsl-ratelimit,nsl-compress
+
+      - com.centurylinklabs.watchtower.enable=true
     environment:
       ## settings according to
       ## https://github.gitop.top/nightscout/cgm-remote-monitor/blob/master/README.md#environment
@@ -179,10 +181,13 @@ services:
       - {{ nightscout_backup_dir }}:/backups
       - {{ nightscout_db_dir }}:/data
     environment:
-      - DELETE_AFTER=30
-      - CRON_TIME=34 02 * * *  # Runs at 02:34:00 every day
-      - UID={{ docker_user.id }}
-      - GID={{ docker_user.id }}
+      DELETE_AFTER: 30
+      CRON_TIME: 34 02 * * *  # Runs at 02:34:00 every day
+      UID: {{ docker_user.id }}
+      GID: {{ docker_user.id }}
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+
     restart: unless-stopped
 
 networks:

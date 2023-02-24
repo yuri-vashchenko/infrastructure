@@ -40,4 +40,7 @@
       traefik.http.middlewares.syncthing-ui-compress.compress: "true"
       # middlewares for routers
       traefik.http.routers.syncthing-ui.middlewares: syncthing-ui-ratelimit,syncthing-ui-compress
+      #
+      # Watchtower
+      com.centurylinklabs.watchtower.enable: "true"
     restart_policy: unless-stopped
