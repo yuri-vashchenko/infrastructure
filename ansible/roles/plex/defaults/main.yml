@@ -4,6 +4,7 @@ plex_tvseries_dir: "{{ media_dir }}/tvseries"
 plex_movies_dir: "{{ media_dir }}/movies"
 plex_music_dir: "{{ media_dir }}/music"
 plex_photos_dir: "{{ media_dir }}/photos"
+plex_videos_dir: "{{ media_dir }}/videos"
 plex_dirs:
   - "{{ plex_library_dir }}"
   - "{{ plex_transcode_dir }}"
@@ -13,5 +14,6 @@ plex_media_dirs:
   - "{{ plex_movies_dir }}"
   - "{{ plex_music_dir }}"
   - "{{ plex_photos_dir }}"
+  - "{{ plex_videos_dir }}"
 
 plex_version: latest

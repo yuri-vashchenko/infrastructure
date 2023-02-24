@@ -68,4 +68,7 @@
       traefik.http.routers.http-catchall.entrypoints: web
       traefik.http.routers.http-catchall.middlewares: redirect-to-https
       traefik.http.routers.http-catchall.priority: "1000"
+      #
+      # Watchtower
+      com.centurylinklabs.watchtower.enable: "true"
     restart_policy: unless-stopped

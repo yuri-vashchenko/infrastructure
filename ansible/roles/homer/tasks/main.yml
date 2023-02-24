@@ -74,6 +74,9 @@
       traefik.http.middlewares.homer-compress.compress: "true"
       # middlewares for routers
       traefik.http.routers.homer-web.middlewares: homer-ratelimit,homer-compress
+      #
+      # Watchtower
+      com.centurylinklabs.watchtower.enable: "true"
     hostname: server-homer
     state: started
     volumes:

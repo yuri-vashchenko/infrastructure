@@ -48,7 +48,7 @@
   ansible.builtin.template:
     src: files/logrotate.conf
     dest: /etc/logrotate.d/traefik
-    mode: 0600
+    mode: "0600"
   become: true
 
 - name: Check for nginx config
@@ -67,7 +67,7 @@
   ansible.builtin.template:
     src: files/nginx.conf
     dest: "{{ traefik_install_dir }}/nginx.conf"
-    mode: 0600
+    mode: "0600"
   when: not nginx_file.stat.exists
   notify: Restart traefik
   become: true
@@ -75,12 +75,12 @@
 - name: Force permissions for nginx.conf
   ansible.builtin.file:
     dest: "{{ traefik_install_dir }}/nginx.conf"
-    mode: 0600
+    mode: "0600"
   become: true
 
 - name: Force permissions for acme.json
   ansible.builtin.file:
     dest: "{{ traefik_config_dir }}/acme.json"
-    mode: 0600
+    mode: "0600"
   become: true
   when: (acme_file.stat.exists) and (acme_file.stat.mode != "0600")

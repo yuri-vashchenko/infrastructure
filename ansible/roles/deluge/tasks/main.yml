@@ -58,6 +58,9 @@
       traefik.http.middlewares.deluge-compress.compress: "true"
       # middlewares for routers
       traefik.http.routers.deluge-web.middlewares: deluge-ratelimit,deluge-compress
+      #
+      # Watchtower
+      com.centurylinklabs.watchtower.enable: "true"
     hostname: server-deluge
     state: started
     restart_policy: unless-stopped
