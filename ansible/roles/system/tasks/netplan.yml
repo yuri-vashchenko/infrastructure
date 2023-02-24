@@ -14,7 +14,7 @@
   ansible.builtin.template:
     src: files/02-wifi.yaml.j2
     dest: /etc/netplan/02-wifi.yaml
-    mode: 0644
+    mode: "0644"
   notify: netplan generate config
   when: wifi_interface is defined and enable_wifi
   become: true
@@ -31,7 +31,7 @@
   ansible.builtin.copy:
     src: /etc/netplan/03-bridge.yaml
     dest: /etc/netplan/03-bridge.yaml.bak
-    mode: 0644
+    mode: "0644"
     remote_src: true
   when: bridge_files.results[0].stat.exists and not bridge_files.results[1].stat.exists
   become: true
@@ -40,7 +40,7 @@
   ansible.builtin.template:
     src: files/03-bridge.yaml.j2
     dest: /etc/netplan/03-bridge.yaml
-    mode: 0644
+    mode: "0644"
   notify: netplan generate config
   when: ethernet_interface is defined and ethernet_cidr is defined and enable_network_bridge
   become: true

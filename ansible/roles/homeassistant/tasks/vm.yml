@@ -35,4 +35,6 @@
 - name: Autostart vm
   ansible.builtin.command:
     cmd: virsh autostart {{ homeassistant_vm_name }}
+  args:
+    creates: /etc/libvirt/qemu/autostart/{{ homeassistant_vm_name }}.xml
   when: vminfo.stdout_lines | regex_search("shut off")
