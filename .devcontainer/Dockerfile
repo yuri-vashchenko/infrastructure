@@ -21,50 +21,49 @@ USER root
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
+        autoconf \
         bc \
         bsdmainutils \
         build-essential \
         cmake \
-        gcc \
-        gnupg \
-        file \
-        git-svn \
-        git-lfs \
-        libarchive-zip-perl \
-        make \
         cpio \
-        libncurses5-dev \
-        libncurses5 \
-        wget \
-        python3 \
-        unzip \
-        tar \
-        sudo \
-        lsb-release \
+        curl \
+        file \
+        fish \
+        gcc \
+        git \
+        git-lfs \
+        gnupg \
+        gpg-agent \
         graphviz \
-        autoconf \
-        libsqlite3-dev \
+        krb5-user \
+        libarchive-zip-perl \
         libc6-i386 \
-        tzdata \
-        xz-utils \
-        python3-dev \
-        python-is-python3 \
-        python-dev-is-python3 \
-        python3-venv \
         libkrb5-dev \
+        libncurses5 \
+        libncurses5-dev \
+        libpam-modules \
+        libsqlite3-dev \
+        locales \
+        lsb-release \
+        make \
         openssh-client \
         openssh-server \
-        libpam-modules \
-        sshpass \
+        python-dev-is-python3 \
+        python-is-python3 \
+        python3 \
+        python3-dev \
         python3-pip \
-        krb5-user \
-        vim \
-        git \
+        python3-venv \
         rsync \
-        gpg-agent \
-        locales \
-        curl \
-        fish
+        sshpass \
+        sudo \
+        tar \
+        tzdata \
+        unzip \
+        vim \
+        wget \
+        xz-utils
 
 #--- Create user -----------------------------------------------------------------------------------
 
@@ -86,28 +85,28 @@ RUN mkdir /src
 
 # setup environment and add extra packages for development
 # install software-properties-common for add-apt-repository to work
-RUN apt-get install -y --no-install-recommends software-properties-common
+# RUN apt-get install -y --no-install-recommends software-properties-common
 
-RUN wget -O- https://apt.releases.hashicorp.com/gpg | \
-        gpg --dearmor | \
-        sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+# RUN wget -O- https://apt.releases.hashicorp.com/gpg | \
+#         gpg --dearmor | \
+#         sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
 
-RUN gpg --no-default-keyring \
-        --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
-        --fingerprint
+# RUN gpg --no-default-keyring \
+#         --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+#         --fingerprint
 
-RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
-        https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
-        sudo tee /etc/apt/sources.list.d/hashicorp.list
+# RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+#         https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+#         sudo tee /etc/apt/sources.list.d/hashicorp.list
 
 # update apt cache
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
-        default-jre tmux \
-        silversearcher-ag \
-        terraform \
+        # default-jre tmux \
+        # silversearcher-ag \
+        # terraform \
         && \
     apt-get autoremove -y; apt-get clean; rm /var/lib/apt/lists/* -r ; \
     rm -rf /usr/share/man/* ; \
@@ -132,7 +131,7 @@ COPY ./files/python/requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt ; rm requirements.txt
 
 RUN chown ${USER}:${GROUP} /src
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+CMD ["/usr/bin/fish"]
 
 # Configure SSHD.
 # SSH login fix. Otherwise user is kicked off after login
@@ -149,20 +148,20 @@ ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
 # install oh-my-posh https://ohmyposh.dev/docs/linux
-RUN wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
-RUN chmod +x /usr/local/bin/oh-my-posh
+# RUN wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
+# RUN chmod +x /usr/local/bin/oh-my-posh
 
 USER ${USER}
 
 # install oh-my-posh themes
-RUN mkdir ${HOME}/.poshthemes
-RUN wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ${HOME}/.poshthemes/themes.zip
-RUN unzip ${HOME}/.poshthemes/themes.zip -d ${HOME}/.poshthemes
-RUN chmod u+rw ${HOME}/.poshthemes/*.json
-RUN rm ${HOME}/.poshthemes/themes.zip
+# RUN mkdir ${HOME}/.poshthemes
+# RUN wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ${HOME}/.poshthemes/themes.zip
+# RUN unzip ${HOME}/.poshthemes/themes.zip -d ${HOME}/.poshthemes
+# RUN chmod u+rw ${HOME}/.poshthemes/*.json
+# RUN rm ${HOME}/.poshthemes/themes.zip
 
 # install tmux plugin manager
-RUN git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
+# RUN git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
 
 # Generate and configure user keys.
 RUN mkdir -p ${HOME}/.ssh && chmod 700 ${HOME}/.ssh && touch ${HOME}/.ssh/authorized_keys && chmod 600 ${HOME}/.ssh/authorized_keys
@@ -182,7 +181,7 @@ RUN mkdir -p \
 
 COPY --chown=${USER}:${GROUP} ./files/env/* ${HOME}/
 COPY --chown=${USER}:${GROUP} ./files/.local/bin/* ${HOME}/.local/bin/
-COPY --chown=${USER}:${GROUP} ./files/.gnupg/gpg-agent.conf ${HOME}/.gnupg/gpg-agent.conf
+# COPY --chown=${USER}:${GROUP} ./files/.gnupg/gpg-agent.conf ${HOME}/.gnupg/gpg-agent.conf
 
 # Copy and choose dircolors flavor
 COPY --chown=${USER}:${GROUP} ./files/dircolors-solarized/dircolors.* ${HOME}/.local/env/dircolors-solarized
@@ -190,7 +189,7 @@ RUN cp ${HOME}/.local/env/dircolors-solarized/dircolors.ansi-dark ${HOME}/.dirco
 
 # change permissions
 # RUN cd ${HOME} && chmod 644 .bashrc .bash_profile .bash_aliases .tmux.conf .dircolors .profile .gnupg/gpg-agent.conf
-RUN cd ${HOME} && chmod 644 .bashrc .bash_profile .bash_aliases .tmux.conf .dircolors .profile
+# RUN cd ${HOME} && chmod 644 .bashrc .bash_profile .bash_aliases .tmux.conf .dircolors .profile
 
 # Update path
 ENV PATH="$PATH:${HOME}/.local/bin:/src/infrastructure/env/bin"
