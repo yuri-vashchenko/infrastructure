@@ -181,6 +181,7 @@ RUN mkdir -p \
 
 COPY --chown=${USER}:${GROUP} ./files/env/* ${HOME}/
 COPY --chown=${USER}:${GROUP} ./files/.local/bin/* ${HOME}/.local/bin/
+COPY --chown=${USER}:${GROUP} ./files/.config ${HOME}/.config
 # COPY --chown=${USER}:${GROUP} ./files/.gnupg/gpg-agent.conf ${HOME}/.gnupg/gpg-agent.conf
 
 # Copy and choose dircolors flavor

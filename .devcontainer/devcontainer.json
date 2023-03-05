@@ -8,9 +8,7 @@
 			"USER": "yuri"
 		}
 	},
-	"containerEnv": {
-	},
-	"runArgs": ["--hostname", "infra"],
+	"runArgs": ["--hostname", "infra", "--name", "infrastructure"],
 	"mounts": [
 		"source=infrastructure,target=/src,type=volume",
 		"source=D:\\share,target=/share,type=bind,consistency=cached",
