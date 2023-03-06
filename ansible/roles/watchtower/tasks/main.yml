@@ -17,6 +17,10 @@
     watchtower_running: true
   when: watchtower_exists is defined and watchtower_docker_status.container['State']['Running']
 
+- name: Include gotify
+  ansible.builtin.include_tasks:
+    file: gotify.yml
+
 - name: Make sure the watchtower container is created and running
   when: enable_watchtower | default(false)
   community.docker.docker_container:
