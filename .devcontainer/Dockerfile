@@ -18,44 +18,25 @@ ENV DEBCONF_NONINTERACTIVE_SEEN true
 USER root
 
 #--- Install dependencies list ---------------------------------------------------------------------
-RUN dpkg --add-architecture i386 && \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        autoconf \
-        bc \
-        bsdmainutils \
-        build-essential \
-        cmake \
-        cpio \
+        ca-certificates \
         curl \
         file \
         fish \
-        gcc \
+        gh \
         git \
-        git-lfs \
-        gnupg \
-        gpg-agent \
-        graphviz \
-        krb5-user \
-        libarchive-zip-perl \
-        libc6-i386 \
-        libkrb5-dev \
-        libncurses5 \
-        libncurses5-dev \
         libpam-modules \
-        libsqlite3-dev \
         locales \
         lsb-release \
-        make \
         openssh-client \
         openssh-server \
-        python-dev-is-python3 \
-        python-is-python3 \
         python3 \
         python3-dev \
         python3-pip \
         python3-venv \
-        rsync \
+        python-dev-is-python3 \
+        python-is-python3 \
         sshpass \
         sudo \
         tar \
@@ -63,54 +44,21 @@ RUN dpkg --add-architecture i386 && \
         unzip \
         vim \
         wget \
-        xz-utils
-
-#--- Create user -----------------------------------------------------------------------------------
-
-RUN adduser ${USER} --disabled-password --gecos "" --shell /bin/bash ; \
-    echo "${USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers ; \
-    sed -i "s/^#force_color_prompt=.*/force_color_prompt=yes/" ${HOME}/.bashrc ; \
-    touch ${HOME}/.bash_login
-
-ENV GCC_COLORS=error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01
-ENV PS1="\[\033[01;32m\]\u\[\033[00m\]: \[\033[01;34m\]\w\[\033[00m\] \$"
-
-#--- Add toolchains and set PATH -------------------------------------------------------------------
-
-# copy and extract toolchains
-
-RUN ln -sf /usr/share/zoneinfo/Asia/Vladivostok /etc/localtime
-
-RUN mkdir /src
-
-# setup environment and add extra packages for development
-# install software-properties-common for add-apt-repository to work
-# RUN apt-get install -y --no-install-recommends software-properties-common
-
-# RUN wget -O- https://apt.releases.hashicorp.com/gpg | \
-#         gpg --dearmor | \
-#         sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-
-# RUN gpg --no-default-keyring \
-#         --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
-#         --fingerprint
-
-# RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
-#         https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
-#         sudo tee /etc/apt/sources.list.d/hashicorp.list
-
-# update apt cache
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends \
-        ca-certificates \
-        # default-jre tmux \
-        # silversearcher-ag \
-        # terraform \
+        xz-utils \
         && \
     apt-get autoremove -y; apt-get clean; rm /var/lib/apt/lists/* -r ; \
     rm -rf /usr/share/man/* ; \
     rm -rf /tmp/* /var/tmp/*
+
+
+#--- Create user -----------------------------------------------------------------------------------
+
+RUN adduser ${USER} --disabled-password --gecos "" --shell /usr/bin/fish ; \
+    echo "${USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+RUN ln -sf /usr/share/zoneinfo/Asia/Vladivostok /etc/localtime
+
+RUN mkdir /src
 
 RUN chmod 2777 /tmp
 
@@ -125,18 +73,19 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
-RUN python3 -m pip install --upgrade pip
-
 COPY ./files/python/requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt ; rm requirements.txt
 
+RUN update-ca-certificates --fresh
+
 RUN chown ${USER}:${GROUP} /src
-CMD ["/usr/bin/fish"]
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# CMD ["/usr/bin/fish"]
 
 # Configure SSHD.
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
-RUN mkdir /var/run/sshd
+RUN mkdir -p /var/run/sshd
 RUN bash -c 'install -m755 <(printf "#!/bin/sh\nexit 0") /usr/sbin/policy-rc.d'
 RUN ex +'%s/^#\zeListenAddress/\1/g' -scwq /etc/ssh/sshd_config
 RUN ex +'%s/^#\zeHostKey .*ssh_host_.*_key/\1/g' -scwq /etc/ssh/sshd_config
@@ -147,52 +96,19 @@ RUN update-rc.d ssh defaults
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
-# install oh-my-posh https://ohmyposh.dev/docs/linux
-# RUN wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
-# RUN chmod +x /usr/local/bin/oh-my-posh
-
 USER ${USER}
-
-# install oh-my-posh themes
-# RUN mkdir ${HOME}/.poshthemes
-# RUN wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ${HOME}/.poshthemes/themes.zip
-# RUN unzip ${HOME}/.poshthemes/themes.zip -d ${HOME}/.poshthemes
-# RUN chmod u+rw ${HOME}/.poshthemes/*.json
-# RUN rm ${HOME}/.poshthemes/themes.zip
-
-# install tmux plugin manager
-# RUN git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
 
 # Generate and configure user keys.
 RUN mkdir -p ${HOME}/.ssh && chmod 700 ${HOME}/.ssh && touch ${HOME}/.ssh/authorized_keys && chmod 600 ${HOME}/.ssh/authorized_keys
 RUN ssh-keygen -t ed25519 -a 100 -f ${HOME}/.ssh/id_ed25519
-COPY ./files/.ssh/authorized_keys /tmp/authorized_keys
+COPY ./files/env/.ssh/authorized_keys /tmp/authorized_keys
 RUN cat /tmp/authorized_keys >> ${HOME}/.ssh/authorized_keys && rm -f /tmp/authorized_keys
 
 WORKDIR ${HOME}
 
-# Create directories
-RUN mkdir -p \
-    ${HOME}/.local/env/dircolors-solarized \
-    ${HOME}/.local/bin \
-    ${HOME}/.gnupg
-
 # Copy files
 
-COPY --chown=${USER}:${GROUP} ./files/env/* ${HOME}/
-COPY --chown=${USER}:${GROUP} ./files/.local/bin/* ${HOME}/.local/bin/
-COPY --chown=${USER}:${GROUP} ./files/.config ${HOME}/.config
-# COPY --chown=${USER}:${GROUP} ./files/.gnupg/gpg-agent.conf ${HOME}/.gnupg/gpg-agent.conf
-
-# Copy and choose dircolors flavor
-COPY --chown=${USER}:${GROUP} ./files/dircolors-solarized/dircolors.* ${HOME}/.local/env/dircolors-solarized
-RUN cp ${HOME}/.local/env/dircolors-solarized/dircolors.ansi-dark ${HOME}/.dircolors
-
-# change permissions
-# RUN cd ${HOME} && chmod 644 .bashrc .bash_profile .bash_aliases .tmux.conf .dircolors .profile .gnupg/gpg-agent.conf
-# RUN cd ${HOME} && chmod 644 .bashrc .bash_profile .bash_aliases .tmux.conf .dircolors .profile
+COPY --chown=${USER}:${GROUP} ./files/env/ ${HOME}/
 
 # Update path
 ENV PATH="$PATH:${HOME}/.local/bin:/src/infrastructure/env/bin"
-
-USER ${USER}
