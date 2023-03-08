@@ -1,0 +1,64 @@
+- name: Include gotify vault
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/../gotify/vars/vault.yml"
+
+- name: Check if gotify is available
+  ansible.builtin.uri:
+    url: https://gotify.{{ host }}/health
+    user: "{{ user.name }}"
+    password: "{{ gotify_password }}"
+  register: gotify_answer
+  ignore_errors: true
+
+- name: Check gotify health
+  ansible.builtin.set_fact:
+    gotify_health: true
+  when: gotify_answer is defined and gotify_answer.json["health"] is defined and gotify_answer.json["health"] == "green"
+  failed_when: false
+
+- name: Get list of gotify applications
+  ansible.builtin.uri:
+    url: https://gotify.{{ host }}/application
+    user: "{{ user.name }}"
+    password: "{{ gotify_password }}"
+    method: GET
+    body_format: json
+    force_basic_auth: true
+  register: gotify_applications
+  when: gotify_health is defined
+
+- name: Set applications list
+  ansible.builtin.set_fact:
+    gotify_application_list: "{{ gotify_applications.json }}"
+  when: gotify_applications is defined
+
+- name: Reset vars
+  ansible.builtin.set_fact:
+    gotify_application_exists: false
+
+- name: Find needed application
+  ansible.builtin.set_fact:
+    gotify_application_exists: true
+    gotify_application_token: "{{ item.token }}"
+  when: not gotify_application_exists and item.name == gotify_app_name and item.description == gotify_app_description
+  with_items:
+    "{{ gotify_applications.json }}"
+
+- name: Create new application
+  ansible.builtin.uri:
+    url: https://gotify.{{ host }}/application
+    user: "{{ user.name }}"
+    password: "{{ gotify_password }}"
+    method: POST
+    body_format: json
+    force_basic_auth: true
+    body:
+      name: "{{ gotify_app_name }}"
+      description: "{{ gotify_app_description }}"
+  register: gotify_app
+  when: not gotify_application_exists
+
+- name: Get new application token
+  ansible.builtin.set_fact:
+    gotify_application_token: "{{ gotify_app.json['token'] }}"
+  when: not gotify_application_exists
