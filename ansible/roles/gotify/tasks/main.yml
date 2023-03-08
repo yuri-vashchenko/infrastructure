@@ -50,10 +50,8 @@
       traefik.enable: "true"
       traefik.docker.network: traefik
       # routers
-      traefik.http.routers.gotify-web.rule: Host(`{{ container_name }}.local`)
+      traefik.http.routers.gotify-web.rule: Host(`{{ container_name }}.{{ host }}`)
       traefik.http.routers.gotify-web.service: gotify-ui
-      traefik.http.routers.gotify-web.entrypoints: web
-      traefik.http.routers.gotify-web.priority: "2000"
       # services
       traefik.http.services.gotify-ui.loadbalancer.server.port: "{{ gotify.port }}"
       # middlewares
