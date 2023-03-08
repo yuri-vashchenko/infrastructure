@@ -20,7 +20,7 @@ enable_traefik: false
 enable_vaultwarden: false
 enable_vaultwarden_backup: false
 enable_wireguard: false
-enable_watchtower: true
+enable_watchtower: false
 enable_zfs: false
 
 print_web_applications: false
