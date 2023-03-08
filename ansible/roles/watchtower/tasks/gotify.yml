@@ -1,1 +1,66 @@
-# - name: Check if watchtower app exists
+- name: Include gotify vault
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/../gotify/vars/vault.yml"
+
+- name: Check if gotify is available
+  ansible.builtin.uri:
+    url: https://gotify.{{ host }}/health
+    user: "{{ user.name }}"
+    password: "{{ gotify_password }}"
+  register: gotify_answer
+  ignore_errors: true
+
+- name: Check gotify health
+  ansible.builtin.set_fact:
+    gotify_health: true
+  when: gotify_answer is defined and gotify_answer.json["health"] is defined and gotify_answer.json["health"] == "green"
+  failed_when: false
+
+- name: Get list of gotify applications
+  ansible.builtin.uri:
+    url: https://gotify.{{ host }}/application
+    user: "{{ user.name }}"
+    password: "{{ gotify_password }}"
+    method: GET
+    body_format: json
+    force_basic_auth: true
+  register: gotify_applications
+  when: gotify_health
+
+- name: Set applications list
+  ansible.builtin.set_fact:
+    gotify_application_list: "{{ gotify_applications.json }}"
+  when: gotify_applications is defined
+
+- name: Is watchtower application exists?
+  ansible.builtin.set_fact:
+    gotify_watchtower_app_exists: true
+  when: gotify_application_list is defined and gotify_application_list.json["watchtower"] is defined
+
+- name: Create watchtower application
+  ansible.builtin.uri:
+    url: https://gotify.{{ host }}/application
+    user: "{{ user.name }}"
+    password: "{{ gotify_password }}"
+    method: POST
+    body_format: json
+    force_basic_auth: true
+    body:
+      name: watchtower
+      description: Watchtower app
+  register: gotify_watchtower_app
+  when: gotify_watchtower_app_exists is not defined
+
+- name: Get existing watchtower application token
+  ansible.builtin.set_fact:
+    gotify_watchtower_app_token: "{{ gotify_application_list.json['watchtower']['token'] }}"
+  when: gotify_watchtower_app_exists is defined
+
+- name: Get new watchtower application token
+  ansible.builtin.set_fact:
+    gotify_watchtower_app_token: "{{ gotify_watchtower_app.json['token'] }}"
+  when: gotify_watchtower_app_exists is not defined
+
+- name: Debug
+  ansible.builtin.debug:
+    var: gotify_watchtower_app_token
