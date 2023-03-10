@@ -110,5 +110,12 @@ WORKDIR ${HOME}
 
 COPY --chown=${USER}:${GROUP} ./files/env/ ${HOME}/
 
+RUN chmod 644 ${HOME}/.config/fish/*.fish
+RUN chmod 644 ${HOME}/.config/fish/fish_variables
+RUN chmod 644 ${HOME}/.config/fish/conf.d/*.fish
+RUN chmod 644 ${HOME}/.config/fish/functions/*.fish
+
+RUN curl -L https://get.oh-my.fish | fish
+
 # Update path
 ENV PATH="$PATH:${HOME}/.local/bin:/src/infrastructure/env/bin"
