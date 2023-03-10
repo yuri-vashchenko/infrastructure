@@ -14,7 +14,7 @@
 		"source=D:\\share,target=/share,type=bind,consistency=cached",
 		"source=env-infrastructure,target=/home/yuri,type=volume"
 	],
-	"forwardPorts": ["22:22"],
+	"forwardPorts": [22],
 	"workspaceFolder": "/src/infrastructure",
 	"remoteUser": "1000",
 	"customizations": {
