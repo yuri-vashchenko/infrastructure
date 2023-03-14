@@ -1,0 +1,7 @@
+container_name: nextcloud
+homer_category: Downloads
+dashboard_name: Nextcloud
+logo: assets/tools/nextcloud.png
+subtitle: Personal cloud
+tag: app
+url: https://nextcloud.{{ host }}

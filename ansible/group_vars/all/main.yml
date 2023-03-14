@@ -11,6 +11,8 @@ enable_duplicati: false
 enable_gotify: false
 enable_homeassistant: false
 enable_homer: false
+enable_mariadb: false
+enable_nextcloud: false
 enable_nightscout: false
 enable_ntp: false
 enable_plex: false
@@ -26,3 +28,5 @@ enable_zfs: false
 print_web_applications: false
 
 home: /home/{{ user.name }}
+
+ansible_python_interpreter: /usr/bin/python

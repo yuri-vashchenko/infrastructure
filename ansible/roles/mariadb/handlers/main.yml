@@ -1,0 +1,6 @@
+- name: Restart mariadb
+  community.docker.docker_container:
+    name: "{{ container_name }}"
+    state: started
+    restart: true
+  when: enable_mariadb | default(false) and mariadb_exists is defined and mariadb_running is defined

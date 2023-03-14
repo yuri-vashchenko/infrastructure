@@ -1,0 +1,55 @@
+- name: Include vault
+  ansible.builtin.include_vars: vault.yml
+
+- name: Include variables
+  ansible.builtin.include_vars:
+    file: defaults/meta.yml
+
+- name: Create mariadb directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "{{ docker_compose_directory_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+  loop: "{{ mariadb_dirs }}"
+  become: true
+
+- name: Get info on the container {{ container_name }}
+  community.docker.docker_container_info:
+    name: "{{ container_name }}"
+  register: mariadb_docker_status
+
+- name: Does mariadb container exist?
+  ansible.builtin.set_fact:
+    mariadb_exists: true
+  when: mariadb_docker_status.exists
+
+- name: Is docker container running?
+  ansible.builtin.set_fact:
+    mariadb_running: true
+  when: mariadb_exists is defined and mariadb_docker_status.container['State']['Running']
+
+- name: Make sure the mariadb container is created and running
+  when: enable_mariadb | default(false)
+  community.docker.docker_container:
+    name: "{{ container_name }}"
+    image: lscr.io/linuxserver/mariadb:{{ mariadb_version }}
+    volumes:
+      - "{{ mariadb_data_dir }}:/config"
+    env:
+      PUID: "3000"
+      PGID: "3000"
+      TZ: "{{ timezone }}"
+      UMASK_SET: "002"
+      MYSQL_ROOT_PASSWORD: "{{ mariadb_root_password }}"
+    ports:
+      - 3306:3306
+    networks:
+      - name: mariadb
+    labels:
+      # Watchtower
+      com.centurylinklabs.watchtower.enable: "true"
+    hostname: server-mariadb
+    state: started
+    restart_policy: unless-stopped

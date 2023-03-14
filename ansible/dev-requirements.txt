@@ -1,5 +1,6 @@
-ansible-lint
-yamllint
 ansible
+ansible-lint
+mysqlclient
 packaging
 passlib
+yamllint

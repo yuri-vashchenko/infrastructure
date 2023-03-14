@@ -1,0 +1,5 @@
+mariadb_data_dir: "{{ database_dir }}/mariadb"
+mariadb_dirs:
+  - "{{ mariadb_data_dir }}"
+
+mariadb_version: latest

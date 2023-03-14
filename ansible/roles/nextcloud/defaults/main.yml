@@ -1,0 +1,7 @@
+nextcloud_config_dir: "{{ app_data_dir }}/nextcloud/config"
+nextcloud_data_dir: "{{ app_data_dir }}/nextcloud/data"
+nextcloud_dirs:
+  - "{{ nextcloud_config_dir }}"
+  - "{{ nextcloud_data_dir }}"
+
+nextcloud_version: latest

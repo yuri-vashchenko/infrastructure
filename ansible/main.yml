@@ -67,6 +67,10 @@
     - role: traefik
       tags: traefik
       when: enable_traefik | default(false)
+    - role: mariadb
+      tags: mariadb
+      become: true
+      when: enable_mariadb | default(false)
     - role: plex
       tags: plex
       become: true
@@ -106,6 +110,9 @@
     - role: watchtower
       tags: watchtower
       when: enable_watchtower | default(false)
+    - role: nextcloud
+      tags: nextcloud
+      when: enable_nextcloud | default(false)
 
 - name: Server london specific tasks
   hosts:
