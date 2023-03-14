@@ -1,0 +1,4 @@
+# ansible_python_interpreter: /usr/bin/python
+
+nextcloud_mariadb_user: "{{ vault_nextcloud_mariadb_user }}"
+nextcloud_mariadb_password: "{{ valut_nextcloud_mariadb_password }}"

@@ -20,15 +20,18 @@ USER root
 #--- Install dependencies list ---------------------------------------------------------------------
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        build-essential \
         ca-certificates \
         curl \
         file \
         fish \
         gh \
         git \
+        libmysqlclient-dev \
         libpam-modules \
         locales \
         lsb-release \
+        mysql-client \
         openssh-client \
         openssh-server \
         python3 \

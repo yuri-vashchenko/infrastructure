@@ -33,3 +33,9 @@
     ipam_config:
       - subnet: "{{ iot_network }}"
   when: enable_docker | default(false) and create_docker_iot_network | default(false)
+
+- name: Create mariadb network
+  community.docker.docker_network:
+    name: mariadb
+    driver: bridge
+  when: enable_docker | default(false) and create_docker_mariadb_network | default(false)

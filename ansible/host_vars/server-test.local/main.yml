@@ -15,4 +15,5 @@ private_ip: "{{ server_test.ip }}"
 
 create_docker_iot_network: false
 create_docker_dmz_network: false
-create_docker_home_lan_network: true
+create_docker_home_lan_network: false
+create_docker_mariadb_network: false

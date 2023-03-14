@@ -3,6 +3,7 @@ collections:
   - community.general
   - community.docker
   - community.libvirt
+  - community.mysql
 
 roles:
   - src: geerlingguy.docker

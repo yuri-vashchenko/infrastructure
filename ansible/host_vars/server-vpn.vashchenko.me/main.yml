@@ -12,6 +12,7 @@ media_root: /mnt/storage
 create_docker_iot_network: false
 create_docker_dmz_network: false
 create_docker_home_lan_network: false
+create_docker_mariadb_network: false
 
 host_enable_wireguard: true
 
