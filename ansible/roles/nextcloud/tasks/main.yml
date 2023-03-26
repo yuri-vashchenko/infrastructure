@@ -49,6 +49,40 @@
     login_user: root
     login_password: "{{ mariadb_root_password }}"
 
+- name: Copy config file
+  when: enable_nextcloud | default(false)
+  ansible.builtin.template:
+    src: files/config.php.j2
+    dest: "{{ nextcloud_config_dir }}/config.ansible.php"
+    mode: "{{ docker_compose_file_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+  become: true
+
+- name: Check that the config.php file exists
+  ansible.builtin.stat:
+    path: "{{ nextcloud_config_dir }}/config.php"
+  register: stat_result
+
+- name: Create config.php file if it doesnt exist already
+  ansible.builtin.file:
+    path: "{{ nextcloud_config_filename }}"
+    mode: "{{ docker_compose_file_mask }}"
+    owner: "{{ docker_user.name }}"
+    group: "{{ docker_user.name }}"
+    state: touch
+  when: not stat_result.stat.exists
+  become: true
+
+- name: Merge existing config with new one
+  ansible.builtin.shell:
+    cmd: |
+      diff --ignore-all-space --line-format %L {{ nextcloud_config_filename }} {{ nextcloud_config_dir }}/config.ansible.php > {{ nextcloud_config_filename }}
+  register: result
+  changed_when: result.rc == 1
+  failed_when: result.rc == 2
+  become: true
+
 - name: Make sure the nextcloud container is created and running
   when: enable_nextcloud | default(false)
   community.docker.docker_container:
@@ -73,18 +107,65 @@
       traefik.enable: "true"
       traefik.docker.network: traefik
       # routers // ui
+      traefik.http.routers.nextcloud-web.entrypoints: web
       traefik.http.routers.nextcloud-web.rule: Host(`{{ container_name }}.{{ host }}`)
-      traefik.http.routers.nextcloud-web.service: nextcloud-ui
+      # traefik.http.routers.nextcloud-web.service: nextcloud-ui
+
+      traefik.http.routers.nextcloud-web-secure.entrypoints: web-secure
+      traefik.http.routers.nextcloud-web-secure.rule: Host(`{{ container_name }}.{{ host }}`)
+      traefik.http.routers.nextcloud-web-secure.tls: "true"
+      traefik.http.routers.nextcloud-web-secure.service: nextcloud
       # services
-      traefik.http.services.nextcloud-ui.loadbalancer.server.port: "80"
+      # traefik.http.services.nextcloud-ui.loadbalancer.server.port: "80"
+      traefik.http.services.nextcloud.loadbalancer.server.port: "80"
       # middlewares
-      traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
+      traefik.http.middlewares.nextcloud-redirect-to-https.redirectscheme.scheme: https
+      traefik.http.middlewares.nextcloud-redirect-to-https.redirectscheme.permanent: "true"
       traefik.http.middlewares.nextcloud-ratelimit.ratelimit.average: "5"
       traefik.http.middlewares.nextcloud-ratelimit.ratelimit.burst: "1000"
       traefik.http.middlewares.nextcloud-compress.compress: "true"
+
+      traefik.http.middlewares.nextcloud-headers.headers.customFrameOptionsValue: SAMEORIGIN
+      traefik.http.middlewares.nextcloud-headers.headers.framedeny: "true"
+      traefik.http.middlewares.nextcloud-headers.headers.sslredirect: "true"
+      traefik.http.middlewares.nextcloud-headers.headers.STSIncludeSubdomains: "true"
+      traefik.http.middlewares.nextcloud-headers.headers.STSPreload: "true"
+      traefik.http.middlewares.nextcloud-headers.headers.STSSeconds: "315360000"
+      traefik.http.middlewares.nextcloud-headers.headers.forceSTSHeader: "true"
+      traefik.http.middlewares.nextcloud-headers.headers.sslProxyHeaders.X-Forwarded-Proto: https
+
+      # from https://docs.nextcloud.com/server/25/admin_manual/configuration_server/reverse_proxy_configuration.html
+      traefik.http.middlewares.nextcloud_redirectregex.redirectregex.permanent: "true"
+      traefik.http.middlewares.nextcloud_redirectregex.redirectregex.regex: (http|https)://(.*)/.well-known/(?:card|cal)dav
+      traefik.http.middlewares.nextcloud_redirectregex.redirectregex.replacement: https://$${2}/remote.php/dav
       # middlewares for routers
-      traefik.http.routers.nextcloud-web.middlewares: nextcloud-ratelimit,nextcloud-compress,redirect-to-https
-      #
+      # traefik.http.routers.nextcloud-web.middlewares: nextcloud-ratelimit,nextcloud-compress,nextcloud-redirect-to-https,nextcloud_redirectregex
+      traefik.http.routers.nextcloud-web-secure.middlewares: >
+        nextcloud-compress,nextcloud-redirect-to-https,nextcloud_redirectregex,nextcloud-headers
+      # traefik.http.routers.nextcloud-web-secure.middlewares: >
+      #   nextcloud-ratelimit,nextcloud-compress,nextcloud-redirect-to-https,nextcloud_redirectregex,nextcloud-headers
       # Watchtower
       com.centurylinklabs.watchtower.enable: "true"
     restart_policy: unless-stopped
+
+    # - "traefik.http.routers.cloud.entrypoints=http"
+    # - "traefik.http.routers.cloud.rule=Host(`$HOST.$DOMAIN`)"
+    # - "traefik.http.middlewares.cloud-https-redirect.redirectscheme.scheme=https"
+    # - "traefik.http.routers.cloud.middlewares=cloud-https-redirect"
+    # - "traefik.http.routers.cloud-secure.entrypoints=https"
+    # - "traefik.http.routers.cloud-secure.rule=Host(`$HOST.$DOMAIN`)"
+    # - "traefik.http.routers.cloud-secure.tls=true"
+    # - "traefik.http.routers.cloud-secure.tls.certresolver=le"
+    # - "traefik.http.routers.cloud-secure.service=cloud"
+    # - "traefik.http.services.cloud.loadbalancer.server.port=80"
+    # - "traefik.docker.network=proxy"
+    # - "traefik.http.middlewares.cloud.headers.customFrameOptionsValue=SAMEORIGIN"
+    # - "traefik.http.middlewares.cloud.headers.framedeny=true"
+    # - "traefik.http.middlewares.cloud.headers.sslredirect=true"
+    # - "traefik.http.middlewares.cloud.headers.STSIncludeSubdomains=true"
+    # - "traefik.http.middlewares.cloud.headers.STSPreload=true"
+    # - "traefik.http.middlewares.cloud.headers.STSSeconds=315360000"
+    # - "traefik.http.middlewares.cloud.headers.forceSTSHeader=true"
+    # - "traefik.http.middlewares.cloud.headers.sslProxyHeaders.X-Forwarded-Proto=https"
+    # - "traefik.http.middlewares.cloud-dav.replacepathregex.regex=^/.well-known/ca(l|rd)dav"
+    # - "traefik.http.middlewares.cloud-dav.replacepathregex.replacement=/remote.php/dav/"

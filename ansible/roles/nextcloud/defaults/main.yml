@@ -1,7 +1,9 @@
-nextcloud_config_dir: "{{ app_data_dir }}/nextcloud/config"
+nextcloud_config_dir: "{{ app_data_dir }}/nextcloud/config/www/nextcloud/config"
 nextcloud_data_dir: "{{ app_data_dir }}/nextcloud/data"
 nextcloud_dirs:
   - "{{ nextcloud_config_dir }}"
   - "{{ nextcloud_data_dir }}"
 
 nextcloud_version: latest
+
+nextcloud_config_filename: "{{ nextcloud_config_dir }}/config.php"
