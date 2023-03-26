@@ -1,0 +1,24 @@
+<?php
+$CONFIG = array (
+  'datadirectory' => '/data',
+  'trusted_domains' =>
+  array (
+    0 => 'nextcloud.{{ host }}',
+  ),
+  'trusted_proxies' =>
+  array (
+    0 => '{{ home_lan_base }}.{{ traefik_ip }}',
+  ),
+  'dbtype' => 'mysql',
+  'overwrite.cli.url' => 'https://nextcloud.{{ host }}',
+  'overwriteprotocol' => 'https',
+  'dbname' => 'nextcloud',
+  'dbhost' => 'mariadb:3306',
+  'dbtableprefix' => 'oc_',
+  'mysql.utf8mb4' => true,
+  'dbuser' => '{{ nextcloud_mariadb_user }}',
+  'dbpassword' => '{{ nextcloud_mariadb_password }}',
+  'installed' => true,
+  'default_phone_region' => 'RU',
+  'twofactor_enforced' => 'true',
+);
