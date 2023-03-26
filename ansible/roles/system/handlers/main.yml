@@ -2,9 +2,11 @@
   ansible.builtin.command: netplan generate
   listen: netplan generate config
   notify: netplan apply config
+  changed_when: true
   become: true
 
 - name: Applying Netplan Configuration
   ansible.builtin.command: netplan apply
   listen: netplan apply config
+  changed_when: true
   become: true
