@@ -169,6 +169,14 @@ zfs_pools:
       - ata-WDC_WD20EFRX-68EUZN0_WD-WCC4MKJCDC35-part1
     type: raidz  # define pool type... | basic (no-raid) | mirror | raidz | raidz2 | raidz3
     state: present
+  - name: tank
+    action: add
+    # atime: 'on'
+    compression: lz4  # on | off (default) | lzjb | gzip | gzip-1 | gzip-2 | gzip-3 | gzip-4 | gzip-5 | gzip-6 | gzip-7 | gzip-8 | gzip-9 | lz4 | zle
+    devices:  # define devices to create pool with...can define multiple by | sdb sdc sdd sde sdf | all on one line w/spaces
+      - nvme-NX-2TB_2280_0007280000069-part1
+    type: cache  # define pool type... | basic (no-raid) | mirror | raidz | raidz2 | raidz3
+    state: present
 
 # defines global scrub cron job parameters. Only applies when `zfs_enable_monitoring` is set to True.
 zfs_pools_scrub_cron:
