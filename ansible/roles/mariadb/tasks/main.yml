@@ -15,6 +15,11 @@
   loop: "{{ mariadb_dirs }}"
   become: true
 
+- name: Create mariadb network
+  community.docker.docker_network:
+    name: mariadb
+    driver: bridge
+
 - name: Get info on the container {{ container_name }}
   community.docker.docker_container_info:
     name: "{{ container_name }}"

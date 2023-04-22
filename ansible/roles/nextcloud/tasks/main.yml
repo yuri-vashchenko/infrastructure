@@ -49,68 +49,84 @@
     login_user: root
     login_password: "{{ mariadb_root_password }}"
 
-- name: Copy config file
-  when: enable_nextcloud | default(false)
-  ansible.builtin.template:
-    src: files/config.php.j2
-    dest: "{{ nextcloud_config_dir_long }}/config.ansible.php"
-    mode: "{{ docker_compose_file_mask }}"
-    owner: "{{ docker_user.name }}"
-    group: "{{ docker_user.name }}"
-  become: true
+# - name: Copy config file
+#   when: enable_nextcloud | default(false)
+#   ansible.builtin.template:
+#     src: files/config.php.j2
+#     dest: "{{ nextcloud_config_dir }}/config.ansible.php"
+#     mode: "{{ docker_compose_file_mask }}"
+#     owner: "{{ docker_user.name }}"
+#     group: "{{ docker_user.name }}"
+#   become: true
 
-- name: Check that the config.php file exists
-  ansible.builtin.stat:
-    path: "{{ nextcloud_config_dir_long }}/config.php"
-  register: stat_result
+# - name: Check that the config.php file exists
+#   ansible.builtin.stat:
+#     # path: "{{ nextcloud_config_dir_long }}/config.php"
+#     path: "{{ nextcloud_config_dir }}/config.php"
+#   register: stat_result
 
-- name: Create config.php file if it doesnt exist already
-  ansible.builtin.file:
-    path: "{{ nextcloud_config_filename }}"
-    mode: "{{ docker_compose_file_mask }}"
-    owner: "{{ docker_user.name }}"
-    group: "{{ docker_user.name }}"
-    state: touch
-  when: not stat_result.stat.exists
-  become: true
+# - name: Create config.php file if it doesnt exist already
+#   ansible.builtin.file:
+#     path: "{{ nextcloud_config_filename }}"
+#     mode: "{{ docker_compose_file_mask }}"
+#     owner: "{{ docker_user.name }}"
+#     group: "{{ docker_user.name }}"
+#     state: touch
+#   when: not stat_result.stat.exists
+#   become: true
 
-- name: Merge existing config with new one
-  ansible.builtin.shell:
-    cmd: diff --ignore-all-space --line-format %L
-      {{ nextcloud_config_filename }} {{ nextcloud_config_dir_long }}/config.ansible.php > {{ nextcloud_config_filename }}.new
-    creates: "{{ nextcloud_config_filename }}.new"
-  register: result
-  changed_when: result.rc == 1
-  failed_when: result.rc == 2
-  become: true
+# - name: Merge existing config with new one
+#   ansible.builtin.shell:
+#     cmd: diff --ignore-all-space --line-format %L
+#       {{ nextcloud_config_filename }} {{ nextcloud_config_dir }}/config.ansible.php > {{ nextcloud_config_filename }}.new
+#     # cmd: diff --ignore-all-space --line-format %L
+#     #   {{ nextcloud_config_filename }} {{ nextcloud_config_dir_long }}/config.ansible.php > {{ nextcloud_config_filename }}.new
+#     creates: "{{ nextcloud_config_filename }}.new"
+#   register: result
+#   changed_when: result.rc == 1
+#   failed_when: result.rc == 2
+#   become: true
 
-- name: Rename config.php.new to config.php
-  ansible.builtin.copy:
-    remote_src: true
-    src: "{{ nextcloud_config_filename }}.new"
-    dest: "{{ nextcloud_config_filename }}"
-    mode: "{{ docker_compose_file_mask }}"
-    owner: "{{ docker_user.name }}"
-    group: "{{ docker_user.name }}"
-  when: result.rc == 1
-  become: true
+# - name: Rename config.php.new to config.php
+#   ansible.builtin.copy:
+#     remote_src: true
+#     src: "{{ nextcloud_config_filename }}.new"
+#     dest: "{{ nextcloud_config_filename }}"
+#     mode: "{{ docker_compose_file_mask }}"
+#     owner: "{{ docker_user.name }}"
+#     group: "{{ docker_user.name }}"
+#   when: result.rc == 1
+#   become: true
 
-- name: Delete config.php.new
-  ansible.builtin.file:
-    path: "{{ nextcloud_config_filename }}.new"
-    state: absent
-  become: true
+# - name: Delete config.php.new
+#   ansible.builtin.file:
+#     path: "{{ nextcloud_config_filename }}.new"
+#     state: absent
+#   become: true
 
 - name: Make sure the nextcloud container is created and running
   when: enable_nextcloud | default(false)
   community.docker.docker_container:
     name: "{{ container_name }}"
-    image: lscr.io/linuxserver/nextcloud:{{ nextcloud_version }}
+    image: nextcloud
+    # image: lscr.io/linuxserver/nextcloud:{{ nextcloud_version }}
     pull: true
     env:
       PUID: "3000"
       PGID: "3000"
       TZ: "{{ timezone }}"
+      # -------------------------------
+      MYSQL_PASSWORD: "{{ nextcloud_mariadb_password }}"
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: "{{ nextcloud_mariadb_user }}"
+      MYSQL_HOST: mariadb
+      NEXTCLOUD_ADMIN_USER: "{{ nextcloud_admin_user }}"
+      NEXTCLOUD_ADMIN_PASSWORD: "{{ nextcloud_admin_password }}"
+      NEXTCLOUD_TRUSTED_DOMAINS: "{{ host }},nextcloud.{{ host }}"
+      TRUSTED_PROXIES: "{{ home_lan_base }}.{{ traefik_ip }}"
+      OVERWRITEPROTOCOL: https
+      OVERWRITECLIURL: https://nextcloud.{{ host }}
+      # -------------------------------
     networks:
       - name: traefik
       - name: mariadb
@@ -119,8 +135,9 @@
     hostname: server-nextcloud
     state: started
     volumes:
-      - "{{ nextcloud_config_dir }}:/config"
-      - "{{ nextcloud_data_dir }}:/data"
+      # - "{{ nextcloud_config_dir }}:/var/www/html/config"
+      # - "{{ nextcloud_data_dir }}:/var/www/html/data"
+      - "{{ nextcloud_dir }}:/var/www/html"
     labels:
       traefik.enable: "true"
       traefik.docker.network: traefik
@@ -165,5 +182,5 @@
       traefik.http.routers.nextcloud-web-secure.middlewares: >
         nextcloud-redirectregex1,nextcloud-ratelimit,nextcloud-compress,nextcloud-redirect-to-https,nextcloud-headers
       # Watchtower
-      com.centurylinklabs.watchtower.enable: "true"
+      # com.centurylinklabs.watchtower.enable: "true"
     restart_policy: unless-stopped

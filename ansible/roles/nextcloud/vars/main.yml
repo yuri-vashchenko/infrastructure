@@ -2,3 +2,5 @@
 
 nextcloud_mariadb_user: "{{ vault_nextcloud_mariadb_user }}"
 nextcloud_mariadb_password: "{{ valut_nextcloud_mariadb_password }}"
+nextcloud_admin_user: "{{ vault_nextcloud_admin_user }}"
+nextcloud_admin_password: "{{ valut_nextcloud_admin_password }}"
