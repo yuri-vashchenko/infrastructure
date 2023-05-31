@@ -12,7 +12,7 @@ enable_gotify: false
 enable_homeassistant: false
 enable_homer: false
 enable_mariadb: false
-enable_nextcloud: true
+enable_nextcloud: false
 enable_nightscout: false
 enable_ntp: false
 enable_plex: false

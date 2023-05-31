@@ -6,7 +6,7 @@ prepare_kvm: false
 
 homeassistant_root_dir: "{{ app_data_dir }}/homeassistant"
 hassos_host_vm_storage: /opt/homeassistant/vm
-hassos_version: 10.0
+hassos_version: 10.2
 hassos_vm_img_url: >
   https://github.com/home-assistant/operating-system/releases/download/{{ hassos_version }}/haos_ova-{{ hassos_version }}.qcow2.xz
 homeassistant_vm_name: server-hassio
