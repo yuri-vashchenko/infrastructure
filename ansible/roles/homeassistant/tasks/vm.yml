@@ -13,7 +13,7 @@
   ansible.builtin.command:
     cmd: >-
       virt-install --import --name {{ homeassistant_vm_name }} --description "Home Assistant OS"
-      --os-variant=generic --ram=2048 --vcpus=2
+      --os-variant=generic --ram=4096 --vcpus=2
       --disk {{ hassos_host_vm_storage }}/{{ homeassistant_vm_name }}.qcow2,bus=sata
       --network bridge=br0
       --graphics none --boot uefi
