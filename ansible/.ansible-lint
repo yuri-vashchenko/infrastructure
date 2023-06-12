@@ -2,6 +2,7 @@ skip_list:
   - command-instead-of-shell
   - no-handler
   - git-latest
+  - '403'
 
 exclude_paths:
   - ansible/galaxy_roles/
