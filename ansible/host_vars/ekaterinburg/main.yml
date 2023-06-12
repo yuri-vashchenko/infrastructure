@@ -1,5 +1,5 @@
 # ethernet interface
-# ethernet_interface: enp4s0
+# docker_ethernet_interface: enp4s0
 home_lan_interface: enp4s0
 
 ansible_become_pass: "{{ vault_ansible_become_pass }}"
@@ -9,7 +9,7 @@ ansible_pass_first_run: "{{ vault_ansible_become_pass }}"
 app_data_root: /media/drive
 media_root: /media/drive
 
-host_local: london.local
+host_local: ekaterinburg
 
 private_ip: "{{ london.ip }}"
 

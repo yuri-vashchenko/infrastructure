@@ -7,26 +7,19 @@
       tags:
         - list_services
 
-- name: Setup ssh port and user
-  hosts: servers
-  gather_facts: false
-  tasks:
-    - name: Detect ssh port and check first run user
-      ansible.builtin.include_tasks: roles/system/tasks/ssh_port_and_user.yml
-
 - name: Common system role
-  hosts: servers
+  hosts: ongoing
   roles:
     - system
 
 - name: Install docker and docker cleanup
   hosts:
-    - london.local
-    - mainsrv.local
-    - server-main.local
-    - server-ns.local
+    - ekaterinburg
+    - novosibirsk
+    - moscow
+    - kazan
     # - server-test.local
-    - server-vpn.vashchenko.me
+    - novgorod
   roles:
     - role: docker
       tags: docker
@@ -39,10 +32,10 @@
 
 - name: Install ntp
   hosts:
-    - london.local
-    - mainsrv.local
-    - server-main.local
-    - server-ns.local
+    - ekaterinburg
+    - novosibirsk
+    - moscow
+    - kazan
     # - server-test.local
   roles:
     - role: geerlingguy.ntp
@@ -55,7 +48,7 @@
 
 - name: Server main specific tasks
   hosts:
-    - server-main.local
+    - moscow
   roles:
     - role: ansible-zfs
       tags: zfs
@@ -116,7 +109,7 @@
 
 - name: Server london specific tasks
   hosts:
-    - london.local
+    - ekaterinburg
   roles:
     - role: syncthing
       tags: syncthing
@@ -125,7 +118,7 @@
 
 - name: Servier vpn specific tasks
   hosts:
-    - server-vpn.vashchenko.me
+    - novgorod
   roles:
     - role: wireguard
       tags: wireguard

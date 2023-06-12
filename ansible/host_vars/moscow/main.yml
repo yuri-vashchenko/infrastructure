@@ -1,5 +1,5 @@
 # ethernet interface
-# ethernet_interface: eno2
+# docker_ethernet_interface: eno2
 home_lan_interface: br0
 
 home_lan_bridge: "{{ home_lan_interface }}"
@@ -16,7 +16,7 @@ media_dir: /{{ media_root }}/media
 
 traefik_ip: 24
 
-host_local: server-main.local
+host_local: moscow
 
 private_ip: "{{ server_main.ip }}"
 
