@@ -2,8 +2,8 @@
     "yaml.schemas": {
         "https://raw.githubusercontent.com/ansible/schemas/main/f/ansible-vars.json": [
             "file:///src/infrastructure/ansible/group_vars/all/main.yml",
-            "file:///src/infrastructure/ansible/host_vars/server-main.local/main.yml",
-            "file:///src/infrastructure/ansible/host_vars/server-main.local/zfs.yml",
+            "file:///src/infrastructure/ansible/host_vars/moscow/main.yml",
+            "file:///src/infrastructure/ansible/host_vars/moscow/zfs.yml",
             "file:///src/infrastructure/ansible/group_vars/all/user.yml",
             "file:///src/infrastructure/ansible/host_vars/localhost/main.yml"
         ],

@@ -1,5 +1,4 @@
 enable_docker_proxy: true
-enable_shenanigans: true
 
 docker_proxy_version: 0.1
 traefik_version: latest

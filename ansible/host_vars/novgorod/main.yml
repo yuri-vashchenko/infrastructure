@@ -1,5 +1,5 @@
 # ethernet interface
-# ethernet_interface: eth0
+# docker_ethernet_interface: eth0
 home_lan_interface: eth0
 
 ansible_pass_first_run: "{{ vault_ansible_pass_first_run }}"

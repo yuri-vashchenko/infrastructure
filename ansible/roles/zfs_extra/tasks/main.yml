@@ -9,6 +9,6 @@
   loop: "{{ users }}"
   tags: smbpasswd
   become: true
-  register: smbpasswd
-  changed_when: "'Added user' in smbpasswd.stdout"
+  register: zfs_extra_smbpasswd
+  changed_when: "'Added user' in zfs_extra_smbpasswd.stdout"
   notify: Restart samba

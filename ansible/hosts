@@ -1,17 +1,62 @@
-[local_servers]
-# london.local
-mainsrv.local
-server-main.local
-server-ns.local
-# server-test.local
+ekaterinburg ansible_host=ekaterinburg.local
+kazan ansible_host=kazan.local
+moscow ansible_host=moscow.local
+novgorod ansible_host=novgorod.local
+novosibirsk ansible_host=novosibirsk.local
 
-[remote_servers]
-server-vpn.vashchenko.me
+; for future use
+; krasnoyarsk
+; samara
+; ufa
+; rostov
+; omsk
+; krasnodar
+; perm
+; volgograd
+; saratov
+; tumen
+; barnaul
+; irkutsk
+; vladivostok
+; kemerovo
+; tomsk
+; sevastopol
+; orenburg
+; penza
+; lipetsk
+; kaliningrad
+; astrakhan
+; tula
+; kirov
+; sochi
+; kursk
 
-[servers]
-london.local
-mainsrv.local
-server-main.local
-server-ns.local
-# server-test.local
-server-vpn.vashchenko.me
+[initial]
+; ekaterinburg
+kazan
+; moscow
+; novgorod
+; novosibirsk
+
+[ongoing]
+ekaterinburg
+kazan
+moscow
+novgorod
+novosibirsk
+
+[local]
+ekaterinburg
+kazan
+moscow
+novosibirsk
+
+[remote]
+novgorod
+
+[hw]
+ekaterinburg
+kazan
+moscow
+novgorod
+novosibirsk

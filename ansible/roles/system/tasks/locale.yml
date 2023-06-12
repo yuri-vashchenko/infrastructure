@@ -12,21 +12,21 @@
 
 - name: Get current locale and language configuration
   ansible.builtin.command: localectl status
-  register: locale_status
+  register: system_locale_status
   changed_when: false
 
 - name: Parse 'LANG' from current locale and language configuration
   ansible.builtin.set_fact:
-    locale_lang: "{{ locale_status.stdout | regex_search('LANG=([^\n]+)', '\\1') | first }}"
+    system_locale_lang: "{{ system_locale_status.stdout | regex_search('LANG=([^\n]+)', '\\1') | first }}"
 
 - name: Parse 'LANGUAGE' from current locale and language configuration
   ansible.builtin.set_fact:
-    locale_language: "{{ locale_status.stdout | regex_search('LANGUAGE=([^\n]+)', '\\1') | default([locale_lang], true) | first }}"
+    system_locale_language: "{{ system_locale_status.stdout | regex_search('LANGUAGE=([^\n]+)', '\\1') | default([system_locale_lang], true) | first }}"
 
 - name: Configure locale and language
   become: true
   ansible.builtin.command: localectl set-locale LANG={{ config_system_locale }} LANGUAGE={{ config_system_language }}
-  changed_when: locale_lang != config_system_locale or locale_language != config_system_language
+  changed_when: system_locale_lang != config_system_locale or system_locale_language != config_system_language
 
 - name: Update bashrc to set locale environment variables
   when: ansible_os_family == 'Debian'

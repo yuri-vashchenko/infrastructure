@@ -3,13 +3,13 @@ network:
   renderer: networkd
 
   ethernets:
-    {{ ethernet_interface }}:
+    {{ system_docker_ethernet_interface }}:
       dhcp4: false
       dhcp6: false
 
   bridges:
     br0:
-      interfaces: [{{ ethernet_interface }}]
+      interfaces: [{{ system_docker_ethernet_interface }}]
       addresses: [{{ ethernet_cidr }}]
       routes:
         - to: default

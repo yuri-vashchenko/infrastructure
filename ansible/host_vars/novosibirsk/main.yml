@@ -1,19 +1,19 @@
 # ethernet interface
-# ethernet_interface: eth0
-home_lan_interface: eth0
+# docker_ethernet_interface: br0
+# docker_ethernet_interface: enp1s0
+home_lan_interface: br0
+home_lan_bridge: "{{ home_lan_interface }}"
 
 ansible_become_pass: "{{ vault_ansible_become_pass }}"
 ansible_user_first_run: root
 ansible_pass_first_run: "{{ vault_ansible_become_pass }}"
 
-app_data_root: /mnt/storage
-media_root: /mnt/storage
+app_data_root: /media/drive
+media_root: /media/drive
 
-host_local: server-ns.local
+host_local: novosibirsk
 
-private_ip: "{{ server_ns.ip }}"
-
-enable_wifi: false
+private_ip: "{{ mainsrv.ip }}"
 
 create_docker_iot_network: false
 create_docker_dmz_network: false

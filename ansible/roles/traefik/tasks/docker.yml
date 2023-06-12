@@ -16,26 +16,8 @@
 - name: Recheck container status
   ansible.builtin.include_tasks: check_status.yml
 
-- name: Make sure the shenanigans container is created and running
-  when: enable_shenanigans | default(false) and enable_traefik | default(false)
-  community.docker.docker_container:
-    name: shenanigans
-    image: nginx:alpine
-    pull: true
-    state: started
-    volumes:
-      - "{{ traefik_install_dir }}/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
-    networks:
-      - name: proxy_private
-    links:
-      - docker_proxy
-    restart_policy: unless-stopped
-
-- name: Recheck container status
-  ansible.builtin.include_tasks: check_status.yml
-
 - name: Make sure the traefik container is created and running
-  when: enable_traefik | default(false) and docker_proxy_running | default(false) and shenanigans_running | default(false)
+  when: enable_traefik | default(false) and traefik_docker_proxy_running | default(false)
   community.docker.docker_container:
     name: traefik
     image: traefik:{{ traefik_version }}
@@ -61,7 +43,6 @@
       - "{{ traefik_config_dir }}:/etc/traefik"
     links:
       - docker_proxy
-      - shenanigans
     labels:
       # global redirect to https
       traefik.http.routers.http-catchall.rule: hostregexp(`{host:.+}`)

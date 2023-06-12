@@ -15,45 +15,45 @@
 - name: Get info on virtual networks
   ansible.builtin.command:
     cmd: virsh net-list --all
-  register: vm_net_info
+  register: homeassistant_vm_net_info
   changed_when: false
 
 - name: Check if qemu bridge network exists
   ansible.builtin.set_fact:
-    vm_bridge_net_exists: true
-  when: vm_net_info.stdout_lines | regex_search("^.*host-bridge.*$")
+    homeassistant_vm_bridge_net_exists: true
+  when: homeassistant_vm_net_info.stdout_lines | regex_search("^.*host-bridge.*$")
 
 - name: Add bridge network
   ansible.builtin.command:
     cmd: virsh net-define --file {{ hassos_host_vm_storage }}/host-bridge.xml
   args:
     creates: /etc/libvirt/qemu/networks/host-bridge.xml
-  when: vm_bridge_net_exists is not defined
+  when: homeassistant_vm_bridge_net_exists is not defined
 
 - name: Disable default network autostart
   ansible.builtin.command:
     cmd: virsh net-autostart --disable --network default
-  register: virsh_disable_default_net_autostart
-  changed_when: virsh_disable_default_net_autostart.stdout contains "unmarked as autostarted"
-  when: vm_net_info.stdout_lines | regex_search("^.*default\s*\w*\s*yes.*$")
+  register: homeassistant_virsh_disable_default_net_autostart
+  changed_when: homeassistant_virsh_disable_default_net_autostart.stdout contains "unmarked as autostarted"
+  when: homeassistant_vm_net_info.stdout_lines | regex_search("^.*default\s*\w*\s*yes.*$")
 
 - name: Stop default network
   ansible.builtin.command:
     cmd: virsh net-destroy --network default
-  register: virsh_destroy_default_net
-  changed_when: virsh_destroy_default_net.stdout contains "destroyed"
-  when: vm_net_info.stdout_lines | regex_search("^.*default\s*active.*$")
+  register: homeassistant_virsh_destroy_default_net
+  changed_when: homeassistant_virsh_destroy_default_net.stdout contains "destroyed"
+  when: homeassistant_vm_net_info.stdout_lines | regex_search("^.*default\s*active.*$")
 
 - name: Enable bridge network autostart
   ansible.builtin.command:
     cmd: virsh net-autostart --network host-bridge
   args:
     creates: /etc/libvirt/qemu/networks/autostart/host-bridge.xml
-  when: vm_net_info.stdout_lines | regex_search("^.*host-bridge\s*\w*\s*no.*$")
+  when: homeassistant_vm_net_info.stdout_lines | regex_search("^.*host-bridge\s*\w*\s*no.*$")
 
 - name: Start bridge network
   ansible.builtin.command:
     cmd: virsh net-start --network host-bridge
   args:
     creates: /var/run/libvirt/network/host-bridge.xml
-  when: vm_net_info.stdout_lines | regex_search("^.*host-bridge.*inactive.*$")
+  when: homeassistant_vm_net_info.stdout_lines | regex_search("^.*host-bridge.*inactive.*$")

@@ -13,14 +13,12 @@ entryPoints:
       middlewares:
         - floc-block@file
         - compress@file
-        - shenanigans@file
   web-secure:
     address: :443
     http:
       middlewares:
         - floc-block@file
         - compress@file
-        - shenanigans@file
       tls:
         certresolver: letsEncrypt
         domains:
