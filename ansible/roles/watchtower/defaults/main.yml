@@ -1,1 +1,4 @@
 watchtower_version: latest
+
+gotify_app_name: watchtower
+gotify_app_description: Updates in Docker containers

@@ -1,6 +1,6 @@
 - name: Get ethernet interface
   ansible.builtin.set_fact:
-    ethernet_interface: "{{ item }}"
+    docker_ethernet_interface: "{{ item }}"
   loop: "{{ ansible_facts.interfaces }}"
   when: item.startswith("en") and "." not in item
 

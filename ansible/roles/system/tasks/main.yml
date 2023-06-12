@@ -1,9 +1,6 @@
 - name: Users
   ansible.builtin.include_tasks: users.yml
   when: create_users | default(false)
-- name: SSH
-  ansible.builtin.include_tasks: ssh.yml
-  when: update_ssh | default(false)
 - name: Netplan
   ansible.builtin.include_tasks: netplan.yml
   when: install_netplan | default(false)
@@ -16,9 +13,6 @@
 - name: Snap
   ansible.builtin.include_tasks: remove_snap.yml
   when: remove_snap | default(false)
-- name: Modify .bashrc
-  ansible.builtin.include_tasks: bashrc.yml
-  when: ansible_os_family == 'Debian' and modify_barhrc | default(false)
 - name: Set locale
   ansible.builtin.include_tasks: locale.yml
   when: ansible_os_family == 'Debian' and set_locale | default(false)

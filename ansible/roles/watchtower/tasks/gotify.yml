@@ -1,9 +1,6 @@
 - name: Include gotify
   ansible.builtin.include_tasks:
     file: "{{ role_path }}/../gotify/tasks/get_app_token.yml"
-  vars:
-    gotify_app_name: watchtower
-    gotify_app_description: Updates in Docker containers
 
 - name: Debug
   ansible.builtin.debug:

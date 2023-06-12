@@ -54,13 +54,13 @@
 - name: Check for nginx config
   ansible.builtin.stat:
     path: "{{ traefik_install_dir }}/nginx.conf"
-  register: nginx_file
+  register: traefik_nginx_file
   become: true
 
 - name: Check for acme.json
   ansible.builtin.stat:
     path: "{{ traefik_config_dir }}/acme.json"
-  register: acme_file
+  register: traefik_acme_file
   become: true
 
 - name: Create nginx config, if it doesn't exist already
@@ -68,7 +68,7 @@
     src: files/nginx.conf
     dest: "{{ traefik_install_dir }}/nginx.conf"
     mode: "0600"
-  when: not nginx_file.stat.exists
+  when: not traefik_nginx_file.stat.exists
   notify: Restart traefik
   become: true
 
@@ -83,4 +83,4 @@
     dest: "{{ traefik_config_dir }}/acme.json"
     mode: "0600"
   become: true
-  when: (acme_file.stat.exists) and (acme_file.stat.mode != "0600")
+  when: (traefik_acme_file.stat.exists) and (traefik_acme_file.stat.mode != "0600")

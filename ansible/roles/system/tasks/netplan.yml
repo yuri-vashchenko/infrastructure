@@ -1,12 +1,12 @@
 - name: Get wifi interface
   ansible.builtin.set_fact:
-    wifi_interface: "{{ item }}"
+    system_wifi_interface: "{{ item }}"
   loop: "{{ ansible_facts.interfaces }}"
   when: item.startswith("wl")
 
 - name: Get ethernet interface
   ansible.builtin.set_fact:
-    ethernet_interface: "{{ item }}"
+    system_docker_ethernet_interface: "{{ item }}"
   loop: "{{ ansible_facts.interfaces }}"
   when: item.startswith("en") and "." not in item
 
@@ -16,13 +16,13 @@
     dest: /etc/netplan/02-wifi.yaml
     mode: "0644"
   notify: netplan generate config
-  when: wifi_interface is defined and enable_wifi
+  when: system_wifi_interface is defined and enable_wifi
   become: true
 
 - name: Check files
   ansible.builtin.stat:
     path: "{{ item }}"
-  register: bridge_files
+  register: system_bridge_files
   loop:
     - /etc/netplan/03-bridge.yaml
     - /etc/netplan/03-bridge.yaml.bak
@@ -33,7 +33,7 @@
     dest: /etc/netplan/03-bridge.yaml.bak
     mode: "0644"
     remote_src: true
-  when: bridge_files.results[0].stat.exists and not bridge_files.results[1].stat.exists
+  when: system_bridge_files.results[0].stat.exists and not system_bridge_files.results[1].stat.exists
   become: true
 
 - name: Configure netowrk bridge with netplan
@@ -42,5 +42,5 @@
     dest: /etc/netplan/03-bridge.yaml
     mode: "0644"
   notify: netplan generate config
-  when: ethernet_interface is defined and ethernet_cidr is defined and enable_network_bridge
+  when: system_docker_ethernet_interface is defined and ethernet_cidr is defined and enable_network_bridge
   become: true

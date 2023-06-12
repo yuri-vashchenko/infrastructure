@@ -33,5 +33,5 @@
 - name: Autostart docker service on boot
   ansible.builtin.command:
     cmd: rc-update add docker default
-  register: add_service_result
-  changed_when: add_service_result.stdout.find("service docker added to runlevel default") > 0
+  register: docker_add_service_result
+  changed_when: docker_add_service_result.stdout.find("service docker added to runlevel default") > 0

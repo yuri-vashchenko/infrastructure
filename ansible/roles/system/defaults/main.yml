@@ -6,7 +6,6 @@ modify_barhrc: false
 remove_snap: false
 set_locale: false
 update_packages: false
-update_ssh: false
 
 packages_to_install:
   - tzdata
