@@ -1,0 +1,166 @@
+############################################################
+# Taken with modifications from
+# https://github.com/do-community/ansible-ubuntu
+############################################################
+# This playbook contains 2 plays.
+
+##### Play 1:
+- name: Initial server setup tasks
+  hosts: initial
+  remote_user: root
+
+  tasks:
+    # This task updates the package database, the equivalent of the
+    # following command: `sudo apt update`.
+    - name: Update and upgrade apt packages (Debian and Ubuntu)
+      when: ansible_os_family == 'Debian'
+      ansible.builtin.apt:
+        name: "*"
+        upgrade: true
+        autoremove: true
+        update_cache: true
+        purge: true
+        autoclean: true
+        clean: true
+        state: latest
+
+    - name: Update and upgrade apt packages (Alpine)
+      when: ansible_os_family == 'Alpine'
+      community.general.apk:
+        upgrade: true
+        update_cache: true
+
+    - name: Install OpenSSH
+      ansible.builtin.package:
+        name: "{{ 'openssh-server' if ansible_os_family == 'Debian' else 'openssh' }}"
+
+    # This task ensures that the NTP daemon is running. This is especially
+    # important when you want to make sure that the hosts that will power
+    # your distributed application are in sync - time-wise.
+    - name: Make sure NTP service is running
+      when: ansible_os_family == 'Debian'
+      ansible.builtin.systemd:
+        state: started
+        name: systemd-timesyncd
+
+    # This task verifies that a sudo group exists on the hosts. We know this
+    # is true for Ubuntu servers, but it doesn't hurt to check.
+    - name: Make sure we have a 'sudo' group
+      ansible.builtin.group:
+        name: "{{ 'sudo' if ansible_os_family == 'Debian' else 'wheel' }}"
+        state: present
+
+    - name: Create a user with sudo privileges
+      ansible.builtin.user:
+        name: "{{ user.name }}"
+        password: "{{ password | password_hash('sha512', password_salt) }}"
+        create_home: true
+        comment: "{{ user.fullname }}"
+        shell: "{{ user.shell | default('/bin/bash') }}"
+        append: true
+        groups: "{{ 'sudo' if ansible_os_family == 'Debian' else 'wheel' }}"
+        state: present
+        update_password: on_create
+
+    # This task copies the public SSH key over to the user's home directory.
+    # This performs the same task as the `ssh-copy-id` command.
+    - name: Set up authorized keys
+      ansible.posix.authorized_key:
+        user: "{{ user.name }}"
+        state: present
+        key: "{{ lookup('file', item) }}"
+      loop:
+        - "{{ lookup('env', 'HOME') + '/.ssh/id_ed25519.pub' }}"
+        - ssh-keys/laptop.pub
+        - ssh-keys/infra.pub
+
+    # Here we look for a line that starts with the regexp in the SSH daemon's
+    # configuration file and change its value to "no". We do this so that
+    # any attempt to log in using the root account after running this playbook
+    # will fail.
+    - name: Disable remote login for root
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: ^PermitRootLogin yes
+        line: PermitRootLogin no
+
+    # Here we look for a line that starts with the regexp in the SSH daemon's
+    # configuration file and change its value to a higher port number that's not in use by another application.
+    # We do this to reduce the number of automated attacks hitting the SSH server, thereby improving it's security posture.
+    - name: Change the SSH port
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: ^#Port 22
+        line: Port "{{ ssh_port }}"
+
+    # This task will configure the UFW firewall application to allow SSH traffic in via the port
+    # configured in task 9 above.
+    - name: UFW - Allow SSH connections
+      when: ansible_os_family == 'Debian'
+      community.general.ufw:
+        rule: allow
+        port: "{{ ssh_port }}"
+
+    # This task will then deny all other traffic access to the hosts and enable UFW.
+    - name: Brute-force attempt protection for SSH
+      when: ansible_os_family == 'Debian'
+      community.general.ufw:
+        rule: limit
+        port: "{{ ssh_port }}"
+        proto: tcp
+
+    # This task will then deny all other traffic access to the hosts and enable UFW.
+    - name: UFW - Deny other incoming traffic and enable UFW
+      when: ansible_os_family == 'Debian'
+      community.general.ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+
+    # This tasks removes package dependencies that are no longer required, the
+    # equivalent of running the `sudo apt autoremove` command.
+    - name: Remove dependencies that are no longer required
+      when: ansible_os_family == 'Debian'
+      ansible.builtin.apt:
+        autoremove: true
+        purge: true
+
+    # Since the SSH daemon's configuration file was modified, this task will apply
+    # the change by reloading the daemon, ensuring that any attempt to log in using
+    # the root account will fail.
+    # - name: Restart the SSH daemon
+    #   when: ansible_os_family == 'Debian'
+    #   ansible.builtin.systemd:
+    #     state: restarted
+    #     name: ssh
+
+    - name: Enable SSH
+      ansible.builtin.service:
+        name: sshd
+        enabled: true
+
+    - name: Restart SSH Daemon
+      ansible.builtin.service:
+        name: sshd
+        state: reloaded
+      when: system_sshd_config.changed
+      become: true
+
+##### Play 2:
+# This play starts after the last task in play 1 has completed successfully.
+- name: Rebooting hosts after initial setup
+  hosts: initial
+  port: "{{ ssh_port }}"
+  remote_user: "{{ user.name }}"
+  become: true
+  vars:
+    ansible_become_pass: "{{ password }}"
+
+  tasks:
+    # This task will reboot all the hosts. You want to do this during an initial
+    # server setup and after running the main playbook so that any updates to the
+    # kernel or a library will take effect before you start installing your application(s).
+    - name: Reboot all hosts
+      ansible.builtin.reboot:
