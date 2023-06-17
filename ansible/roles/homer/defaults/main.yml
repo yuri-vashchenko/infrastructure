@@ -55,6 +55,12 @@ homer_apps:
     subtitle: Bathroom warm
     tag: app
     url: http://192.168.0.230/
+  - name: ESPresense
+    category: Devices
+    logo: assets/tools/water-meter.png
+    subtitle: Мама
+    tag: app
+    url: http://192.168.0.235/
 
   - name: Keenetic router
     category: Services

@@ -10,7 +10,7 @@ enable_docker_cleanup: false
 enable_duplicati: false
 enable_gotify: false
 enable_homeassistant: false
-enable_homer: false
+enable_homer: true
 enable_mariadb: false
 enable_nextcloud: false
 enable_nightscout: false
