@@ -57,10 +57,28 @@ homer_apps:
     url: http://192.168.0.230/
   - name: ESPresense
     category: Devices
-    logo: assets/tools/water-meter.png
+    logo: assets/tools/espresense.png
     subtitle: Мама
     tag: app
     url: http://192.168.0.235/
+  - name: ESPresense
+    category: Devices
+    logo: assets/tools/espresense.png
+    subtitle: Кухня
+    tag: app
+    url: http://192.168.0.236/
+  - name: ESPresense
+    category: Devices
+    logo: assets/tools/espresense.png
+    subtitle: Елена
+    tag: app
+    url: http://192.168.0.237/
+  - name: ESPresense
+    category: Devices
+    logo: assets/tools/espresense.png
+    subtitle: Михаил
+    tag: app
+    url: http://192.168.0.238/
 
   - name: Keenetic router
     category: Services
