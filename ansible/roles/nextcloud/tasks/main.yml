@@ -182,5 +182,5 @@
       traefik.http.routers.nextcloud-web-secure.middlewares: >
         nextcloud-redirectregex1,nextcloud-ratelimit,nextcloud-compress,nextcloud-redirect-to-https,nextcloud-headers
       # Watchtower
-      # com.centurylinklabs.watchtower.enable: "true"
+      com.centurylinklabs.watchtower.enable: "true"
     restart_policy: unless-stopped
