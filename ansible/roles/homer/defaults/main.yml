@@ -55,6 +55,12 @@ homer_apps:
     subtitle: Bathroom warm
     tag: app
     url: http://192.168.0.230/
+  - name: Water meter
+    category: Devices
+    logo: assets/tools/water-meter.png
+    subtitle: Toilet cold
+    tag: app
+    url: http://192.168.0.231/
   - name: ESPresense
     category: Devices
     logo: assets/tools/espresense.png
@@ -79,6 +85,12 @@ homer_apps:
     subtitle: Михаил
     tag: app
     url: http://192.168.0.238/
+  - name: WLED
+    category: Devices
+    logo: assets/tools/wled.png
+    subtitle: Elena TV
+    tag: app
+    url: http://192.168.0.242/
 
   - name: Keenetic router
     category: Services
