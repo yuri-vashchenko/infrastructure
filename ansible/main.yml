@@ -17,7 +17,7 @@
     - ekaterinburg
     - novosibirsk
     - moscow
-    - kazan
+    # - kazan
     # - server-test.local
     - novgorod
   roles:
@@ -35,7 +35,7 @@
     - ekaterinburg
     - novosibirsk
     - moscow
-    - kazan
+    # - kazan
     # - server-test.local
   roles:
     - role: geerlingguy.ntp
@@ -49,7 +49,7 @@
 - name: Install security
   hosts:
     - ekaterinburg
-    - kazan
+    # - kazan
     - moscow
     - novosibirsk
     # - server-test.local

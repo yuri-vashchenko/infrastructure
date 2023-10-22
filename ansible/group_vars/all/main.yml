@@ -17,7 +17,7 @@ enable_nightscout: false
 enable_ntp: false
 enable_plex: false
 enable_restic: false
-enable_security: true
+enable_security: false
 enable_syncthing: false
 enable_traefik: false
 enable_vaultwarden: false
