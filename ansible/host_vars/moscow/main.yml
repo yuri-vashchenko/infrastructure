@@ -31,3 +31,23 @@ enable_wifi: true
 enable_network_bridge: true
 wifi_cidr: "{{ server_main.wifi_ip }}/24"
 ethernet_cidr: "{{ server_main.ip }}/24"
+
+security_ssh_port: "{{ ssh_port }}"
+security_ssh_password_authentication: "no"
+security_ssh_permit_root_login: "no"
+security_ssh_usedns: "no"
+security_ssh_permit_empty_password: "no"
+security_ssh_challenge_response_auth: "no"
+security_ssh_gss_api_authentication: "no"
+security_ssh_x11_forwarding: "no"
+security_ssh_allowed_users:
+  - "{{ user.name }}"
+security_sshd_state: started
+security_ssh_restart_handler_state: restarted
+security_sudoers_passwordless:
+  - "{{ user.name }}"
+security_autoupdate_enabled: true
+security_autoupdate_blacklist: []
+security_autoupdate_reboot: true
+security_autoupdate_reboot_time: 03:10
+security_fail2ban_enabled: true

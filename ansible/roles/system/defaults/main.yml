@@ -17,7 +17,5 @@ system_packages_to_install:
   - sudo
   - fish
 
-system_ssh_extra_allowed_users: "{{ user.name }}"
-
 system_config_system_locale: ru_RU.UTF-8
 system_config_system_language: en_US.UTF-8
