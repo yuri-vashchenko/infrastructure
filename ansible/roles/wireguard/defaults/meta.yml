@@ -1,1 +1,1 @@
-container_name: wireguard
+container_name: wireguard  # noqa: var-naming[no-role-prefix]

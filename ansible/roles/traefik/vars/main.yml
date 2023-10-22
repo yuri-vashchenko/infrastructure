@@ -1,1 +1,1 @@
-letsencrypt_email: "{{ vault_letsencrypt_email }}"
+traefik_letsencrypt_email: "{{ vault_letsencrypt_email }}"

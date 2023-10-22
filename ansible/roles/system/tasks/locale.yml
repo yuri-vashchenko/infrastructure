@@ -1,13 +1,13 @@
-- name: Ensure localisation files are available for locale {{ config_system_locale }}
+- name: Ensure localisation files are available for locale {{ system_config_system_locale }}
   become: true
   community.general.locale_gen:
-    name: "{{ config_system_locale }}"
+    name: "{{ system_config_system_locale }}"
     state: present
 
-- name: Ensure localisation files are available for language {{ config_system_language }}
+- name: Ensure localisation files are available for language {{ system_config_system_language }}
   become: true
   community.general.locale_gen:
-    name: "{{ config_system_language }}"
+    name: "{{ system_config_system_language }}"
     state: present
 
 - name: Get current locale and language configuration
@@ -25,8 +25,8 @@
 
 - name: Configure locale and language
   become: true
-  ansible.builtin.command: localectl set-locale LANG={{ config_system_locale }} LANGUAGE={{ config_system_language }}
-  changed_when: system_locale_lang != config_system_locale or system_locale_language != config_system_language
+  ansible.builtin.command: localectl set-locale LANG={{ system_config_system_locale }} LANGUAGE={{ system_config_system_language }}
+  changed_when: system_locale_lang != system_config_system_locale or system_locale_language != system_config_system_language
 
 - name: Update bashrc to set locale environment variables
   when: ansible_os_family == 'Debian'

@@ -3,20 +3,20 @@
 
 - name: Create directories
   ansible.builtin.include_tasks: directories.yml
-  when: create_directories | default(false)
+  when: homeassistant_create_directories | default(false)
 
 - name: Prepare kvm
   ansible.builtin.include_tasks: kvm.yml
-  when: prepare_kvm | default(false)
+  when: homeassistant_prepare_kvm | default(false)
 
 - name: Create network bridge
   ansible.builtin.include_tasks: bridge.yml
-  when: create_bridge | default(false)
+  when: homeassistant_create_bridge | default(false)
 
 - name: Download hassio image
   ansible.builtin.include_tasks: image.yml
-  when: download_image | default(false)
+  when: homeassistant_download_image | default(false)
 
 - name: Create hassio virtual machine
   ansible.builtin.include_tasks: vm.yml
-  when: create_vm | default(false)
+  when: homeassistant_create_vm | default(false)

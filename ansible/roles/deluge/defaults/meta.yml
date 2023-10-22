@@ -1,7 +1,7 @@
-container_name: deluge
-homer_category: Downloads
-dashboard_name: Deluge
-logo: assets/tools/deluge.png
-subtitle: Deluge
-tag: app
-url: http://deluge.{{ host_local }}
+container_name: deluge  # noqa: var-naming[no-role-prefix]
+homer_category: Downloads  # noqa: var-naming[no-role-prefix]
+dashboard_name: Deluge  # noqa: var-naming[no-role-prefix]
+logo: assets/tools/deluge.png  # noqa: var-naming[no-role-prefix]
+subtitle: Deluge  # noqa: var-naming[no-role-prefix]
+tag: app  # noqa: var-naming[no-role-prefix]
+url: http://deluge.{{ host_local }}  # noqa: var-naming[no-role-prefix]

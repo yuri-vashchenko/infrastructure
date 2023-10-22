@@ -1,7 +1,7 @@
-container_name: vaultwarden
-homer_category: Services
-dashboard_name: Vaultwarden
-logo: assets/tools/bitwarden.png
-subtitle: Password manager
-tag: app
-url: https://vaultwarden.{{ host }}
+container_name: vaultwarden  # noqa: var-naming[no-role-prefix]
+homer_category: Services  # noqa: var-naming[no-role-prefix]
+dashboard_name: Vaultwarden  # noqa: var-naming[no-role-prefix]
+logo: assets/tools/bitwarden.png  # noqa: var-naming[no-role-prefix]
+subtitle: Password manager  # noqa: var-naming[no-role-prefix]
+tag: app  # noqa: var-naming[no-role-prefix]
+url: https://vaultwarden.{{ host }}  # noqa: var-naming[no-role-prefix]

@@ -1,6 +1,6 @@
-container_name: restic
-# homer_category: Services
-logo: assets/tools/restic.png
-subtitle: Backup
-tag: app
-# url: http://restic.{{ host_local }}
+container_name: restic  # noqa: var-naming[no-role-prefix]
+# homer_category: Services  # noqa: var-naming[no-role-prefix]
+logo: assets/tools/restic.png  # noqa: var-naming[no-role-prefix]
+subtitle: Backup  # noqa: var-naming[no-role-prefix]
+tag: app  # noqa: var-naming[no-role-prefix]
+# url: http://restic.{{ host_local }}  # noqa: var-naming[no-role-prefix]

@@ -2,9 +2,9 @@ FROM alpine:latest
 
 ARG ARCH
 ARG RCLONE_ARCH
-ARG RCLONE_VERSION="{{ rclone_version }}"
+ARG RCLONE_VERSION="{{ restic_rclone_version }}"
 ARG RESTIC_VERSION="{{ restic_version }}"
-ARG OVERLAY_VERSION="{{ overlay_version }}"
+ARG OVERLAY_VERSION="{{ restic_overlay_version }}"
 ARG OVERLAY_ARCH
 
 ENV TZ "{{ timezone }}"

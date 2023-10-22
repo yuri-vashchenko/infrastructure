@@ -1,1 +1,1 @@
-container_name: watchtower
+container_name: watchtower  # noqa: var-naming[no-role-prefix]
