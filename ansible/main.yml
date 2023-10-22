@@ -46,6 +46,19 @@
         ntp_manage_config: true
       when: enable_ntp | default(false)
 
+- name: Install security
+  hosts:
+    - ekaterinburg
+    - kazan
+    - moscow
+    - novosibirsk
+    # - server-test.local
+  roles:
+    - role: geerlingguy.security
+      tags: security
+      become: true
+      when: enable_security | default(false)
+
 - name: Server main specific tasks
   hosts:
     - moscow
