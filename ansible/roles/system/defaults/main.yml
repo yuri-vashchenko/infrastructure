@@ -1,13 +1,12 @@
-create_users: false
-do_mount: false
-install_netplan: false
-install_packages: false
-modify_barhrc: false
-remove_snap: false
-set_locale: false
-update_packages: false
+system_create_users: false
+system_do_mount: false
+system_install_netplan: false
+system_install_packages: false
+system_remove_snap: false
+system_set_locale: false
+system_update_packages: false
 
-packages_to_install:
+system_packages_to_install:
   - tzdata
   - speedtest-cli
   - htop
@@ -18,7 +17,7 @@ packages_to_install:
   - sudo
   - fish
 
-ssh_extra_allowed_users: "{{ user.name }}"
+system_ssh_extra_allowed_users: "{{ user.name }}"
 
-config_system_locale: ru_RU.UTF-8
-config_system_language: en_US.UTF-8
+system_config_system_locale: ru_RU.UTF-8
+system_config_system_language: en_US.UTF-8

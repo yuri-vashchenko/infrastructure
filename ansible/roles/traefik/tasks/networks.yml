@@ -7,7 +7,7 @@
     - Restart traefik
 
 - name: Create docker proxy network
-  when: enable_docker_proxy | default(false)
+  when: traefik_enable_docker_proxy | default(false)
   community.docker.docker_network:
     name: proxy_private
     state: present

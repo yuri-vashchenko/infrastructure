@@ -1,7 +1,7 @@
-container_name: homer
+container_name: homer  # noqa: var-naming[no-role-prefix]
 
-url: http://homer.local
+url: http://homer.local  # noqa: var-naming[no-role-prefix]
 
-homer_category: Media
+homer_category: Media  # noqa: var-naming[no-role-prefix]
 
-dashboard_name: Homer
+dashboard_name: Homer  # noqa: var-naming[no-role-prefix]

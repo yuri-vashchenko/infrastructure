@@ -1,7 +1,7 @@
-container_name: nextcloud
-homer_category: Downloads
-dashboard_name: Nextcloud
-logo: assets/tools/nextcloud.png
-subtitle: Personal cloud
-tag: app
-url: https://nextcloud.{{ host }}
+container_name: nextcloud  # noqa: var-naming[no-role-prefix]
+homer_category: Downloads  # noqa: var-naming[no-role-prefix]
+dashboard_name: Nextcloud  # noqa: var-naming[no-role-prefix]
+logo: assets/tools/nextcloud.png  # noqa: var-naming[no-role-prefix]
+subtitle: Personal cloud  # noqa: var-naming[no-role-prefix]
+tag: app  # noqa: var-naming[no-role-prefix]
+url: https://nextcloud.{{ host }}  # noqa: var-naming[no-role-prefix]

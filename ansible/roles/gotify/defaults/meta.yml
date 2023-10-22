@@ -1,7 +1,7 @@
-container_name: gotify
-homer_category: Services
-dashboard_name: Gotify
-logo: assets/tools/gotify.png
-subtitle: Gotify
-tag: app
-url: http://gotify.{{ host }}
+container_name: gotify  # noqa: var-naming[no-role-prefix]
+homer_category: Services  # noqa: var-naming[no-role-prefix]
+dashboard_name: Gotify  # noqa: var-naming[no-role-prefix]
+logo: assets/tools/gotify.png  # noqa: var-naming[no-role-prefix]
+subtitle: Gotify  # noqa: var-naming[no-role-prefix]
+tag: app  # noqa: var-naming[no-role-prefix]
+url: http://gotify.{{ host }}  # noqa: var-naming[no-role-prefix]

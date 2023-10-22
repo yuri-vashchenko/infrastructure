@@ -1,21 +1,21 @@
 - name: Users
   ansible.builtin.include_tasks: users.yml
-  when: create_users | default(false)
+  when: system_create_users | default(false)
 - name: Netplan
   ansible.builtin.include_tasks: netplan.yml
-  when: install_netplan | default(false)
+  when: system_install_netplan | default(false)
 - name: Update
   ansible.builtin.include_tasks: update.yml
-  when: update_packages | default(false)
+  when: system_update_packages | default(false)
 - name: Packages
   ansible.builtin.include_tasks: packages.yml
-  when: install_packages | default(false)
+  when: system_install_packages | default(false)
 - name: Snap
   ansible.builtin.include_tasks: remove_snap.yml
-  when: remove_snap | default(false)
+  when: system_remove_snap | default(false)
 - name: Set locale
   ansible.builtin.include_tasks: locale.yml
-  when: ansible_os_family == 'Debian' and set_locale | default(false)
+  when: ansible_os_family == 'Debian' and system_set_locale | default(false)
 - name: Mount volumes
   ansible.builtin.include_tasks: mount.yml
-  when: do_mount | default(false)
+  when: system_do_mount | default(false)

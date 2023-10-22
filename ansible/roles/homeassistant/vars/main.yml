@@ -1,7 +1,7 @@
 homeassistant_mariadb_password: "{{ vault_homeassistant_mariadb_password }}"
 homeassistant_mariadb_database: "{{ vault_homeassistant_mariadb_database }}"
 homeassistant_mariadb_user: "{{ vault_homeassistant_mariadb_user }}"
-mariadb_root_password: "{{ vault_mariadb_root_password }}"
+homeassistant_mariadb_root_password: "{{ vault_mariadb_root_password }}"
 
-mosquitto_user: "{{ vault_mosquitto_user }}"
-mosquitto_password: "{{ vault_mosquitto_password }}"
+homeassistant_mosquitto_user: "{{ vault_mosquitto_user }}"
+homeassistant_mosquitto_password: "{{ vault_mosquitto_password }}"

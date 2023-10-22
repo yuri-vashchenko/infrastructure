@@ -1,7 +1,7 @@
-container_name: nightscout
-homer_category: Health
-dashboard_name: Nightscout
-logo: assets/tools/nightscout.png
-subtitle: Yuri
-tag: app
-url: https://ns.{{ host }}
+container_name: nightscout  # noqa: var-naming[no-role-prefix]
+homer_category: Health  # noqa: var-naming[no-role-prefix]
+dashboard_name: Nightscout  # noqa: var-naming[no-role-prefix]
+logo: assets/tools/nightscout.png  # noqa: var-naming[no-role-prefix]
+subtitle: Yuri  # noqa: var-naming[no-role-prefix]
+tag: app  # noqa: var-naming[no-role-prefix]
+url: https://ns.{{ host }}  # noqa: var-naming[no-role-prefix]

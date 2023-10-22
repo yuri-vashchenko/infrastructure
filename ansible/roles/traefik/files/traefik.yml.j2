@@ -51,7 +51,7 @@ api:
 certificatesResolvers:
   letsEncrypt:
     acme:
-      email: "{{ letsencrypt_email }}"
+      email: "{{ traefik_letsencrypt_email }}"
       storage: /etc/traefik/acme.json
       # caServer: https://acme-staging-v02.api.letsencrypt.org/directory
       httpChallenge:

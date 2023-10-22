@@ -1,8 +1,8 @@
 - name: Make sure the docker_proxy container is created and running
-  when: enable_docker_proxy | default(false) and enable_traefik | default(false)
+  when: traefik_enable_docker_proxy | default(false) and enable_traefik | default(false)
   community.docker.docker_container:
     name: docker_proxy
-    image: tecnativa/docker-socket-proxy:{{ docker_proxy_version }}
+    image: tecnativa/docker-socket-proxy:{{ traefik_docker_proxy_version }}
     state: started
     restart_policy: unless-stopped
     env:

@@ -1,1 +1,1 @@
-container_name: mariadb
+container_name: mariadb  # noqa: var-naming[no-role-prefix]

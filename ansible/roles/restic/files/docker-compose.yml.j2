@@ -7,8 +7,8 @@ services:
       dockerfile: Dockerfile
       args:
         - ARCH={{ restic_architecture }}
-        - OVERLAY_ARCH={{ overlay_architecture }}
-        - RCLONE_ARCH={{ rclone_architecture }}
+        - OVERLAY_ARCH={{ restic_overlay_architecture }}
+        - RCLONE_ARCH={{ restic_rclone_architecture }}
     # image: ghcr.io/niniyas/restic-rclone:amd64 | arm64 | armhf
     environment:
       - PUID={{ docker_user.id }}
@@ -18,10 +18,10 @@ services:
       - TINI_VERBOSITY=0
       - RESTIC_PASSWORD={{ restic_password }}
       - RESTIC_REPOSITORY={{ restic_repository }}
-      - RCLONE_REMOTE_NAME={{ rclone_remote_name }}
-      - RCLONE_REMOTE_LOCATION={{ rclone_remote_location }}
-      - RCLONE_CONFIG_LOCATION={{ rclone_config_location }}
-      - RCLONE_SERVE_ARGS={{ rclone_serve_args }}
+      - RCLONE_REMOTE_NAME={{ restic_rclone_remote_name }}
+      - RCLONE_REMOTE_LOCATION={{ restic_rclone_remote_location }}
+      - RCLONE_CONFIG_LOCATION={{ restic_rclone_config_location }}
+      - RCLONE_SERVE_ARGS={{ restic_rclone_serve_args }}
       - RESTIC_BACKUP_ARGS={{ restic_backup_args }}
       - RESTIC_FORGET_ARGS={{ restic_forget_args }}
       - NOTIFICATIONS={{ restic_notifications }}
@@ -33,5 +33,5 @@ services:
       - {{ restic_config_directory }}:/config  # Optional. Required to see the logs.
       - {{ app_data_dir }}:/data/app_data  # Required. This is the backup directory.
       - {{ database_dir }}:/data/dbs  # Required. This is the backup directory.
-      - {{ rclone_config_path }}:/config/rclone/rclone.conf  # Only if you are using rclone.
+      - {{ restic_rclone_config_path }}:/config/rclone/rclone.conf  # Only if you are using rclone.
     restart: unless-stopped

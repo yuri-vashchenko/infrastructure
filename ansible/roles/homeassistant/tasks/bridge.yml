@@ -1,7 +1,7 @@
 - name: Create network bridge xml
   ansible.builtin.template:
     src: files/host-bridge.xml.j2
-    dest: "{{ hassos_host_vm_storage }}/host-bridge.xml"
+    dest: "{{ homeassistant_hassos_host_vm_storage }}/host-bridge.xml"
     mode: "{{ docker_compose_file_mask }}"
     owner: "{{ docker_user.name }}"
     group: "{{ docker_user.name }}"
@@ -25,7 +25,7 @@
 
 - name: Add bridge network
   ansible.builtin.command:
-    cmd: virsh net-define --file {{ hassos_host_vm_storage }}/host-bridge.xml
+    cmd: virsh net-define --file {{ homeassistant_hassos_host_vm_storage }}/host-bridge.xml
   args:
     creates: /etc/libvirt/qemu/networks/host-bridge.xml
   when: homeassistant_vm_bridge_net_exists is not defined

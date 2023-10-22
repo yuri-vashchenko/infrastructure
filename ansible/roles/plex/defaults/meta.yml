@@ -1,7 +1,7 @@
-container_name: plex
-homer_category: Media
-dashboard_name: Plex
-logo: assets/tools/plex.png
-subtitle: TV Shows & Movie Collection
-tag: app
-url: https://plex.{{ host }}
+container_name: plex  # noqa: var-naming[no-role-prefix]
+homer_category: Media  # noqa: var-naming[no-role-prefix]
+dashboard_name: Plex  # noqa: var-naming[no-role-prefix]
+logo: assets/tools/plex.png  # noqa: var-naming[no-role-prefix]
+subtitle: TV Shows & Movie Collection  # noqa: var-naming[no-role-prefix]
+tag: app  # noqa: var-naming[no-role-prefix]
+url: https://plex.{{ host }}  # noqa: var-naming[no-role-prefix]

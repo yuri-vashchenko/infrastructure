@@ -1,7 +1,7 @@
-container_name: homeassistant
-homer_category: Home Assistant
-dashboard_name: Home Assistant
-logo: assets/tools/home-assistant.png
-subtitle: Main server
-tag: app
-url: https://homeassistant.{{ host }}
+container_name: homeassistant  # noqa: var-naming[no-role-prefix]
+homer_category: Home Assistant  # noqa: var-naming[no-role-prefix]
+dashboard_name: Home Assistant  # noqa: var-naming[no-role-prefix]
+logo: assets/tools/home-assistant.png  # noqa: var-naming[no-role-prefix]
+subtitle: Main server  # noqa: var-naming[no-role-prefix]
+tag: app  # noqa: var-naming[no-role-prefix]
+url: https://homeassistant.{{ host }}  # noqa: var-naming[no-role-prefix]

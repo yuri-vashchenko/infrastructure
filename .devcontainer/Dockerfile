@@ -27,13 +27,12 @@ RUN apt-get update && \
         fish \
         gh \
         git \
-        libmysqlclient-dev \
+        default-libmysqlclient-dev \
         libpam-modules \
         locales \
         lsb-release \
         mysql-client \
         openssh-client \
-        openssh-server \
         python3 \
         python3-dev \
         python3-pip \
@@ -82,21 +81,6 @@ RUN pip3 install -r requirements.txt ; rm requirements.txt
 RUN update-ca-certificates --fresh
 
 RUN chown ${USER}:${GROUP} /src
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# CMD ["/usr/bin/fish"]
-
-# Configure SSHD.
-# SSH login fix. Otherwise user is kicked off after login
-RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
-RUN mkdir -p /var/run/sshd
-RUN bash -c 'install -m755 <(printf "#!/bin/sh\nexit 0") /usr/sbin/policy-rc.d'
-RUN ex +'%s/^#\zeListenAddress/\1/g' -scwq /etc/ssh/system_sshd_config
-RUN ex +'%s/^#\zeHostKey .*ssh_host_.*_key/\1/g' -scwq /etc/ssh/system_sshd_config
-RUN RUNLEVEL=1 dpkg-reconfigure openssh-server
-RUN ssh-keygen -A -v
-RUN update-rc.d ssh defaults
-
-RUN  sed 's@^\(#\)\?\s*StrictHostKeyChecking\s*.*@    StrictHostKeyChecking accept-new@g' -i /etc/ssh/ssh_config
 
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
@@ -106,8 +90,6 @@ USER ${USER}
 # Generate and configure user keys.
 RUN mkdir -p ${HOME}/.ssh && chmod 700 ${HOME}/.ssh && touch ${HOME}/.ssh/authorized_keys && chmod 600 ${HOME}/.ssh/authorized_keys
 RUN ssh-keygen -t ed25519 -a 100 -f ${HOME}/.ssh/id_ed25519
-COPY ./files/env/.ssh/authorized_keys /tmp/authorized_keys
-RUN cat /tmp/authorized_keys >> ${HOME}/.ssh/authorized_keys && rm -f /tmp/authorized_keys
 
 WORKDIR ${HOME}
 
@@ -115,12 +97,15 @@ WORKDIR ${HOME}
 
 COPY --chown=${USER}:${GROUP} ./files/env/ ${HOME}/
 
-RUN chmod 644 ${HOME}/.config/fish/*.fish
-RUN chmod 644 ${HOME}/.config/fish/fish_variables
-RUN chmod 644 ${HOME}/.config/fish/conf.d/*.fish
-RUN chmod 644 ${HOME}/.config/fish/functions/*.fish
+RUN chmod 644 ${HOME}/.config/fish/*.fish; exit 0
+RUN chmod 644 ${HOME}/.config/fish/fish_variables; exit 0
+RUN chmod 644 ${HOME}/.config/fish/conf.d/*.fish; exit 0
+RUN chmod 644 ${HOME}/.config/fish/functions/*.fish; exit 0
 
-RUN curl -L https://get.oh-my.fish | fish
+RUN curl -L https://get.oh-my.fish > /tmp/oh-my.fish; chmod 755 /tmp/oh-my.fish; /usr/bin/fish /tmp/oh-my.fish; rm /tmp/oh-my.fish
 
 # Update path
 ENV PATH="$PATH:${HOME}/.local/bin:/src/infrastructure/env/bin"
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# CMD ["/usr/bin/fish"]

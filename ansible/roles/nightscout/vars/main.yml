@@ -1,4 +1,3 @@
 nightscout_y_api_secret: "{{ vault_nightscout_y_api_secret }}"
 nightscout_l_api_secret: "{{ vault_nightscout_l_api_secret }}"
 nightscout_mqtt: "{{ vault_nightscout_mqtt }}"
-install_dir: "{{ nightscout_install_dir }}"

@@ -10,4 +10,4 @@
     name: docker_proxy
     state: started
     restart: true
-  when: enable_docker_proxy | default(false) and docker_proxy_exists is defined and traefik_docker_proxy_running is defined
+  when: traefik_enable_docker_proxy | default(false) and docker_proxy_exists is defined and traefik_docker_proxy_running is defined

@@ -1,6 +1,6 @@
-enable_docker_proxy: true
+traefik_enable_docker_proxy: true
 
-docker_proxy_version: 0.1
+traefik_docker_proxy_version: 0.1
 traefik_version: latest
 
 traefik_provider_homeassistant: true

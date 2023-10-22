@@ -1,7 +1,7 @@
-container_name: duplicati
-homer_category: Backup and sync
-dashboard_name: duplicati
-logo: assets/tools/duplicati.png
-subtitle: Duplicati on server-main
-tag: app
-url: http://duplicati.{{ host_local }}
+container_name: duplicati  # noqa: var-naming[no-role-prefix]
+homer_category: Backup and sync  # noqa: var-naming[no-role-prefix]
+dashboard_name: duplicati  # noqa: var-naming[no-role-prefix]
+logo: assets/tools/duplicati.png  # noqa: var-naming[no-role-prefix]
+subtitle: Duplicati on server-main  # noqa: var-naming[no-role-prefix]
+tag: app  # noqa: var-naming[no-role-prefix]
+url: http://duplicati.{{ host_local }}  # noqa: var-naming[no-role-prefix]
