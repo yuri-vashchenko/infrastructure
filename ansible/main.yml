@@ -14,13 +14,7 @@
     - system
 
 - name: Install docker and docker cleanup
-  hosts:
-    - ekaterinburg
-    - novosibirsk
-    - moscow
-    # - kazan
-    # - server-test.local
-    - novgorod
+  hosts: all
   roles:
     - role: docker
       tags: docker
@@ -32,12 +26,7 @@
       become: true
 
 - name: Install ntp
-  hosts:
-    - ekaterinburg
-    - novosibirsk
-    - moscow
-    # - kazan
-    # - server-test.local
+  hosts: local
   roles:
     - role: geerlingguy.ntp
       tags: ntp
@@ -48,12 +37,7 @@
       when: enable_ntp | default(false)
 
 - name: Install security
-  hosts:
-    - ekaterinburg
-    # - kazan
-    - moscow
-    - novosibirsk
-    # - server-test.local
+  hosts: all
   roles:
     - role: geerlingguy.security
       tags: security
