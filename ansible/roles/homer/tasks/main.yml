@@ -37,7 +37,7 @@
     - files/icons
     - files/tools
 
-- name: Crate homer config
+- name: Create homer config
   ansible.builtin.template:
     src: templates/config.yml.j2
     dest: "{{ homer_config_dir }}/config.yml"

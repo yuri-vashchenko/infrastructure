@@ -1,8 +1,15 @@
 {% set categories = [] %}
+{% for app in homer_webapps %}
+  {% if homer_webapps[app].category | length > 0 %}
+    {% if homer_webapps[app].category not in categories %}
+      {% set categories = categories.append(homer_webapps[app].category) %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
 {% for app in homer_apps %}
-  {% if homer_apps[app].category | length > 0 %}
-    {% if homer_apps[app].category not in categories %}
-      {% set categories = categories.append(homer_apps[app].category) %}
+  {% if app.category | length > 0 %}
+    {% if app.category not in categories %}
+      {% set categories = categories.append(app.category) %}
     {% endif %}
   {% endif %}
 {% endfor %}
@@ -13,7 +20,7 @@
 title: "Yuri dashboard"
 subtitle: "Home"
 logo: "assets/tools/home.png" # "logo.png"
-# icon: "fas fa-home" # Optional icon
+icon: "fas fa-home" # Optional icon
 
 header: true
 footer: false #'<p>Created with <span class="has-text-danger">❤️</span> with <a href="https://bulma.io/">bulma</a>, <a href="https://vuejs.org/">vuejs</a> & <a href="https://fontawesome.com/">font awesome</a> // Fork me on <a href="https://github.com/bastienwirtz/homer"><i class="fab fa-github-alt"></i></a></p>' # set false if you want to hide it.
@@ -80,143 +87,24 @@ services:
   - name: {{ category.name }}
     icon: {{ category.icon }}
     items:
-{% for app in apps %}
-{% if apps[app].category == category.name %}
-      - name: {{ apps[app].name }}
-        logo: {{ apps[app].logo }}
-        subtitle: {{ apps[app].subtitle }}
-        tag: {{ apps[app].tag }}
-        url: {{ apps[app].url }}
+{% for app in homer_webapps %}
+{% if homer_webapps[app].category == category.name %}
+      - name: {{ homer_webapps[app].name }}
+        logo: {{ homer_webapps[app].logo }}
+        subtitle: {{ homer_webapps[app].subtitle }}
+        tag: {{ homer_webapps[app].tag }}
+        url: {{ homer_webapps[app].url }}
         target: "_blank"
 {% endif %}
 {% endfor %}
-{% for app in homer_apps %}
-{% if app.category == category.name %}
-      - name: {{ app.name }}
-        logo: {{ app.logo }}
-        subtitle: {{ app.subtitle }}
-        tag: {{ app.tag }}
-        url: {{ app.url }}
+{% for happ in homer_apps %}
+{% if happ.category == category.name %}
+      - name: {{ happ.name }}
+        logo: {{ happ.logo }}
+        subtitle: {{ happ.subtitle }}
+        tag: {{ happ.tag }}
+        url: {{ happ.url }}
         target: "_blank"
 {% endif %}
 {% endfor %}
 {% endfor %}
-
-#  - name: "Media"
-#    icon: "fas fa-cloud"
-#    items:
-#      - name: "Plex"
-#        logo: "assets/tools/plex.png"
-#        subtitle: "TV Shows & Movie Collection"
-#        tag: "app"
-#        url: "http://192.168.0.11:32400/web/index.html"
-#        target: "_blank" # optional html a tag target attribute
-#      - name: "Youtube"
-#        logo: "assets/tools/youtube.svg"
-#        tag: "url"
-#        url: "https://youtube.com"
-#  - name: "Downloads"
-#    icon: "fas fa-cloud-download-alt"
-#    items:
-#      - name: "Deluge"
-#        logo: "assets/tools/deluge.png"
-#        subtitle: "Deluge"
-#        tag: "app"
-#        url: "http://192.168.0.15:8112/"
-#        target: "_blank" # optional html a tag target attribute
-#  - name: "Devices"
-#    icon: "fas fa-wifi"
-#    items:
-#      - name: "ESPHome"
-#        logo: "assets/tools/esphome.png"
-#        subtitle: ""
-#        tag: "app"
-#        url: "http://192.168.0.5:6052/"
-#        target: "_blank" # optional html a tag target attribute
-#      - name: "Home Assistant Glow"
-#        logo: "assets/tools/electric-meter.png"
-#        subtitle: ""
-#        tag: "app"
-#        url: "http://192.168.0.233/"
-#        target: "_blank" # optional html a tag target attribute
-#      - name: "Water meter"
-#        logo: "assets/tools/water-meter.png"
-#        subtitle: "Kitchen hot"
-#        tag: "app"
-#        url: "http://192.168.0.229/"
-#        target: "_blank" # optional html a tag target attribute
-#      - name: "Water meter"
-#        logo: "assets/tools/water-meter.png"
-#        subtitle: "Kitchen cold"
-#        tag: "app"
-#        url: "http://192.168.0.228/"
-#        target: "_blank" # optional html a tag target attribute
-#      - name: "Water meter"
-#        logo: "assets/tools/water-meter.png"
-#        subtitle: "Bathroom warm"
-#        tag: "app"
-#        url: "http://192.168.0.230/"
-#        target: "_blank" # optional html a tag target attribute
-#  - name: "Services"
-#    icon: "fas fa-wifi"
-#    items:
-#      - name: "Keenetic router"
-#        logo: "assets/tools/wifi.png"
-#        subtitle: ""
-#        tag: "app"
-#        url: "http://192.168.0.1"
-#        target: "_blank" # optional html a tag target attribute
-#      - name: "AdGuardHome"
-#        logo: "assets/tools/adguardhome.png"
-#        subtitle: ""
-#        tag: "app"
-#        url: "http://192.168.0.1:8181/"
-#        target: "_blank" # optional html a tag target attribute
-#      - name: "Zigbee2MQTT"
-#        logo: "assets/tools/zigbee2mqtt.png"
-#        subtitle: ""
-#        tag: "app"
-#        url: "http://192.168.0.1:8080/"
-#        target: "_blank" # optional html a tag target attribute
-#      - name: "RTSPtoWEB"
-#        logo: "assets/tools/RTSPtoWEB.svg"
-#        subtitle: ""
-#        tag: "app"
-#        url: "http://192.168.0.5:8083/"
-#        target: "_blank" # optional html a tag target attribute
-#      - name: "Ip Table"
-#        logo: "assets/tools/ip.png"
-#        subtitle: ""
-#        tag: "web"
-#        url: "https://docs.google.com/spreadsheets/d/1iHm01ehdf4iPwgbJXPKL2bOvgjLLD-_TzNcOQAJ1p_4/edit#gid=0"
-#        target: "_blank" # optional html a tag target attribute
-#  - name: "Home Assistant"
-#    icon: "fas fa-home"
-#    items:
-#      - name: "Home Assistant"
-#        logo: "assets/tools/home-assistant.png"
-#        subtitle: "Main server"
-#        tag: "app"
-#        url: "https://vashchenko.me/"
-#        target: "_blank" # optional html a tag target attribute
-#      - name: "Home Assistant"
-#        logo: "assets/tools/home-assistant.png"
-#        subtitle: "Backup server"
-#        tag: "app"
-#        url: "https://192.168.0.8:8123/"
-#        target: "_blank" # optional html a tag target attribute
-#  - name: "Backup and sync"
-#    icon: "fas fa-hdd"
-#    items:
-#      - name: "Syncthing"
-#        logo: "assets/tools/syncthing.png"
-#        subtitle: "Keenectic router"
-#        tag: "app"
-#        url: "https://192.168.0.1:8384/"
-#        target: "_blank" # optional html a tag target attribute
-#      - name: "Syncthing"
-#        logo: "assets/tools/syncthing.png"
-#        subtitle: "server-syncthing"
-#        tag: "app"
-#        url: "https://192.168.0.30:8384/"
-#        target: "_blank" # optional html a tag target attribute
