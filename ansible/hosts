@@ -2,7 +2,7 @@ ekaterinburg ansible_host=ekaterinburg.local
 ; kazan ansible_host=kazan.local
 moscow ansible_host=moscow.local
 novgorod ansible_host=novgorod.local
-novosibirsk ansible_host=novosibirsk.local
+; novosibirsk ansible_host=novosibirsk.local
 
 ; for future use
 ; krasnoyarsk
@@ -43,13 +43,13 @@ ekaterinburg
 ; kazan
 moscow
 novgorod
-novosibirsk
+; novosibirsk
 
 [local]
 ekaterinburg
 ; kazan
 moscow
-novosibirsk
+; novosibirsk
 
 [remote]
 novgorod
@@ -59,4 +59,4 @@ ekaterinburg
 ; kazan
 moscow
 novgorod
-novosibirsk
+; novosibirsk
