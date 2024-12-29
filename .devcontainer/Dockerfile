@@ -28,6 +28,7 @@ RUN apt-get update && \
         gh \
         git \
         default-libmysqlclient-dev \
+        less \
         libpam-modules \
         locales \
         lsb-release \
