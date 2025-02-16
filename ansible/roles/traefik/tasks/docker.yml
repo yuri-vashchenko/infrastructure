@@ -23,8 +23,8 @@
     image: traefik:{{ traefik_version }}
     networks:
       - name: traefik
-      - name: dmz
-        ipv4_address: "{{ dmz_base }}.{{ traefik_ip }}"
+      # - name: dmz
+      #   ipv4_address: "{{ dmz_base }}.{{ traefik_ip }}"
       - name: home_lan
         ipv4_address: "{{ home_lan_base }}.{{ traefik_ip }}"
       - name: proxy_private

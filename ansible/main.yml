@@ -6,7 +6,7 @@
       ansible.builtin.import_tasks: tasks/list_services.yml
       tags:
         - list_services
-      when: enable_homer | default(false)
+      when: enable_homer or enable_traefik | default(false)
 
 - name: Common system role
   hosts: ongoing
@@ -105,14 +105,14 @@
       tags: nextcloud
       when: enable_nextcloud | default(false)
 
-- name: Server london specific tasks
-  hosts:
-    - ekaterinburg
-  roles:
-    - role: syncthing
-      tags: syncthing
-      become: true
-      when: enable_syncthing | default(false)
+# - name: Server london specific tasks
+#   hosts:
+#     - ekaterinburg
+#   roles:
+#     - role: syncthing
+#       tags: syncthing
+#       become: true
+#       when: enable_syncthing | default(false)
 
 - name: Servier vpn specific tasks
   hosts:
